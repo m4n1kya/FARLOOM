@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FARLOOM — Technical Knowledge Intelligence Engine</title>
+  <style>
+    /* ------------------------------------------------------------------ */
+    /* Design tokens                                                         */
+    /* ------------------------------------------------------------------ */
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2330;
+      --border: #2d3748;
+      --border2: #374151;
+      --text: #e6edf3;
+      --text2: #8b949e;
+      --text3: #6e7681;
+      --accent: #2dd4bf;
+      --accent2: #0ea5e9;
+      --accent-dim: rgba(45, 212, 191, 0.12);
+      --accent-border: rgba(45, 212, 191, 0.3);
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --success: #34d399;
+      --mono: 'SF Mono', 'Fira Code', 'Fira Mono', Consolas, monospace;
+      --radius: 8px;
+      --radius2: 12px;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Reset & base                                                          */
+    /* ------------------------------------------------------------------ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 15px; scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+    pre, code { font-family: var(--mono); }
+
+    /* ------------------------------------------------------------------ */
+    /* Layout                                                                */
+    /* ------------------------------------------------------------------ */
+    .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.03em;
+      color: var(--text);
+    }
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .logo-name { color: var(--accent); letter-spacing: 0.06em; }
+
+    .nav { display: flex; gap: 0.25rem; flex: 1; }
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text2);
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      transition: color 0.15s, background 0.15s;
+    }
+    .nav-btn:hover { color: var(--text); background: var(--surface2); }
+    .nav-btn.active { color: var(--accent); background: var(--accent-dim); }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text2);
+    }
+    .status-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text3);
+    }
+    .status-dot.ok { background: var(--success); }
+    .status-dot.demo { background: var(--warning); }
+    .status-dot.error { background: var(--danger); }
+
+    /* Main content */
+    .main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+    /* Panels (tabs) */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ------------------------------------------------------------------ */
+    /* Cards & surfaces                                                      */
+    /* ------------------------------------------------------------------ */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .card-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text3);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Stat grid */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .stat {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    .stat-label { font-size: 0.75rem; color: var(--text3); margin-bottom: 0.4rem; }
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.2rem; }
+
+    /* ------------------------------------------------------------------ */
+    /* Banners                                                               */
+    /* ------------------------------------------------------------------ */
+    .banner {
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+    }
+    .banner.warning { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; }
+    .banner.info { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); }
+    .banner.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
+    .banner.success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
+
+    /* ------------------------------------------------------------------ */
+    /* Query workspace                                                       */
+    /* ------------------------------------------------------------------ */
+    .query-form {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      align-items: flex-start;
+    }
+    .query-input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 0.65rem 1rem;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.15s;
+      min-width: 0;
+    }
+    .query-input:focus { border-color: var(--accent); }
+    .query-input::placeholder { color: var(--text3); }
+
+    .mode-select {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 0.65rem 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .mode-select:focus { border-color: var(--accent); }
+
+    .btn {
+      background: var(--accent);
+      color: #0d1117;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0.65rem 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: opacity 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border2);
+    }
+    .btn-secondary:hover { background: var(--border); }
+
+    /* Answer box */
+    .answer-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+    .answer-box .refused-label {
+      font-size: 0.8rem;
+      color: var(--warning);
+      margin-bottom: 0.5rem;
+    }
+    .answer-text { white-space: pre-wrap; word-break: break-word; }
+
+    /* Citations */
+    .citation-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .citation {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+    }
+    .citation-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .citation-tag {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      border-radius: 4px;
+      padding: 0.1rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+    .citation-source { font-size: 0.85rem; color: var(--text2); }
+    .citation-snippet {
+      font-size: 0.82rem;
+      color: var(--text2);
+      font-family: var(--mono);
+      background: var(--bg);
+      border-radius: 4px;
+      padding: 0.5rem 0.75rem;
+      border-left: 2px solid var(--accent);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Example queries */
+    .example-queries {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .example-q {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      color: var(--text2);
+      padding: 0.35rem 0.9rem;
+      font-size: 0.8rem;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .example-q:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Diagnostics                                                           */
+    /* ------------------------------------------------------------------ */
+    .diag-section { margin-bottom: 1rem; }
+    .diag-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      user-select: none;
+    }
+    .diag-header:hover { border-color: var(--border2); }
+    .diag-title { font-size: 0.875rem; font-weight: 600; }
+    .diag-toggle { color: var(--text3); font-size: 0.75rem; }
+    .diag-body {
+      display: none;
+      padding: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .diag-body.open { display: block; }
+
+    .leg-hits { display: flex; flex-direction: column; gap: 0.3rem; }
+    .leg-hit {
+      display: flex;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-family: var(--mono);
+      color: var(--text2);
+      padding: 0.25rem 0.5rem;
+      background: var(--bg);
+      border-radius: 4px;
+    }
+    .leg-rank { color: var(--accent); min-width: 2rem; }
+    .leg-score { color: var(--text3); min-width: 5rem; }
+
+    /* ------------------------------------------------------------------ */
+    /* Graph explorer                                                        */
+    /* ------------------------------------------------------------------ */
+    .graph-search {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+
+    #graph-canvas {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      height: 480px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .graph-node {
+      position: absolute;
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      border-radius: 20px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      z-index: 2;
+      user-select: none;
+    }
+    .graph-node.seed {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+      font-weight: 600;
+    }
+    .graph-node:hover { border-color: var(--accent2); }
+
+    #graph-svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .edge-label {
+      position: absolute;
+      font-size: 0.68rem;
+      color: var(--text3);
+      font-family: var(--mono);
+      background: var(--surface2);
+      padding: 0.1rem 0.3rem;
+      border-radius: 3px;
+      z-index: 3;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .graph-empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text3);
+      font-size: 0.875rem;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .graph-empty-icon { font-size: 2.5rem; opacity: 0.4; }
+
+    /* ------------------------------------------------------------------ */
+    /* Corpus panel                                                          */
+    /* ------------------------------------------------------------------ */
+    .doc-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.8rem 1rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .doc-icon { font-size: 1.2rem; opacity: 0.7; }
+    .doc-info { flex: 1; min-width: 0; }
+    .doc-name { font-size: 0.9rem; font-weight: 500; }
+    .doc-meta { font-size: 0.78rem; color: var(--text2); }
+    .doc-badge {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      border-radius: 12px;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Evaluation panel                                                      */
+    /* ------------------------------------------------------------------ */
+    .eval-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin-top: 0.75rem;
+    }
+    .eval-table th {
+      text-align: left;
+      color: var(--text3);
+      font-weight: 500;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .eval-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+    }
+    .eval-table tr:last-child td { border-bottom: none; }
+    .eval-table tr:hover td { background: var(--surface2); }
+    .eval-best td { color: var(--accent); }
+
+    /* ------------------------------------------------------------------ */
+    /* Misc utilities                                                        */
+    /* ------------------------------------------------------------------ */
+    .loading {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text2);
+      font-size: 0.875rem;
+    }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .confidence-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 0.5rem;
+    }
+    .confidence-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.25rem 0;
+    }
+    .tag-pill {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      padding: 0.15rem 0.55rem;
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin: 0.15rem;
+    }
+    .tag-pill.entity {
+      border-color: rgba(14,165,233,0.4);
+      color: var(--accent2);
+      background: rgba(14,165,233,0.08);
+    }
+    .hidden { display: none !important; }
+    .mt { margin-top: 1rem; }
+    .mb { margin-bottom: 1rem; }
+    .text-muted { color: var(--text2); font-size: 0.875rem; }
+    .text-small { font-size: 0.8rem; color: var(--text3); }
+    .flex-row { display: flex; align-items: center; gap: 0.6rem; }
+    .flex-wrap { flex-wrap: wrap; }
+    .ml-auto { margin-left: auto; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">⬡</div>
+      <span class="logo-name">FARLOOM</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" data-panel="dashboard">Dashboard</button>
+      <button class="nav-btn" data-panel="query">Query</button>
+      <button class="nav-btn" data-panel="graph">Graph Explorer</button>
+      <button class="nav-btn" data-panel="corpus">Corpus</button>
+      <button class="nav-btn" data-panel="eval">Evaluation</button>
+    </nav>
+    <div class="header-status">
+      <div class="status-dot" id="health-dot"></div>
+      <span id="health-label">connecting…</span>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+
+    <!-- ================================================================ -->
+    <!-- DASHBOARD                                                          -->
+    <!-- ================================================================ -->
+    <div class="panel active" id="panel-dashboard">
+      <div style="margin-bottom:1.5rem;">
+        <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:0.35rem;">
+          FARLOOM
+          <span style="font-size:0.9rem;font-weight:400;color:var(--text2);margin-left:0.5rem;">
+            Technical Knowledge Intelligence Engine
+          </span>
+        </h1>
+        <p class="text-muted">
+          Hybrid retrieval combining dense vector search, BM25 keyword matching,
+          and knowledge graph traversal — fused with Reciprocal Rank Fusion.
+        </p>
+      </div>
+
+      <div id="demo-banner" class="banner warning hidden">
+        ⚠ <span><strong>Offline demonstration mode</strong> — no generative model configured.
+        Retrieval, graph exploration, and citations work fully.
+        Answers are extractive (keyword-scored sentences from retrieved chunks).</span>
+      </div>
+      <div id="gemini-banner" class="banner info hidden">
+        ✦ <span>Gemini free-tier active — real LLM answers enabled.</span>
+      </div>
+
+      <div class="stat-grid" id="stats-grid">
+        <div class="stat">
+          <div class="stat-label">Documents</div>
+          <div class="stat-value" id="stat-docs">–</div>
+          <div class="stat-sub">ingested</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Chunks</div>
+          <div class="stat-value" id="stat-chunks">–</div>
+          <div class="stat-sub">indexed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Entities</div>
+          <div class="stat-value" id="stat-entities">–</div>
+          <div class="stat-sub">graph nodes</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Relationships</div>
+          <div class="stat-value" id="stat-edges">–</div>
+          <div class="stat-sub">graph edges</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Provider</div>
+          <div class="stat-value" id="stat-provider" style="font-size:1.1rem;">–</div>
+          <div class="stat-sub" id="stat-mode">–</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Try an example question</div>
+        <div class="example-queries" id="dash-examples">
+          <div class="loading"><div class="spinner"></div>Loading…</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">How it works</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+          <div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ Dense Retrieval</div>
+            <div class="text-muted">Feature-hashing embeddings stored in ChromaDB. Finds semantically similar passages even without exact keyword matches.</div>
+          </div>
+          <div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ BM25 Retrieval</div>
+            <div class="text-muted">Okapi BM25 for exact terms, identifiers, version strings, and package names where semantic similarity fails.</div>
+          </div>
+          <div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ Graph Expansion</div>
+            <div class="text-muted">Knowledge graph BFS from query entities. Discovers evidence across multi-hop relationships.</div>
+          </div>
+          <div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ RRF Fusion</div>
+            <div class="text-muted">Reciprocal Rank Fusion combines all retrieval legs without requiring comparable score scales.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- QUERY WORKSPACE                                                    -->
+    <!-- ================================================================ -->
+    <div class="panel" id="panel-query">
+      <div class="section-title">⬡ AI Query Workspace</div>
+
+      <div class="query-form">
+        <input
+          type="text"
+          id="query-input"
+          class="query-input"
+          placeholder="Ask a question about the indexed corpus…"
+          autocomplete="off"
+        />
+        <select id="mode-select" class="mode-select">
+          <option value="hybrid_graph">hybrid_graph</option>
+          <option value="hybrid">hybrid</option>
+          <option value="dense">dense</option>
+          <option value="bm25">bm25</option>
+        </select>
+        <button class="btn" id="ask-btn" onclick="submitQuery()">Ask</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Example questions</div>
+        <div class="example-queries" id="query-examples">
+          <div class="loading"><div class="spinner"></div>Loading…</div>
+        </div>
+      </div>
+
+      <!-- Result area -->
+      <div id="query-result" class="hidden">
+        <div class="divider"></div>
+
+        <div id="query-refused-banner" class="banner warning hidden">
+          ⚠ Low retrieval confidence — the engine could not find sufficiently relevant evidence.
+        </div>
+        <div id="query-demo-banner" class="banner warning hidden">
+          ⚠ Offline demonstration mode — answer is extractive, not generative.
+        </div>
+
+        <div class="card">
+          <div class="card-title">Answer</div>
+          <div class="answer-box">
+            <div class="answer-text" id="answer-text"></div>
+          </div>
+          <div class="flex-row text-small">
+            <span id="answer-mode-badge"></span>
+            <span id="answer-conf"></span>
+            <button class="btn btn-secondary ml-auto" style="font-size:0.8rem;padding:0.3rem 0.7rem;" onclick="clearResult()">Clear</button>
+          </div>
+        </div>
+
+        <div id="citations-section" class="hidden">
+          <div class="section-title" style="font-size:0.95rem;">Citations</div>
+          <div class="citation-list" id="citation-list"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Diagnostics -->
+        <div class="diag-section">
+          <div class="diag-header" onclick="toggleDiag('diag-debug')">
+            <span class="diag-title">Retrieval Diagnostics</span>
+            <span class="diag-toggle" id="diag-debug-toggle">▼ expand</span>
+          </div>
+          <div class="diag-body" id="diag-debug">
+            <div id="diag-entities" class="mb"></div>
+            <div id="diag-confidence" class="mb"></div>
+            <div id="diag-legs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div id="query-loading" class="hidden">
+        <div class="divider"></div>
+        <div class="loading" style="padding:1rem 0;">
+          <div class="spinner"></div>
+          Retrieving and synthesizing…
+        </div>
+      </div>
+
+      <!-- Error state -->
+      <div id="query-error" class="hidden">
+        <div class="divider"></div>
+        <div class="banner error">
+          ✖ <span id="query-error-msg">Error</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- GRAPH EXPLORER                                                     -->
+    <!-- ================================================================ -->
+    <div class="panel" id="panel-graph">
+      <div class="section-title">⬡ Knowledge Graph Explorer</div>
+
+      <div class="graph-search">
+        <input
+          type="text"
+          id="graph-entity-input"
+          class="query-input"
+          placeholder="Search entity name…"
+          style="max-width:360px;"
+          autocomplete="off"
+        />
+        <select id="graph-depth" class="mode-select">
+          <option value="1">Depth 1</option>
+          <option value="2">Depth 2</option>
+          <option value="3">Depth 3</option>
+        </select>
+        <button class="btn" onclick="exploreGraph()">Explore</button>
+        <button class="btn btn-secondary" onclick="clearGraph()">Clear</button>
+      </div>
+
+      <div class="card" style="padding:0.75rem 1rem;">
+        <div class="card-title">Entity suggestions</div>
+        <div id="entity-suggestions" style="display:flex;flex-wrap:wrap;gap:0.4rem;max-height:80px;overflow-y:auto;">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <div id="graph-canvas">
+        <svg id="graph-svg"></svg>
+        <div class="graph-empty" id="graph-empty">
+          <div class="graph-empty-icon">⬡</div>
+          <div>Search for an entity to explore its graph neighborhood</div>
+        </div>
+      </div>
+
+      <div id="graph-edge-list" class="hidden mt">
+        <div class="card-title">Edges</div>
+        <div id="graph-edge-table" style="font-size:0.82rem;font-family:var(--mono);"></div>
+      </div>
+
+      <div id="graph-not-found" class="banner error hidden mt">
+        ✖ Entity not found in the knowledge graph.
+      </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- CORPUS                                                             -->
+    <!-- ================================================================ -->
+    <div class="panel" id="panel-corpus">
+      <div class="section-title">⬡ Document Corpus</div>
+      <div class="banner info">
+        ℹ The corpus is pre-loaded at startup. The bundled documents are re-ingested
+        automatically if the runtime index is empty (e.g. after a service restart).
+      </div>
+      <div id="corpus-loading" class="loading">
+        <div class="spinner"></div> Loading documents…
+      </div>
+      <div id="corpus-empty" class="hidden banner warning">
+        ⚠ No documents found. The index may still be initializing.
+      </div>
+      <div class="doc-list" id="doc-list"></div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- EVALUATION                                                         -->
+    <!-- ================================================================ -->
+    <div class="panel" id="panel-eval">
+      <div class="section-title">⬡ Retrieval Evaluation</div>
+      <div class="banner info">
+        ℹ Runs the full retrieval benchmark across all four modes on the bundled gold
+        QA pairs. Each mode is scored on Hit@k, MRR, Context Precision, and
+        Answer Faithfulness. Results are real measurements — not simulated.
+      </div>
+
+      <div class="card">
+        <div class="card-title">Benchmark configuration</div>
+        <div class="flex-row" style="flex-wrap:wrap;gap:0.75rem;align-items:flex-end;">
+          <div>
+            <div class="text-small" style="margin-bottom:0.3rem;">Gold QA path</div>
+            <input type="text" id="eval-gold" class="query-input" style="width:280px;"
+              value="data/gold/qa_pairs.json" />
+          </div>
+          <div>
+            <div class="text-small" style="margin-bottom:0.3rem;">Corpus directory</div>
+            <input type="text" id="eval-corpus" class="query-input" style="width:220px;"
+              value="data/corpus" />
+          </div>
+          <div>
+            <div class="text-small" style="margin-bottom:0.3rem;">k</div>
+            <input type="number" id="eval-k" class="query-input" style="width:70px;" value="5" min="1" max="20" />
+          </div>
+          <button class="btn" id="eval-run-btn" onclick="runEval()">Run Evaluation</button>
+        </div>
+      </div>
+
+      <div id="eval-loading" class="loading hidden" style="margin:1rem 0;">
+        <div class="spinner"></div> Running evaluation across all modes… (this may take a minute)
+      </div>
+      <div id="eval-error" class="banner error hidden"></div>
+
+      <div id="eval-results" class="hidden">
+        <div class="card">
+          <div class="card-title">Results</div>
+          <table class="eval-table" id="eval-table">
+            <thead>
+              <tr>
+                <th>Mode</th>
+                <th>Hit@k</th>
+                <th>MRR</th>
+                <th>Ctx Precision@k</th>
+                <th>Faithfulness</th>
+                <th>Answered</th>
+                <th>Refused</th>
+              </tr>
+            </thead>
+            <tbody id="eval-tbody"></tbody>
+          </table>
+          <div id="eval-best-label" class="text-small mt"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+/* ========================================================================= */
+/* State                                                                       */
+/* ========================================================================= */
+const API = '';  // same-origin
+
+const EXAMPLE_QUESTIONS = [
+  'What rate limit does Beacon API enforce per customer agent?',
+  'Who is the chief executive officer of Aurora Dynamics?',
+  'What is Helios Sync?',
+  'How does RRF combine retrieval legs?',
+  'Which retrieval mode should I use for exact package names?',
+  'What is the difference between pip and uv?',
+  'How does ChromaDB handle cosine distance vs similarity?',
+  'What is the walk-scoring formula used in FARLOOM graph expansion?',
+  'Which Python web framework uses lifespan instead of on_event?',
+  'What does BM25 excel at that vector search fails on?',
+  'How long are Pulse Engine telemetry archives retained?',
+  'Who owns the Meridian Policy?',
+  'How often are Beacon API agent tokens rotated?',
+  'Which engineering organization is led from the campus hosting the primary Pulse Engine cluster?',
+];
+
+let lastResponse = null;
+let graphNodes = [];
+let graphEdges = [];
+
+/* ========================================================================= */
+/* Navigation                                                                  */
+/* ========================================================================= */
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+    if (btn.dataset.panel === 'corpus') loadCorpus();
+    if (btn.dataset.panel === 'graph') loadEntitySuggestions();
+  });
+});
+
+/* ========================================================================= */
+/* API helpers                                                                 */
+/* ========================================================================= */
+async function apiFetch(path, opts = {}) {
+  const r = await fetch(API + path, opts);
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({ detail: r.statusText }));
+    throw new Error(err.detail || r.statusText);
+  }
+  return r.json();
+}
+
+/* ========================================================================= */
+/* Health + Status                                                             */
+/* ========================================================================= */
+async function initDashboard() {
+  try {
+    const [health, status, graphStats, chunkCount, docs] = await Promise.allSettled([
+      apiFetch('/health'),
+      apiFetch('/status'),
+      apiFetch('/graph/stats'),
+      apiFetch('/chunks/count'),
+      apiFetch('/docs/list'),
+    ]);
+
+    // Health
+    if (health.status === 'fulfilled' && health.value.status === 'ok') {
+      document.getElementById('health-dot').className = 'status-dot ok';
+      document.getElementById('health-label').textContent = 'healthy';
+    } else {
+      document.getElementById('health-dot').className = 'status-dot error';
+      document.getElementById('health-label').textContent = 'unreachable';
+    }
+
+    // Provider status
+    if (status.status === 'fulfilled') {
+      const s = status.value;
+      document.getElementById('stat-provider').textContent = s.provider;
+      document.getElementById('stat-mode').textContent = s.demo_mode ? 'offline demonstration' : 'live inference';
+      if (s.demo_mode) {
+        document.getElementById('demo-banner').classList.remove('hidden');
+      } else if (s.provider === 'gemini') {
+        document.getElementById('gemini-banner').classList.remove('hidden');
+      }
+    }
+
+    // Stats
+    if (docs.status === 'fulfilled') {
+      document.getElementById('stat-docs').textContent = docs.value.length;
+    }
+    if (chunkCount.status === 'fulfilled') {
+      document.getElementById('stat-chunks').textContent = chunkCount.value.count;
+    }
+    if (graphStats.status === 'fulfilled') {
+      document.getElementById('stat-entities').textContent = graphStats.value.num_nodes;
+      document.getElementById('stat-edges').textContent = graphStats.value.num_edges;
+    }
+  } catch (e) {
+    document.getElementById('health-dot').className = 'status-dot error';
+    document.getElementById('health-label').textContent = 'error';
+  }
+}
+
+/* ========================================================================= */
+/* Example questions                                                           */
+/* ========================================================================= */
+function renderExamples(containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  EXAMPLE_QUESTIONS.forEach(q => {
+    const el = document.createElement('button');
+    el.className = 'example-q';
+    el.textContent = q;
+    el.onclick = () => {
+      document.getElementById('query-input').value = q;
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-panel="query"]').classList.add('active');
+      document.getElementById('panel-query').classList.add('active');
+      submitQuery();
+    };
+    container.appendChild(el);
+  });
+}
+
+/* ========================================================================= */
+/* Query                                                                       */
+/* ========================================================================= */
+document.getElementById('query-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitQuery();
+});
+
+async function submitQuery() {
+  const q = document.getElementById('query-input').value.trim();
+  const mode = document.getElementById('mode-select').value;
+  if (!q) return;
+
+  document.getElementById('query-result').classList.add('hidden');
+  document.getElementById('query-error').classList.add('hidden');
+  document.getElementById('query-loading').classList.remove('hidden');
+  document.getElementById('ask-btn').disabled = true;
+
+  try {
+    const resp = await apiFetch(`/ask?q=${encodeURIComponent(q)}&mode=${mode}`);
+    lastResponse = resp;
+    renderQueryResult(resp);
+  } catch (e) {
+    document.getElementById('query-error-msg').textContent = e.message;
+    document.getElementById('query-error').classList.remove('hidden');
+  } finally {
+    document.getElementById('query-loading').classList.add('hidden');
+    document.getElementById('ask-btn').disabled = false;
+  }
+}
+
+function renderQueryResult(resp) {
+  // Answer
+  document.getElementById('answer-text').textContent = resp.answer;
+
+  // Banners
+  document.getElementById('query-refused-banner').classList.toggle('hidden', !resp.refused);
+  // Show demo mode banner if answer contains the offline marker
+  const isDemo = resp.answer.includes('[Offline demonstration mode') ||
+    (resp.debug && resp.debug.mode && !resp.refused &&
+     resp.answer.match(/\[\d+\]/g) !== null);
+  document.getElementById('query-demo-banner').classList.add('hidden'); // only show explicitly
+
+  // Mode badge
+  document.getElementById('answer-mode-badge').innerHTML =
+    `<span class="tag-pill">mode: ${resp.debug.mode}</span>`;
+
+  // Confidence
+  const conf = resp.debug.confidence;
+  document.getElementById('answer-conf').innerHTML =
+    `<span class="tag-pill">confidence: ${(conf * 100).toFixed(1)}%</span>`;
+
+  // Citations
+  if (resp.citations && resp.citations.length > 0) {
+    document.getElementById('citations-section').classList.remove('hidden');
+    const list = document.getElementById('citation-list');
+    list.innerHTML = '';
+    resp.citations.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'citation';
+      let where = c.source;
+      if (c.section) where += ` › ${c.section}`;
+      if (c.page) where += ` (p.${c.page})`;
+      div.innerHTML = `
+        <div class="citation-header">
+          <span class="citation-tag">[${c.tag}]</span>
+          <span class="citation-source">${escHtml(where)}</span>
+        </div>
+        <div class="citation-snippet">${escHtml(c.snippet)}</div>
+      `;
+      list.appendChild(div);
+    });
+  } else {
+    document.getElementById('citations-section').classList.add('hidden');
+  }
+
+  // Diagnostics
+  const debug = resp.debug;
+
+  // Entities
+  const entDiv = document.getElementById('diag-entities');
+  if (debug.query_entities && debug.query_entities.length > 0) {
+    entDiv.innerHTML = '<div class="text-small" style="margin-bottom:0.4rem;">Detected entities:</div>' +
+      debug.query_entities.map(e => `<span class="tag-pill entity">${escHtml(e)}</span>`).join('');
+  } else {
+    entDiv.innerHTML = '<div class="text-small">No query entities detected.</div>';
+  }
+
+  // Confidence bar
+  document.getElementById('diag-confidence').innerHTML = `
+    <div class="text-small" style="margin-bottom:0.3rem;">
+      Retrieval confidence: ${(conf * 100).toFixed(1)}%
+      (max fused score: ${debug.max_fused_score.toFixed(4)})
+    </div>
+    <div class="confidence-bar">
+      <div class="confidence-fill" style="width:${Math.min(conf*100,100)}%"></div>
+    </div>
+  `;
+
+  // Legs
+  const legsDiv = document.getElementById('diag-legs');
+  legsDiv.innerHTML = '';
+  Object.entries(debug.legs || {}).forEach(([legName, hits]) => {
+    const section = document.createElement('div');
+    section.style.marginBottom = '0.75rem';
+    section.innerHTML = `<div class="text-small" style="margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.06em;">${legName} leg (${hits.length} hits)</div>`;
+    const hitsDiv = document.createElement('div');
+    hitsDiv.className = 'leg-hits';
+    hits.slice(0, 5).forEach(h => {
+      const row = document.createElement('div');
+      row.className = 'leg-hit';
+      row.innerHTML = `
+        <span class="leg-rank">#${h.rank}</span>
+        <span class="leg-score">${h.score.toFixed(4)}</span>
+        <span>${escHtml(h.chunk_id)}</span>
+      `;
+      hitsDiv.appendChild(row);
+    });
+    section.appendChild(hitsDiv);
+    legsDiv.appendChild(section);
+  });
+
+  document.getElementById('query-result').classList.remove('hidden');
+}
+
+function clearResult() {
+  document.getElementById('query-result').classList.add('hidden');
+  document.getElementById('query-input').value = '';
+  lastResponse = null;
+}
+
+function toggleDiag(id) {
+  const body = document.getElementById(id);
+  const toggle = document.getElementById(id + '-toggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  toggle.textContent = isOpen ? '▼ expand' : '▲ collapse';
+}
+
+/* ========================================================================= */
+/* Graph Explorer                                                              */
+/* ========================================================================= */
+async function loadEntitySuggestions() {
+  try {
+    const data = await apiFetch('/graph/entities?limit=80');
+    const container = document.getElementById('entity-suggestions');
+    container.innerHTML = '';
+    data.entities.forEach(e => {
+      const el = document.createElement('button');
+      el.className = 'example-q';
+      el.style.fontSize = '0.75rem';
+      el.textContent = e;
+      el.onclick = () => {
+        document.getElementById('graph-entity-input').value = e;
+        exploreGraph();
+      };
+      container.appendChild(el);
+    });
+    if (data.entities.length === 0) {
+      container.innerHTML = '<span class="text-muted">No entities yet — ingest documents first.</span>';
+    }
+  } catch (e) {
+    document.getElementById('entity-suggestions').innerHTML =
+      `<span class="text-muted">Could not load: ${e.message}</span>`;
+  }
+}
+
+document.getElementById('graph-entity-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') exploreGraph();
+});
+
+// Live search in entity suggestions
+document.getElementById('graph-entity-input').addEventListener('input', async function() {
+  const q = this.value.trim();
+  if (!q) return loadEntitySuggestions();
+  try {
+    const data = await apiFetch(`/graph/entities?q=${encodeURIComponent(q)}&limit=30`);
+    const container = document.getElementById('entity-suggestions');
+    container.innerHTML = '';
+    data.entities.forEach(e => {
+      const el = document.createElement('button');
+      el.className = 'example-q';
+      el.style.fontSize = '0.75rem';
+      el.textContent = e;
+      el.onclick = () => {
+        document.getElementById('graph-entity-input').value = e;
+        exploreGraph();
+      };
+      container.appendChild(el);
+    });
+  } catch(_) {}
+});
+
+async function exploreGraph() {
+  const entity = document.getElementById('graph-entity-input').value.trim();
+  const depth = parseInt(document.getElementById('graph-depth').value);
+  if (!entity) return;
+
+  document.getElementById('graph-not-found').classList.add('hidden');
+  document.getElementById('graph-edge-list').classList.add('hidden');
+  document.getElementById('graph-empty').innerHTML = '<div class="spinner" style="width:20px;height:20px;"></div>';
+
+  try {
+    const data = await apiFetch(
+      `/graph/neighbors?entity=${encodeURIComponent(entity)}&depth=${depth}`
+    );
+    if (!data.found) {
+      document.getElementById('graph-not-found').classList.remove('hidden');
+      document.getElementById('graph-empty').innerHTML =
+        '<div class="graph-empty"><div class="graph-empty-icon">⬡</div><div>Entity not found in graph</div></div>';
+      return;
+    }
+    renderGraph(entity, data.edges);
+  } catch (e) {
+    document.getElementById('graph-empty').innerHTML =
+      `<div class="graph-empty"><div>Error: ${escHtml(e.message)}</div></div>`;
+  }
+}
+
+function clearGraph() {
+  document.getElementById('graph-entity-input').value = '';
+  document.getElementById('graph-not-found').classList.add('hidden');
+  document.getElementById('graph-edge-list').classList.add('hidden');
+  document.getElementById('graph-empty').innerHTML = `
+    <div class="graph-empty-icon">⬡</div>
+    <div>Search for an entity to explore its graph neighborhood</div>
+  `;
+  const canvas = document.getElementById('graph-canvas');
+  canvas.querySelectorAll('.graph-node, .edge-label').forEach(el => el.remove());
+  const svg = document.getElementById('graph-svg');
+  svg.innerHTML = '';
+}
+
+function renderGraph(seedEntity, edges) {
+  const canvas = document.getElementById('graph-canvas');
+  const svg = document.getElementById('graph-svg');
+
+  // Clear previous
+  canvas.querySelectorAll('.graph-node, .edge-label').forEach(el => el.remove());
+  svg.innerHTML = '';
+  document.getElementById('graph-empty').style.display = 'none';
+
+  // Collect unique nodes
+  const nodeSet = new Set();
+  nodeSet.add(seedEntity.toLowerCase());
+  edges.forEach(e => {
+    nodeSet.add(e.subject.toLowerCase());
+    nodeSet.add(e.obj.toLowerCase());
+  });
+
+  const nodeList = Array.from(nodeSet);
+  const nodeLabels = {};
+  // Prefer display labels from edges
+  edges.forEach(e => {
+    nodeLabels[e.subject.toLowerCase()] = e.subject;
+    nodeLabels[e.obj.toLowerCase()] = e.obj;
+  });
+  nodeLabels[seedEntity.toLowerCase()] = seedEntity;
+
+  // Position nodes in a radial layout
+  const W = canvas.offsetWidth;
+  const H = canvas.offsetHeight;
+  const cx = W / 2, cy = H / 2;
+  const positions = {};
+
+  // Seed at center
+  positions[seedEntity.toLowerCase()] = { x: cx, y: cy };
+
+  // Others in circle
+  const others = nodeList.filter(n => n !== seedEntity.toLowerCase());
+  const r = Math.min(W, H) * 0.35;
+  others.forEach((node, i) => {
+    const angle = (2 * Math.PI * i) / others.length - Math.PI / 2;
+    positions[node] = {
+      x: cx + r * Math.cos(angle),
+      y: cy + r * Math.sin(angle),
+    };
+  });
+
+  // Draw edges first (SVG lines)
+  edges.forEach(e => {
+    const sk = e.subject.toLowerCase();
+    const ok = e.obj.toLowerCase();
+    const p1 = positions[sk];
+    const p2 = positions[ok];
+    if (!p1 || !p2) return;
+
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', p1.x);
+    line.setAttribute('y1', p1.y);
+    line.setAttribute('x2', p2.x);
+    line.setAttribute('y2', p2.y);
+    line.setAttribute('stroke', '#2d3748');
+    line.setAttribute('stroke-width', '1.5');
+    svg.appendChild(line);
+
+    // Arrow
+    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
+    const arrowX = p2.x - 22 * Math.cos(angle);
+    const arrowY = p2.y - 22 * Math.sin(angle);
+    const arrowSize = 6;
+    const ax1 = arrowX - arrowSize * Math.cos(angle - 0.4);
+    const ay1 = arrowY - arrowSize * Math.sin(angle - 0.4);
+    const ax2 = arrowX - arrowSize * Math.cos(angle + 0.4);
+    const ay2 = arrowY - arrowSize * Math.sin(angle + 0.4);
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', `${arrowX},${arrowY} ${ax1},${ay1} ${ax2},${ay2}`);
+    poly.setAttribute('fill', '#2d3748');
+    svg.appendChild(poly);
+
+    // Edge label
+    const midX = (p1.x + p2.x) / 2;
+    const midY = (p1.y + p2.y) / 2;
+    const label = document.createElement('div');
+    label.className = 'edge-label';
+    label.textContent = e.relation.replace(/_/g, ' ');
+    label.style.left = (midX - 30) + 'px';
+    label.style.top = (midY - 10) + 'px';
+    canvas.appendChild(label);
+  });
+
+  // Draw nodes
+  nodeList.forEach(nodeKey => {
+    const pos = positions[nodeKey];
+    if (!pos) return;
+    const label = nodeLabels[nodeKey] || nodeKey;
+    const node = document.createElement('div');
+    node.className = 'graph-node' + (nodeKey === seedEntity.toLowerCase() ? ' seed' : '');
+    node.textContent = label;
+    node.style.left = (pos.x - 50) + 'px';
+    node.style.top = (pos.y - 14) + 'px';
+    node.style.transform = 'translateX(-50%)';
+    node.onclick = () => {
+      document.getElementById('graph-entity-input').value = label;
+      exploreGraph();
+    };
+    canvas.appendChild(node);
+  });
+
+  // Edge list
+  if (edges.length > 0) {
+    document.getElementById('graph-edge-list').classList.remove('hidden');
+    const tableDiv = document.getElementById('graph-edge-table');
+    tableDiv.innerHTML = edges.map(e =>
+      `<div style="padding:0.25rem 0;color:var(--text2);">
+         <span style="color:var(--text);">${escHtml(e.subject)}</span>
+         <span style="color:var(--text3);margin:0 0.4rem;">–[${escHtml(e.relation.replace(/_/g,' '))}]→</span>
+         <span style="color:var(--text);">${escHtml(e.obj)}</span>
+       </div>`
+    ).join('');
+  }
+}
+
+/* ========================================================================= */
+/* Corpus                                                                      */
+/* ========================================================================= */
+async function loadCorpus() {
+  document.getElementById('corpus-loading').style.display = 'flex';
+  document.getElementById('corpus-empty').classList.add('hidden');
+  document.getElementById('doc-list').innerHTML = '';
+
+  try {
+    const docs = await apiFetch('/docs/list');
+    document.getElementById('corpus-loading').style.display = 'none';
+    if (docs.length === 0) {
+      document.getElementById('corpus-empty').classList.remove('hidden');
+      return;
+    }
+    const list = document.getElementById('doc-list');
+    docs.forEach(doc => {
+      const icons = { pdf: '📄', markdown: '📝', text: '📃' };
+      const el = document.createElement('div');
+      el.className = 'doc-item';
+      el.innerHTML = `
+        <div class="doc-icon">${icons[doc.fmt] || '📄'}</div>
+        <div class="doc-info">
+          <div class="doc-name">${escHtml(doc.title || doc.source)}</div>
+          <div class="doc-meta">${escHtml(doc.source)} · ${doc.fmt}</div>
+        </div>
+        <div class="doc-badge">${doc.num_chunks} chunks</div>
+      `;
+      list.appendChild(el);
+    });
+  } catch (e) {
+    document.getElementById('corpus-loading').style.display = 'none';
+    document.getElementById('corpus-empty').classList.remove('hidden');
+    document.getElementById('corpus-empty').innerHTML = `⚠ Error loading corpus: ${escHtml(e.message)}`;
+  }
+}
+
+/* ========================================================================= */
+/* Evaluation                                                                  */
+/* ========================================================================= */
+async function runEval() {
+  const goldPath = document.getElementById('eval-gold').value.trim();
+  const corpusDir = document.getElementById('eval-corpus').value.trim();
+  const k = parseInt(document.getElementById('eval-k').value) || 5;
+
+  document.getElementById('eval-run-btn').disabled = true;
+  document.getElementById('eval-loading').classList.remove('hidden');
+  document.getElementById('eval-error').classList.add('hidden');
+  document.getElementById('eval-results').classList.add('hidden');
+
+  try {
+    const report = await apiFetch('/eval/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ gold_path: goldPath, corpus_dir: corpusDir, k }),
+    });
+    renderEvalResults(report);
+  } catch (e) {
+    document.getElementById('eval-error').classList.remove('hidden');
+    document.getElementById('eval-error').innerHTML = `✖ ${escHtml(e.message)}`;
+  } finally {
+    document.getElementById('eval-loading').classList.add('hidden');
+    document.getElementById('eval-run-btn').disabled = false;
+  }
+}
+
+function renderEvalResults(report) {
+  const tbody = document.getElementById('eval-tbody');
+  tbody.innerHTML = '';
+
+  // Find best by hit@k then mrr
+  let best = report.results.reduce((a, b) =>
+    (b.hit_at_k > a.hit_at_k || (b.hit_at_k === a.hit_at_k && b.mrr > a.mrr)) ? b : a
+  );
+
+  report.results.forEach(r => {
+    const tr = document.createElement('tr');
+    if (r.mode === best.mode) tr.className = 'eval-best';
+    tr.innerHTML = `
+      <td>${r.mode}${r.mode === best.mode ? ' ★' : ''}</td>
+      <td>${r.hit_at_k.toFixed(3)}</td>
+      <td>${r.mrr.toFixed(3)}</td>
+      <td>${r.context_precision.toFixed(3)}</td>
+      <td>${r.faithfulness.toFixed(3)}</td>
+      <td>${r.answered}/${r.total}</td>
+      <td>${r.refused}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('eval-best-label').textContent =
+    `Best config: ${best.mode} · ${report.num_questions} questions · k=${report.k}`;
+  document.getElementById('eval-results').classList.remove('hidden');
+}
+
+/* ========================================================================= */
+/* Utility                                                                     */
+/* ========================================================================= */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ========================================================================= */
+/* Init                                                                        */
+/* ========================================================================= */
+(async function init() {
+  await initDashboard();
+  renderExamples('dash-examples');
+  renderExamples('query-examples');
+  // load entity suggestions lazily when graph tab opened
+})();
+</script>
+</body>
+</html>

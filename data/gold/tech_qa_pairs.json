@@ -1,0 +1,52 @@
+{
+  "questions": [
+    {
+      "id": "t01",
+      "question": "Which build-backend is declared in the pyproject.toml example?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "python_packaging.md", "must_contain": "hatchling.build" }]
+    },
+    {
+      "id": "t02",
+      "question": "What tool replaces pip with up to 100x faster resolution?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "python_packaging.md", "must_contain": "uv is a fast Python package installer" }]
+    },
+    {
+      "id": "t03",
+      "question": "What lifecycle handler replaces on_event in FastAPI?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "fastapi_reference.md", "must_contain": "lifespan" }]
+    },
+    {
+      "id": "t04",
+      "question": "What distance metrics does ChromaDB HNSW index support?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "vector_databases.md", "must_contain": "cosine, l2, ip" }]
+    },
+    {
+      "id": "t05",
+      "question": "What is the formula used in Reciprocal Rank Fusion?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "vector_databases.md", "must_contain": "RRF_score" }]
+    },
+    {
+      "id": "t06",
+      "question": "What graph type does FARLOOM use for triple storage in NetworkX?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "knowledge_graphs.md", "must_contain": "MultiDiGraph" }]
+    },
+    {
+      "id": "t07",
+      "question": "What is the formula used for entity weighting during graph expansion?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "knowledge_graphs.md", "must_contain": "weight(entity)" }]
+    },
+    {
+      "id": "t08",
+      "question": "What does BM25 excel at where semantic vector search fails?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "vector_databases.md", "must_contain": "exact identifiers" }]
+    }
+  ]
+}

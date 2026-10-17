@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "farloom"
+version = "0.1.0"
+description = "FARLOOM — Technical Knowledge Intelligence Engine. Hybrid RAG fusing vector search, BM25, and a knowledge graph."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Manikya N.", email = "m4n1kya2005@gmail.com" },
+]
+dependencies = [
+    "fastapi==0.136.3",
+    "uvicorn==0.49.0",
+    "chromadb==1.5.9",
+    "rank-bm25==0.2.2",
+    "networkx==3.6.1",
+    "pypdf==6.13.2",
+    "pydantic==2.13.4",
+    "httpx==0.28.1",
+    "python-multipart>=0.0.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.0.3",
+    "ruff==0.15.17",
+    "mypy==2.1.0",
+    "httpx>=0.28.1",
+]
+
+[project.scripts]
+graphrag = "graphrag_knowledge_engine.cli:main"
+farloom = "graphrag_knowledge_engine.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/graphrag_knowledge_engine"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "C4"]
+ignore = ["E501"]  # line-too-long (handled by formatter)
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["chromadb.*", "rank_bm25.*", "networkx.*", "pypdf.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

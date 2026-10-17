@@ -1,0 +1,160 @@
+{
+  "questions": [
+    {
+      "id": "s01",
+      "question": "Who is the chief executive officer of Aurora Dynamics?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "chief executive officer" }]
+    },
+    {
+      "id": "s02",
+      "question": "Where is Aurora Dynamics headquartered?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "Portland" }]
+    },
+    {
+      "id": "s03",
+      "question": "How many days of paid time off do full-time staff receive?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "25 days of paid time off" }]
+    },
+    {
+      "id": "s04",
+      "question": "What is the meal per diem for business travel?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "75 USD" }]
+    },
+    {
+      "id": "s05",
+      "question": "What does the Atlas Program pair new engineers with?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "senior mentor" }]
+    },
+    {
+      "id": "s06",
+      "question": "Who coordinates the Atlas Program?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "Sofia Marques" }]
+    },
+    {
+      "id": "s07",
+      "question": "Within how many hours must suspected security incidents be reported?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "24 hours" }]
+    },
+    {
+      "id": "s08",
+      "question": "How many remote days per week are allowed with manager approval?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "three days per week" }]
+    },
+    {
+      "id": "s09",
+      "question": "What is Helios Sync?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "telemetry synchronization platform" }]
+    },
+    {
+      "id": "s10",
+      "question": "What are the three subsystems and what does each of them do?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "three subsystems" }]
+    },
+    {
+      "id": "s11",
+      "question": "What rate limit does Beacon API enforce per customer agent?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "1200 requests per minute" }]
+    },
+    {
+      "id": "s12",
+      "question": "How often are Beacon API agent tokens rotated?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "rotated every" }]
+    },
+    {
+      "id": "s13",
+      "question": "What monthly uptime commitment does Helios Sync carry for ingestion?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "99.9 percent" }]
+    },
+    {
+      "id": "s14",
+      "question": "How quickly does Sentinel Dashboard page the on-call engineer?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "five minutes" }]
+    },
+    {
+      "id": "s15",
+      "question": "Where does the warm standby Pulse Engine cluster run?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "colocation facility" }]
+    },
+    {
+      "id": "s16",
+      "question": "How long are Pulse Engine telemetry archives retained?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "18 months" }]
+    },
+    {
+      "id": "s17",
+      "question": "How long are Sentinel Dashboard audit trails kept?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "400 days" }]
+    },
+    {
+      "id": "s18",
+      "question": "How long are employee records retained after employment ends?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "seven years" }]
+    },
+    {
+      "id": "s19",
+      "question": "Who owns the Meridian Policy?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "Priya Raghavan owns" }]
+    },
+    {
+      "id": "s20",
+      "question": "How often is the Meridian Policy reviewed?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "reviewed annually" }]
+    },
+    {
+      "id": "s21",
+      "question": "How are decommissioned storage media sanitized?",
+      "kind": "single-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "cryptographic erasure" }]
+    },
+    {
+      "id": "m01",
+      "question": "What computing gear and storage fill the racks at the location where Daniel Okafor is based?",
+      "kind": "multi-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "HX-9" }]
+    },
+    {
+      "id": "m02",
+      "question": "Who personally signs off on deviations from the retention rules that Priya Raghavan enforces?",
+      "kind": "multi-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "written approval" }]
+    },
+    {
+      "id": "m03",
+      "question": "What is parked near Sofia Marques's office, ready to take over when the main location goes dark?",
+      "kind": "multi-hop",
+      "evidence": [{ "doc": "helios_spec.md", "must_contain": "warm standby" }]
+    },
+    {
+      "id": "m04",
+      "question": "Which engineering organization is led from the campus hosting the primary Pulse Engine cluster?",
+      "kind": "multi-hop",
+      "evidence": [{ "doc": "aurora_handbook.md", "must_contain": "Platform Engineering" }]
+    },
+    {
+      "id": "m05",
+      "question": "Who is the keeper of the rulebook whose exemptions go through Mira Castellanos?",
+      "kind": "multi-hop",
+      "evidence": [{ "doc": "meridian_policy.md", "must_contain": "Priya Raghavan owns" }]
+    }
+  ]
+}

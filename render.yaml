@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: farloom
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -e ".[dev]"
+    startCommand: python -m uvicorn graphrag_knowledge_engine.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GRAPHRAG_PROVIDER
+        value: fake
+      - key: GRAPHRAG_DATA_DIR
+        value: /tmp/farloom-runtime
+      - key: GRAPHRAG_MIN_CONFIDENCE
+        value: "0.4"
+      - key: GRAPHRAG_PORT
+        value: "10000"
+      # Gemini (optional — set in Render dashboard under Environment > Secrets):
+      # - key: GEMINI_API_KEY
+      #   value: your_key_here
+      # - key: GRAPHRAG_PROVIDER
+      #   value: gemini
+    healthCheckPath: /health
