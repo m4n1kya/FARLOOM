@@ -115,3 +115,29 @@ def test_upload_unsupported_file_type(api_client: TestClient) -> None:
     )
     assert resp.status_code == 422
     assert "Unsupported file type" in resp.json()["detail"]
+
+
+def test_upload_with_auto_space_creation(api_client: TestClient) -> None:
+    doc_content = b"# Gamma Manual\n\nGamma Core handles telemetry routing."
+    resp = api_client.post(
+        "/upload",
+        files={"file": ("gamma.md", io.BytesIO(doc_content), "text/markdown")},
+        data={
+            "strategy": "heading",
+            "create_new_space": "true",
+            "new_space_name": "Project Gamma",
+            "new_space_preset": "tech_docs",
+        },
+    )
+    assert resp.status_code == 200
+    assert resp.headers.get("x-farloom-space-id") == "project-gamma"
+
+    # Verify project-gamma exists and has gamma.md
+    docs = api_client.get("/docs/list", params={"space": "project-gamma"}).json()
+    assert len(docs) == 1
+    assert docs[0]["source"] == "gamma.md"
+
+    # Verify default space does NOT have gamma.md
+    default_docs = api_client.get("/docs/list", params={"space": "default"}).json()
+    assert not any(d["source"] == "gamma.md" for d in default_docs)
+

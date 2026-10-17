@@ -758,6 +758,71 @@
       color: var(--accent);
       font-weight: 600;
     }
+
+    /* Spaces Hub Grid */
+    .spaces-hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+    .space-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius2);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .space-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .space-card.active-space {
+      border-color: var(--accent);
+      background: linear-gradient(180deg, var(--accent-dim) 0%, var(--surface) 100%);
+    }
+    .space-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .space-card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .space-card-desc {
+      font-size: 0.85rem;
+      color: var(--text2);
+      min-height: 2.2rem;
+    }
+    .space-card-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+      background: var(--surface2);
+      padding: 0.5rem;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .space-mini-stat-val { font-size: 0.95rem; font-weight: 700; color: var(--accent); }
+    .space-mini-stat-lbl { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; }
+    .space-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      align-items: center;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
@@ -774,21 +839,38 @@
       </div>
       <div class="modal-body">
         <p class="text-muted mb">
-          Knowledge Spaces are fully isolated. Documents uploaded to a space have their own separate vector database, knowledge graph, and citations.
+          Knowledge Spaces are <strong>100% isolated</strong>. Documents uploaded to a space have their own separate vector database, knowledge graph, and citations.
         </p>
         <div style="margin-bottom:0.85rem;">
-          <label class="form-label">Space Name</label>
-          <input type="text" id="new-space-name" class="form-input" placeholder="e.g. Infrastructure Docs, Project Titan" maxlength="60" />
+          <label class="form-label">Space Name *</label>
+          <input type="text" id="new-space-name" class="form-input" placeholder="e.g. My Private Notes, Kubernetes Architecture, Billing API" maxlength="60" />
         </div>
         <div style="margin-bottom:0.85rem;">
           <label class="form-label">Description (Optional)</label>
-          <textarea id="new-space-desc" class="form-textarea" placeholder="Brief description of this knowledge environment..." rows="2" maxlength="250"></textarea>
+          <textarea id="new-space-desc" class="form-textarea" placeholder="What technical topics does this space cover?" rows="2" maxlength="250"></textarea>
+        </div>
+        <div style="margin-bottom:0.85rem;">
+          <label class="form-label">Environment Preset</label>
+          <select id="new-space-preset" class="form-select">
+            <option value="blank">⚪ Blank Clean Slate (100% Isolated, Starts Empty)</option>
+            <option value="tech_docs">🔵 Technical Documentation (Architecture Specs)</option>
+            <option value="api_specs">🟣 Code & API Reference (Dense Symbol Matching)</option>
+            <option value="research">🟢 Academic Research & Whitepapers (Semantic Search)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:0.85rem;">
+          <label class="form-label">Chunking Window Size</label>
+          <select id="new-space-chunk-size" class="form-select">
+            <option value="800">Standard (800 characters - Balanced)</option>
+            <option value="400">Fine-grained (400 characters - Best for code & short APIs)</option>
+            <option value="1200">Broad (1200 characters - Best for long research papers)</option>
+          </select>
         </div>
         <div id="create-space-error" class="banner error hidden"></div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeCreateSpaceModal()">Cancel</button>
-        <button class="btn btn-primary" id="btn-submit-create-space" onclick="submitCreateSpace()">Create Space</button>
+        <button class="btn btn-primary" id="btn-submit-create-space" onclick="submitCreateSpace()">Create Isolated Space</button>
       </div>
     </div>
   </div>
@@ -804,6 +886,7 @@
       <button class="nav-btn" data-panel="query">Query</button>
       <button class="nav-btn" data-panel="graph">Graph Explorer</button>
       <button class="nav-btn" data-panel="corpus">Corpus</button>
+      <button class="nav-btn" data-panel="spaces">Spaces Hub</button>
       <button class="nav-btn" data-panel="eval">Evaluation</button>
     </nav>
     <div class="space-selector-wrap" id="space-selector-wrap">
@@ -903,6 +986,45 @@
               <option value="heading">Heading-aware (Markdown specs)</option>
               <option value="recursive">Recursive (PDFs & text)</option>
             </select>
+          </div>
+        </div>
+
+        <!-- Destination Space Options -->
+        <div style="background:var(--surface2);padding:0.85rem 1rem;border-radius:var(--radius);margin-bottom:1rem;border:1px solid var(--border);">
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;">
+            <span>🎯</span> Destination Knowledge Space:
+          </div>
+          <div class="flex-row flex-wrap" style="gap:1.5rem;font-size:0.85rem;">
+            <label style="display:flex;align-items:center;gap:0.45rem;cursor:pointer;">
+              <input type="radio" name="upload-dest-type" value="current" checked onchange="toggleUploadDest(this.value)">
+              <span>Add to active space (<strong id="upload-active-space-label">Default Space</strong>)</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:0.45rem;cursor:pointer;">
+              <input type="radio" name="upload-dest-type" value="new" onchange="toggleUploadDest(this.value)">
+              <span style="color:var(--accent);font-weight:600;">✨ Create a Brand New Isolated Space for this document</span>
+            </label>
+          </div>
+
+          <!-- New space inline inputs (revealed when user chooses 'new') -->
+          <div id="inline-new-space-wrap" class="hidden" style="margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid var(--border2);">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;">
+              <div>
+                <label class="form-label">New Space Name *</label>
+                <input type="text" id="inline-space-name" class="form-input" placeholder="e.g. My Private Notes, Kubernetes Architecture" maxlength="60" />
+              </div>
+              <div>
+                <label class="form-label">Environment Preset</label>
+                <select id="inline-space-preset" class="form-select">
+                  <option value="blank">⚪ Blank Clean Slate (100% Isolated, Starts Empty)</option>
+                  <option value="tech_docs">🔵 Technical Documentation (Architecture Specs)</option>
+                  <option value="api_specs">🟣 Code & API Reference (Dense Symbol Matching)</option>
+                  <option value="research">🟢 Academic Research & Whitepapers (Semantic Search)</option>
+                </select>
+              </div>
+            </div>
+            <div class="text-small" style="color:var(--text2);margin-top:0.4rem;">
+              ℹ <strong>The Default Space will not be modified.</strong> A clean isolated environment will be created for this document.
+            </div>
           </div>
         </div>
 
@@ -1123,6 +1245,23 @@
     </div>
 
     <!-- ================================================================ -->
+    <!-- SPACES HUB                                                         -->
+    <!-- ================================================================ -->
+    <div class="panel" id="panel-spaces">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div class="section-title" style="margin-bottom:0.25rem;">⬡ Knowledge Spaces Hub</div>
+          <div class="text-muted">Manage your isolated documentation environments. Documents in one space never cross into another.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openCreateSpaceModal()">+ Create New Isolated Space</button>
+      </div>
+
+      <div class="spaces-hub-grid" id="spaces-hub-grid">
+        <div class="loading"><div class="spinner"></div>Loading spaces…</div>
+      </div>
+    </div>
+
+    <!-- ================================================================ -->
     <!-- EVALUATION                                                         -->
     <!-- ================================================================ -->
     <div class="panel" id="panel-eval">
@@ -1225,6 +1364,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
     if (btn.dataset.panel === 'corpus') loadCorpus();
     if (btn.dataset.panel === 'graph') loadEntitySuggestions();
+    if (btn.dataset.panel === 'spaces') loadSpacesHub();
   });
 });
 
@@ -1259,6 +1399,8 @@ async function loadSpaces() {
       if (activeEl) activeEl.textContent = activeSpace.name;
       const targetBadge = document.getElementById('upload-target-space-badge');
       if (targetBadge) targetBadge.textContent = activeSpace.name;
+      const activeRadioLbl = document.getElementById('upload-active-space-label');
+      if (activeRadioLbl) activeRadioLbl.textContent = activeSpace.name;
     }
     renderSpacesDropdown();
   } catch (err) {
@@ -1301,6 +1443,68 @@ function renderSpacesDropdown() {
   });
 }
 
+async function loadSpacesHub() {
+  const grid = document.getElementById('spaces-hub-grid');
+  if (!grid) return;
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div>Loading spaces…</div>';
+  await loadSpaces();
+  grid.innerHTML = '';
+  spacesList.forEach(s => {
+    const card = document.createElement('div');
+    const isActive = s.id === currentSpace;
+    card.className = 'space-card' + (isActive ? ' active-space' : '');
+
+    let presetBadge = '<span class="tag-pill">Blank Slate</span>';
+    if (s.preset === 'tech_docs') presetBadge = '<span class="tag-pill" style="color:var(--accent);border-color:var(--accent-border);">Technical Docs</span>';
+    else if (s.preset === 'api_specs') presetBadge = '<span class="tag-pill" style="color:#a855f7;border-color:rgba(168,85,247,0.3);">API Specs</span>';
+    else if (s.preset === 'research') presetBadge = '<span class="tag-pill" style="color:#22c55e;border-color:rgba(34,197,94,0.3);">Research</span>';
+
+    card.innerHTML = `
+      <div class="space-card-header">
+        <div>
+          <div class="space-card-title">
+            <span>${isActive ? '🪐' : '📁'}</span> ${escHtml(s.name)}
+          </div>
+          <div style="margin-top:0.25rem;">${presetBadge}</div>
+        </div>
+        ${isActive ? '<span class="space-badge">Active</span>' : ''}
+      </div>
+      <div class="space-card-desc">${escHtml(s.description || 'Isolated documentation space.')}</div>
+      <div class="space-card-stats">
+        <div><div class="space-mini-stat-val">${s.doc_count || 0}</div><div class="space-mini-stat-lbl">Docs</div></div>
+        <div><div class="space-mini-stat-val">${s.chunk_count || 0}</div><div class="space-mini-stat-lbl">Chunks</div></div>
+        <div><div class="space-mini-stat-val">${s.entity_count || 0}</div><div class="space-mini-stat-lbl">Nodes</div></div>
+        <div><div class="space-mini-stat-val">${s.edge_count || 0}</div><div class="space-mini-stat-lbl">Edges</div></div>
+      </div>
+      <div class="space-card-actions">
+        ${isActive ? '<button class="btn btn-sm" disabled style="opacity:0.6;">Currently Active</button>' : `<button class="btn btn-sm btn-primary" onclick="switchSpace('${s.id}')">Activate Space</button>`}
+        <button class="btn btn-sm btn-secondary" onclick="quickUploadToSpace('${s.id}')">Upload Doc</button>
+        <button class="btn btn-sm btn-secondary" onclick="exploreSpaceGraph('${s.id}')">View Graph</button>
+        ${s.id !== 'default' ? `<button class="btn btn-sm btn-secondary ml-auto" style="color:var(--danger);" onclick="deleteSpace('${s.id}', '${escHtml(s.name)}')">Delete</button>` : ''}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function quickUploadToSpace(spaceId) {
+  switchSpace(spaceId);
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="dashboard"]').classList.add('active');
+  document.getElementById('panel-dashboard').classList.add('active');
+  document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth' });
+}
+
+function exploreSpaceGraph(spaceId) {
+  switchSpace(spaceId);
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-panel="graph"]').classList.add('active');
+  document.getElementById('panel-graph').classList.add('active');
+  loadEntitySuggestions();
+}
+
 async function switchSpace(spaceId) {
   currentSpace = spaceId;
   localStorage.setItem('farloom_current_space', currentSpace);
@@ -1310,6 +1514,9 @@ async function switchSpace(spaceId) {
   await initDashboard();
   loadCorpus();
   loadEntitySuggestions();
+  if (document.getElementById('panel-spaces').classList.contains('active')) {
+    loadSpacesHub();
+  }
   const queryAnswer = document.getElementById('query-answer-wrap');
   if (queryAnswer) queryAnswer.classList.add('hidden');
   clearGraph();
@@ -1344,6 +1551,8 @@ function closeCreateSpaceModal() {
 async function submitCreateSpace() {
   const name = document.getElementById('new-space-name').value.trim();
   const desc = document.getElementById('new-space-desc').value.trim();
+  const preset = document.getElementById('new-space-preset').value;
+  const chunkSize = parseInt(document.getElementById('new-space-chunk-size').value, 10);
   const errEl = document.getElementById('create-space-error');
   if (!name) {
     errEl.textContent = 'Please provide a space name.';
@@ -1354,7 +1563,7 @@ async function submitCreateSpace() {
     const newSpace = await apiFetch('/spaces', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, description: desc }),
+      body: JSON.stringify({ name, description: desc, preset, chunk_size: chunkSize }),
     });
     closeCreateSpaceModal();
     await switchSpace(newSpace.id);
@@ -1377,6 +1586,18 @@ async function deleteSpace(spaceId, spaceName) {
 /* ========================================================================= */
 /* Document Upload Handlers                                                    */
 /* ========================================================================= */
+function toggleUploadDest(val) {
+  const inlineWrap = document.getElementById('inline-new-space-wrap');
+  if (!inlineWrap) return;
+  if (val === 'new') {
+    inlineWrap.classList.remove('hidden');
+    const input = document.getElementById('inline-space-name');
+    if (input) input.focus();
+  } else {
+    inlineWrap.classList.add('hidden');
+  }
+}
+
 function initUploadHandlers() {
   const dropZone = document.getElementById('drop-zone');
   const fileInput = document.getElementById('file-input');
@@ -1423,6 +1644,23 @@ async function startFileUpload() {
   const alertEl = document.getElementById('upload-result-alert');
   const btn = document.getElementById('btn-start-upload');
 
+  const destTypeEl = document.querySelector('input[name="upload-dest-type"]:checked');
+  const destType = destTypeEl ? destTypeEl.value : 'current';
+  const isNewSpace = destType === 'new';
+  let newSpaceName = '';
+  let newSpacePreset = 'blank';
+
+  if (isNewSpace) {
+    newSpaceName = document.getElementById('inline-space-name').value.trim();
+    newSpacePreset = document.getElementById('inline-space-preset').value;
+    if (!newSpaceName) {
+      alertEl.className = 'banner error mt';
+      alertEl.textContent = 'Please enter a name for your new space, or select active space.';
+      alertEl.classList.remove('hidden');
+      return;
+    }
+  }
+
   progressWrap.classList.remove('hidden');
   alertEl.classList.add('hidden');
   btn.disabled = true;
@@ -1430,11 +1668,17 @@ async function startFileUpload() {
   const formData = new FormData();
   formData.append('file', pendingFile);
   formData.append('strategy', strategy);
+  if (isNewSpace) {
+    formData.append('create_new_space', 'true');
+    formData.append('new_space_name', newSpaceName);
+    formData.append('new_space_preset', newSpacePreset);
+  } else {
+    formData.append('target_space', currentSpace);
+  }
 
   try {
-    const r = await fetch(API + `/spaces/${encodeURIComponent(currentSpace)}/upload`, {
+    const r = await fetch(API + '/upload', {
       method: 'POST',
-      headers: { 'x-farloom-space': currentSpace },
       body: formData,
     });
     if (!r.ok) {
@@ -1442,18 +1686,25 @@ async function startFileUpload() {
       throw new Error(err.detail || r.statusText);
     }
     const res = await r.json();
+    const destSpaceId = r.headers.get('x-farloom-space-id') || currentSpace;
+
     alertEl.className = 'banner info mt';
-    alertEl.innerHTML = `✓ Successfully ingested <strong>${escHtml(res.source)}</strong>: <strong>${res.num_chunks}</strong> chunks and <strong>${res.num_triples}</strong> graph relationships woven into <em>${escHtml(document.getElementById('active-space-name').textContent)}</em>!`;
+    alertEl.innerHTML = `✓ Successfully ingested <strong>${escHtml(res.source)}</strong>: <strong>${res.num_chunks}</strong> chunks and <strong>${res.num_triples}</strong> graph relationships woven into isolated space!`;
     alertEl.classList.remove('hidden');
     
     pendingFile = null;
     document.getElementById('selected-file-info').classList.add('hidden');
     const fileInput = document.getElementById('file-input');
     if (fileInput) fileInput.value = '';
-    await loadSpaces();
-    await initDashboard();
-    loadCorpus();
-    loadEntitySuggestions();
+    
+    // Reset radio
+    const currentRadio = document.querySelector('input[name="upload-dest-type"][value="current"]');
+    if (currentRadio) currentRadio.checked = true;
+    toggleUploadDest('current');
+    const inlineNameInput = document.getElementById('inline-space-name');
+    if (inlineNameInput) inlineNameInput.value = '';
+
+    await switchSpace(destSpaceId);
   } catch (err) {
     alertEl.className = 'banner error mt';
     alertEl.textContent = 'Upload failed: ' + err.message;

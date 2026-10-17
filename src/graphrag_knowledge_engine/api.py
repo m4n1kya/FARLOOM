@@ -15,7 +15,17 @@ from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, Query, Request, UploadFile
+from fastapi import (
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    Request,
+    Response,
+    UploadFile,
+)
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
@@ -57,6 +67,8 @@ class CreateSpaceRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     name: str = Field(min_length=1, max_length=60)
     description: str = Field(default="", max_length=250)
+    preset: str = Field(default="blank", max_length=40)
+    chunk_size: int = Field(default=800, ge=200, le=2500)
 
 
 def _auto_ingest_corpus(engine: Engine) -> None:
@@ -149,7 +161,12 @@ def create_app(engine: Engine | None = None) -> FastAPI:
     def create_space(payload: CreateSpaceRequest, request: Request) -> SpaceMetadata:
         """Create a new isolated Knowledge Space."""
         spaces_mgr: SpaceManager = request.app.state.spaces
-        return spaces_mgr.create_space(payload.name, payload.description)
+        return spaces_mgr.create_space(
+            payload.name,
+            payload.description,
+            preset=payload.preset,
+            chunk_size=payload.chunk_size,
+        )
 
     @app.delete("/spaces/{space_id}")
     def delete_space(space_id: str, request: Request) -> dict[str, Any]:
@@ -171,18 +188,33 @@ def create_app(engine: Engine | None = None) -> FastAPI:
     @app.post("/upload", response_model=IngestResponse)
     async def upload_document(
         request: Request,
+        response: Response,
         file: Annotated[UploadFile, File(description="Document to ingest (.pdf, .md, .txt)")],
         strategy: Annotated[ChunkStrategy, Form()] = "heading",
         space_id: str | None = None,
+        target_space: Annotated[str | None, Form()] = None,
+        create_new_space: Annotated[bool, Form()] = False,
+        new_space_name: Annotated[str | None, Form()] = None,
+        new_space_desc: Annotated[str | None, Form()] = None,
+        new_space_preset: Annotated[str, Form()] = "blank",
     ) -> IngestResponse:
         """Upload and ingest a document into an isolated Knowledge Space."""
-        target_space = space_id or request.query_params.get("space") or "default"
         spaces_mgr: SpaceManager = request.app.state.spaces
+        if create_new_space and new_space_name and new_space_name.strip():
+            created_meta = spaces_mgr.create_space(
+                new_space_name.strip(),
+                new_space_desc or "",
+                preset=new_space_preset,
+            )
+            resolved_space = created_meta.id
+        else:
+            resolved_space = target_space or space_id or request.query_params.get("space") or "default"
+
         try:
-            space_dir = spaces_mgr.get_space_dir(target_space)
-            eng = spaces_mgr.get_engine(target_space)
+            space_dir = spaces_mgr.get_space_dir(resolved_space)
+            eng = spaces_mgr.get_engine(resolved_space)
         except KeyError as exc:
-            raise HTTPException(status_code=404, detail=f"Space '{target_space}' not found") from exc
+            raise HTTPException(status_code=404, detail=f"Space '{resolved_space}' not found") from exc
 
         # Validate file extension
         filename = file.filename or "uploaded_doc.txt"
@@ -199,7 +231,9 @@ def create_app(engine: Engine | None = None) -> FastAPI:
             shutil.copyfileobj(file.file, buffer)
 
         try:
-            return eng.ingest_path(upload_dest, strategy=strategy)
+            ingest_res = eng.ingest_path(upload_dest, strategy=strategy)
+            response.headers["x-farloom-space-id"] = resolved_space
+            return ingest_res
         except Exception as exc:
             raise HTTPException(status_code=500, detail=f"Failed to ingest document: {exc}") from exc
 

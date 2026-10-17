@@ -36,6 +36,8 @@ class SpaceMetadata:
     name: str
     description: str
     created_at: str
+    preset: str = "blank"  # blank, tech_docs, research, api_specs
+    chunk_size: int = 800
     doc_count: int = 0
     chunk_count: int = 0
     entity_count: int = 0
@@ -57,7 +59,14 @@ class SpaceManager:
         # Ensure default space exists
         self._ensure_space_dir("default", "Default Space", "System baseline knowledge space")
 
-    def _ensure_space_dir(self, space_id: str, name: str, description: str = "") -> Path:
+    def _ensure_space_dir(
+        self,
+        space_id: str,
+        name: str,
+        description: str = "",
+        preset: str = "blank",
+        chunk_size: int = 800,
+    ) -> Path:
         space_dir = self.spaces_root / space_id
         space_dir.mkdir(parents=True, exist_ok=True)
         (space_dir / "uploads").mkdir(parents=True, exist_ok=True)
@@ -67,6 +76,8 @@ class SpaceManager:
                 id=space_id,
                 name=name,
                 description=description,
+                preset=preset,
+                chunk_size=chunk_size,
                 created_at=datetime.now(UTC).isoformat(),
             )
             meta_file.write_text(json.dumps(meta.to_dict(), indent=2), encoding="utf-8")
@@ -79,14 +90,33 @@ class SpaceManager:
             raise KeyError(f"Space '{space_id}' does not exist.")
         return space_dir
 
+    def get_space_meta(self, space_id: str) -> SpaceMetadata:
+        space_dir = self.get_space_dir(space_id)
+        meta_file = space_dir / "meta.json"
+        if meta_file.exists():
+            try:
+                data = json.loads(meta_file.read_text(encoding="utf-8"))
+                return SpaceMetadata(**data)
+            except Exception:
+                pass
+        return SpaceMetadata(
+            id=space_dir.name,
+            name=space_dir.name.capitalize(),
+            description="",
+            created_at=datetime.now(UTC).isoformat(),
+        )
+
     def get_engine(self, space_id: str = "default") -> Engine:
         clean_id = slugify(space_id)
         if clean_id in self._engines:
             return self._engines[clean_id]
 
         space_dir = self.get_space_dir(clean_id)
+        meta = self.get_space_meta(clean_id)
         # Create a dedicated EngineConfig pointing to this space's directory
-        space_config = self.base_config.model_copy(update={"data_dir": space_dir})
+        space_config = self.base_config.model_copy(
+            update={"data_dir": space_dir, "chunk_size": meta.chunk_size}
+        )
         engine = create_engine(space_config)
         self._engines[clean_id] = engine
         return engine
@@ -140,20 +170,27 @@ class SpaceManager:
             spaces.append(meta)
         return spaces
 
-    def create_space(self, name: str, description: str = "") -> SpaceMetadata:
+    def create_space(
+        self,
+        name: str,
+        description: str = "",
+        preset: str = "blank",
+        chunk_size: int = 800,
+    ) -> SpaceMetadata:
         clean_id = slugify(name)
         space_dir = self.spaces_root / clean_id
         if space_dir.exists():
-            # If already exists, return existing
             meta_file = space_dir / "meta.json"
             if meta_file.exists():
                 return SpaceMetadata(**json.loads(meta_file.read_text(encoding="utf-8")))
 
-        self._ensure_space_dir(clean_id, name, description)
+        self._ensure_space_dir(clean_id, name, description, preset, chunk_size)
         meta = SpaceMetadata(
             id=clean_id,
             name=name,
             description=description,
+            preset=preset,
+            chunk_size=chunk_size,
             created_at=datetime.now(UTC).isoformat(),
         )
         (space_dir / "meta.json").write_text(json.dumps(meta.to_dict(), indent=2), encoding="utf-8")
