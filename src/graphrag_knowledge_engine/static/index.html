@@ -555,10 +555,243 @@
     .flex-row { display: flex; align-items: center; gap: 0.6rem; }
     .flex-wrap { flex-wrap: wrap; }
     .ml-auto { margin-left: auto; }
+
+    /* ------------------------------------------------------------------ */
+    /* Knowledge Spaces & Upload Styles                                   */
+    /* ------------------------------------------------------------------ */
+    .space-selector-wrap { position: relative; margin-left: auto; }
+    .space-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+    }
+    .space-btn:hover {
+      border-color: var(--accent);
+      background: var(--surface3);
+    }
+    .space-pill-icon { font-size: 0.95rem; }
+    .space-pill-label { color: var(--text3); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .space-arrow { font-size: 0.75rem; color: var(--text3); margin-left: 0.2rem; }
+    
+    .space-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius2);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      z-index: 150;
+      padding: 0.75rem;
+    }
+    .space-dropdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+    .space-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .space-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.65rem;
+      border-radius: var(--radius);
+      background: var(--surface2);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .space-item:hover {
+      background: var(--surface3);
+      border-color: var(--accent-border);
+    }
+    .space-item.active {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .space-item-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+    .space-item-sub {
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+    .space-item-del {
+      background: none;
+      border: none;
+      color: var(--text3);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .space-item-del:hover {
+      color: var(--danger);
+      background: rgba(248, 113, 113, 0.15);
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius2);
+      width: 100%;
+      max-width: 460px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text3);
+      font-size: 1.1rem;
+    }
+    .modal-close:hover { color: var(--text); }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    /* Forms */
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 0.3rem;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--accent);
+    }
+
+    /* Upload & Drop zone */
+    .upload-card { border: 1px solid var(--accent-border); }
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+    .drop-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius2);
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: var(--surface2);
+      transition: all 0.2s ease;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .drop-zone-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
+    .drop-zone-prompt { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+    .browse-link { color: var(--accent); text-decoration: underline; }
+    .drop-zone-sub { font-size: 0.8rem; color: var(--text2); margin-top: 0.35rem; }
+    
+    .selected-file-bar {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      background: var(--surface3);
+      padding: 0.6rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+    .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+    .space-badge {
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- Modal for Creating Space -->
+  <div class="modal-overlay hidden" id="create-space-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;">
+          <span>🪐</span> Create Knowledge Space
+        </div>
+        <button class="modal-close" onclick="closeCreateSpaceModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb">
+          Knowledge Spaces are fully isolated. Documents uploaded to a space have their own separate vector database, knowledge graph, and citations.
+        </p>
+        <div style="margin-bottom:0.85rem;">
+          <label class="form-label">Space Name</label>
+          <input type="text" id="new-space-name" class="form-input" placeholder="e.g. Infrastructure Docs, Project Titan" maxlength="60" />
+        </div>
+        <div style="margin-bottom:0.85rem;">
+          <label class="form-label">Description (Optional)</label>
+          <textarea id="new-space-desc" class="form-textarea" placeholder="Brief description of this knowledge environment..." rows="2" maxlength="250"></textarea>
+        </div>
+        <div id="create-space-error" class="banner error hidden"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeCreateSpaceModal()">Cancel</button>
+        <button class="btn btn-primary" id="btn-submit-create-space" onclick="submitCreateSpace()">Create Space</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== HEADER ===== -->
   <header class="header">
@@ -573,6 +806,23 @@
       <button class="nav-btn" data-panel="corpus">Corpus</button>
       <button class="nav-btn" data-panel="eval">Evaluation</button>
     </nav>
+    <div class="space-selector-wrap" id="space-selector-wrap">
+      <button class="space-btn" id="space-dropdown-btn" onclick="toggleSpaceDropdown()">
+        <span class="space-pill-icon">🪐</span>
+        <span class="space-pill-label">Space:</span>
+        <strong id="active-space-name">Default Space</strong>
+        <span class="space-arrow">▾</span>
+      </button>
+      <div class="space-dropdown hidden" id="space-dropdown">
+        <div class="space-dropdown-header">
+          <span style="font-weight:600;font-size:0.85rem;">Knowledge Spaces</span>
+          <button class="btn btn-sm btn-primary" onclick="openCreateSpaceModal()">+ New Space</button>
+        </div>
+        <div class="space-list" id="space-dropdown-list">
+          <!-- dynamically populated -->
+        </div>
+      </div>
+    </div>
     <div class="header-status">
       <div class="status-dot" id="health-dot"></div>
       <span id="health-label">connecting…</span>
@@ -634,6 +884,53 @@
           <div class="stat-value" id="stat-provider" style="font-size:1.1rem;">–</div>
           <div class="stat-sub" id="stat-mode">–</div>
         </div>
+      </div>
+
+      <!-- Document Upload Card -->
+      <div class="card upload-card" style="margin-bottom:1.5rem;">
+        <div class="card-header-flex">
+          <div>
+            <div class="card-title" style="display:flex;align-items:center;gap:0.5rem;">
+              <span>📁</span> Upload & Weave Documents
+            </div>
+            <div class="text-muted">
+              Add technical files to <span class="space-badge" id="upload-target-space-badge">Default Space</span>. They will be parsed, embedded, and linked into the graph.
+            </div>
+          </div>
+          <div class="flex-row">
+            <label class="text-small" style="color:var(--text2);">Strategy:</label>
+            <select id="upload-strategy" class="form-select" style="width:auto;padding:0.3rem 0.6rem;">
+              <option value="heading">Heading-aware (Markdown specs)</option>
+              <option value="recursive">Recursive (PDFs & text)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="drop-zone" id="drop-zone">
+          <div class="drop-zone-icon">📥</div>
+          <div class="drop-zone-prompt">Drag & drop files here, or <span class="browse-link">browse your computer</span></div>
+          <div class="drop-zone-sub">Supported formats: Markdown (.md), PDF (.pdf), Plain Text (.txt)</div>
+          <input type="file" id="file-input" class="hidden" accept=".pdf,.md,.txt" />
+        </div>
+
+        <div id="selected-file-info" class="selected-file-bar hidden">
+          <div class="flex-row">
+            <span style="font-size:1.2rem;">📄</span>
+            <div>
+              <span id="selected-file-name" style="font-weight:600;font-size:0.9rem;">filename.md</span>
+              <span id="selected-file-size" class="text-muted" style="font-size:0.8rem;margin-left:0.5rem;">(0 KB)</span>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-primary ml-auto" id="btn-start-upload" onclick="startFileUpload()">Weave into Graph</button>
+        </div>
+
+        <div id="upload-progress-wrap" class="hidden mt">
+          <div class="loading">
+            <div class="spinner"></div>
+            <span id="upload-status-text">Parsing document, chunking, and extracting graph entities…</span>
+          </div>
+        </div>
+        <div id="upload-result-alert" class="banner hidden mt"></div>
       </div>
 
       <div class="card">
@@ -913,6 +1210,9 @@ const EXAMPLE_QUESTIONS = [
 let lastResponse = null;
 let graphNodes = [];
 let graphEdges = [];
+let currentSpace = localStorage.getItem('farloom_current_space') || 'default';
+let spacesList = [];
+let pendingFile = null;
 
 /* ========================================================================= */
 /* Navigation                                                                  */
@@ -929,15 +1229,239 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
 });
 
 /* ========================================================================= */
-/* API helpers                                                                 */
+/* API helpers (Space-aware)                                                   */
 /* ========================================================================= */
 async function apiFetch(path, opts = {}) {
+  opts.headers = Object.assign({}, opts.headers || {});
+  if (!opts.headers['x-farloom-space']) {
+    opts.headers['x-farloom-space'] = currentSpace;
+  }
   const r = await fetch(API + path, opts);
   if (!r.ok) {
     const err = await r.json().catch(() => ({ detail: r.statusText }));
     throw new Error(err.detail || r.statusText);
   }
   return r.json();
+}
+
+/* ========================================================================= */
+/* Knowledge Spaces Management                                                 */
+/* ========================================================================= */
+async function loadSpaces() {
+  try {
+    const spaces = await apiFetch('/spaces');
+    spacesList = spaces;
+    const activeSpace = spaces.find(s => s.id === currentSpace) || spaces[0];
+    if (activeSpace) {
+      currentSpace = activeSpace.id;
+      localStorage.setItem('farloom_current_space', currentSpace);
+      const activeEl = document.getElementById('active-space-name');
+      if (activeEl) activeEl.textContent = activeSpace.name;
+      const targetBadge = document.getElementById('upload-target-space-badge');
+      if (targetBadge) targetBadge.textContent = activeSpace.name;
+    }
+    renderSpacesDropdown();
+  } catch (err) {
+    console.error('Failed to load spaces', err);
+  }
+}
+
+function renderSpacesDropdown() {
+  const container = document.getElementById('space-dropdown-list');
+  if (!container) return;
+  container.innerHTML = '';
+  spacesList.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'space-item' + (s.id === currentSpace ? ' active' : '');
+    item.onclick = (e) => {
+      if (e.target.closest('.space-item-del')) return;
+      switchSpace(s.id);
+    };
+    
+    const info = document.createElement('div');
+    info.innerHTML = `
+      <div class="space-item-name">${escHtml(s.name)} ${s.id === currentSpace ? '✓' : ''}</div>
+      <div class="space-item-sub">${s.doc_count || 0} docs · ${s.chunk_count || 0} chunks · ${s.entity_count || 0} nodes</div>
+    `;
+    item.appendChild(info);
+
+    if (s.id !== 'default') {
+      const delBtn = document.createElement('button');
+      delBtn.className = 'space-item-del';
+      delBtn.title = 'Delete this space';
+      delBtn.textContent = '🗑';
+      delBtn.onclick = (e) => {
+        e.stopPropagation();
+        deleteSpace(s.id, s.name);
+      };
+      item.appendChild(delBtn);
+    }
+
+    container.appendChild(item);
+  });
+}
+
+async function switchSpace(spaceId) {
+  currentSpace = spaceId;
+  localStorage.setItem('farloom_current_space', currentSpace);
+  const dropdown = document.getElementById('space-dropdown');
+  if (dropdown) dropdown.classList.add('hidden');
+  await loadSpaces();
+  await initDashboard();
+  loadCorpus();
+  loadEntitySuggestions();
+  const queryAnswer = document.getElementById('query-answer-wrap');
+  if (queryAnswer) queryAnswer.classList.add('hidden');
+  clearGraph();
+}
+
+function toggleSpaceDropdown() {
+  const dropdown = document.getElementById('space-dropdown');
+  if (dropdown) dropdown.classList.toggle('hidden');
+}
+
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('space-selector-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    const dropdown = document.getElementById('space-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+  }
+});
+
+function openCreateSpaceModal() {
+  const dropdown = document.getElementById('space-dropdown');
+  if (dropdown) dropdown.classList.add('hidden');
+  document.getElementById('new-space-name').value = '';
+  document.getElementById('new-space-desc').value = '';
+  document.getElementById('create-space-error').classList.add('hidden');
+  document.getElementById('create-space-modal').classList.remove('hidden');
+}
+
+function closeCreateSpaceModal() {
+  document.getElementById('create-space-modal').classList.add('hidden');
+}
+
+async function submitCreateSpace() {
+  const name = document.getElementById('new-space-name').value.trim();
+  const desc = document.getElementById('new-space-desc').value.trim();
+  const errEl = document.getElementById('create-space-error');
+  if (!name) {
+    errEl.textContent = 'Please provide a space name.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  try {
+    const newSpace = await apiFetch('/spaces', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, description: desc }),
+    });
+    closeCreateSpaceModal();
+    await switchSpace(newSpace.id);
+  } catch (err) {
+    errEl.textContent = err.message || 'Failed to create space.';
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function deleteSpace(spaceId, spaceName) {
+  if (!confirm(`Are you sure you want to delete space "${spaceName}"? All its documents, chunks, and graph relationships will be permanently removed.`)) return;
+  try {
+    await apiFetch(`/spaces/${spaceId}`, { method: 'DELETE' });
+    await switchSpace('default');
+  } catch (err) {
+    alert('Failed to delete space: ' + err.message);
+  }
+}
+
+/* ========================================================================= */
+/* Document Upload Handlers                                                    */
+/* ========================================================================= */
+function initUploadHandlers() {
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+
+  if (dropZone && fileInput) {
+    dropZone.onclick = () => fileInput.click();
+    fileInput.onchange = (e) => {
+      if (e.target.files.length) handleSelectedFile(e.target.files[0]);
+    };
+    ['dragenter', 'dragover'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('dragover');
+      });
+    });
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length) handleSelectedFile(files[0]);
+    });
+  }
+}
+
+function handleSelectedFile(file) {
+  pendingFile = file;
+  document.getElementById('selected-file-name').textContent = file.name;
+  const kb = Math.round(file.size / 1024);
+  document.getElementById('selected-file-size').textContent = `(${kb} KB)`;
+  document.getElementById('selected-file-info').classList.remove('hidden');
+  document.getElementById('upload-result-alert').classList.add('hidden');
+}
+
+async function startFileUpload() {
+  if (!pendingFile) return;
+  const strategy = document.getElementById('upload-strategy').value;
+  const progressWrap = document.getElementById('upload-progress-wrap');
+  const alertEl = document.getElementById('upload-result-alert');
+  const btn = document.getElementById('btn-start-upload');
+
+  progressWrap.classList.remove('hidden');
+  alertEl.classList.add('hidden');
+  btn.disabled = true;
+
+  const formData = new FormData();
+  formData.append('file', pendingFile);
+  formData.append('strategy', strategy);
+
+  try {
+    const r = await fetch(API + `/spaces/${encodeURIComponent(currentSpace)}/upload`, {
+      method: 'POST',
+      headers: { 'x-farloom-space': currentSpace },
+      body: formData,
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({ detail: r.statusText }));
+      throw new Error(err.detail || r.statusText);
+    }
+    const res = await r.json();
+    alertEl.className = 'banner info mt';
+    alertEl.innerHTML = `✓ Successfully ingested <strong>${escHtml(res.source)}</strong>: <strong>${res.num_chunks}</strong> chunks and <strong>${res.num_triples}</strong> graph relationships woven into <em>${escHtml(document.getElementById('active-space-name').textContent)}</em>!`;
+    alertEl.classList.remove('hidden');
+    
+    pendingFile = null;
+    document.getElementById('selected-file-info').classList.add('hidden');
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) fileInput.value = '';
+    await loadSpaces();
+    await initDashboard();
+    loadCorpus();
+    loadEntitySuggestions();
+  } catch (err) {
+    alertEl.className = 'banner error mt';
+    alertEl.textContent = 'Upload failed: ' + err.message;
+    alertEl.classList.remove('hidden');
+  } finally {
+    progressWrap.classList.add('hidden');
+    btn.disabled = false;
+  }
 }
 
 /* ========================================================================= */
@@ -1475,10 +1999,11 @@ function escHtml(str) {
 /* Init                                                                        */
 /* ========================================================================= */
 (async function init() {
+  await loadSpaces();
   await initDashboard();
   renderExamples('dash-examples');
   renderExamples('query-examples');
-  // load entity suggestions lazily when graph tab opened
+  initUploadHandlers();
 })();
 </script>
 </body>
