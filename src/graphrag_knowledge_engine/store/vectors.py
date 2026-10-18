@@ -8,6 +8,7 @@ ONNX model on first call, which breaks the offline guarantee. Instead, every
 
 from __future__ import annotations
 
+import contextlib
 from pathlib import Path
 from typing import Any, cast
 
@@ -36,10 +37,8 @@ class VectorIndex:
     def delete(self, chunk_ids: list[str]) -> None:
         if not chunk_ids:
             return
-        try:
+        with contextlib.suppress(Exception):
             self._collection.delete(ids=chunk_ids)
-        except Exception:
-            pass
 
     def query(self, embedding: list[float], top_k: int) -> list[tuple[str, float]]:
         """Return (chunk_id, cosine_similarity) pairs, best first."""
