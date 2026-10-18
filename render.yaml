@@ -4,9 +4,11 @@ services:
     runtime: python
     region: oregon
     plan: free
-    buildCommand: pip install -e ".[dev]"
-    startCommand: python -m uvicorn graphrag_knowledge_engine.api:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -e .
+    startCommand: python -m uvicorn graphrag_knowledge_engine.api:create_app --factory --host 0.0.0.0 --port $PORT
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
       - key: GRAPHRAG_PROVIDER
         value: fake
       - key: GRAPHRAG_DATA_DIR
@@ -20,4 +22,16 @@ services:
       #   value: your_key_here
       # - key: GRAPHRAG_PROVIDER
       #   value: gemini
+      # Neo4j AuraDB (optional — free tier at https://console.neo4j.io):
+      # - key: GRAPH_BACKEND
+      #   value: neo4j
+      # - key: NEO4J_URI
+      #   value: neo4j+s://<instance-id>.databases.neo4j.io
+      # - key: NEO4J_USERNAME
+      #   value: neo4j
+      # - key: NEO4J_PASSWORD
+      #   value: your_auradb_password
+      # - key: NEO4J_DATABASE
+      #   value: neo4j
     healthCheckPath: /health
+

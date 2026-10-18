@@ -61,6 +61,10 @@ class ProviderStatus(BaseModel):
     demo_mode: bool
     version: str
     data_dir: str
+    graph_backend: str = "networkx"
+    neo4j_status: str = "disabled"
+    graph_diagnostics: dict[str, Any] = Field(default_factory=dict)
+
 
 
 class CreateSpaceRequest(BaseModel):
@@ -267,6 +271,38 @@ def create_app(engine: Engine | None = None) -> FastAPI:
     ) -> NeighborsResponse:
         return eng.neighbors(entity, depth=depth)
 
+    @app.get("/graph/overview", response_model=NeighborsResponse)
+    def graph_overview(
+        eng: EngineDep,
+        limit: Annotated[int | None, Query(ge=5, le=100)] = None,
+        limit_entities: Annotated[int | None, Query(ge=5, le=100)] = None,
+        max_edges: Annotated[int, Query(ge=10, le=250)] = 90,
+    ) -> NeighborsResponse:
+        """Curated overview subgraph of top hub entities and their connections."""
+        effective_limit = limit_entities or limit or 45
+        edges = eng.graph.overview(limit_entities=effective_limit, max_edges=max_edges)
+        return NeighborsResponse(
+            entity="Knowledge Universe Overview",
+            found=len(edges) > 0,
+            edges=edges,
+        )
+
+    @app.get("/graph/path", response_model=NeighborsResponse)
+    def graph_path(
+        eng: EngineDep,
+        source: Annotated[str, Query(min_length=1)],
+        target: Annotated[str, Query(min_length=1)],
+        max_depth: Annotated[int, Query(ge=1, le=6)] = 4,
+    ) -> NeighborsResponse:
+        """Find the shortest relationship path between two entities."""
+        edges = eng.graph.find_path(source=source, target=target, max_depth=max_depth)
+        return NeighborsResponse(
+            entity=f"{source} -> {target}",
+            found=len(edges) > 0,
+            edges=edges,
+        )
+
+
     @app.post("/eval/run", response_model=EvalReport)
     def eval_run(payload: EvalRunRequest, eng: EngineDep) -> EvalReport:
         corpus_dir = Path(payload.corpus_dir)
@@ -276,8 +312,35 @@ def create_app(engine: Engine | None = None) -> FastAPI:
         return run_eval(corpus_dir, gold_path, k=payload.k, base_config=eng.config)
 
     @app.get("/health")
-    def health() -> dict[str, str]:
-        return {"status": "ok", "version": __version__}
+    def health(request: Request) -> dict[str, Any]:
+        eng: Engine | None = getattr(request.app.state, "engine", None)
+        graph_ok = eng.graph.ping() if eng is not None else True
+        backend = eng.graph.backend_name if eng is not None else "networkx"
+        return {
+            "status": "ok" if graph_ok else "degraded",
+            "version": __version__,
+            "graph_backend": backend,
+            "graph_ready": graph_ok,
+        }
+
+    @app.get("/health/ready")
+    def health_ready(request: Request) -> dict[str, Any]:
+        eng: Engine | None = getattr(request.app.state, "engine", None)
+        if eng is None:
+            raise HTTPException(status_code=503, detail="Engine is not initialized")
+        ready = eng.graph.ping()
+        if not ready:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Graph backend '{eng.graph.backend_name}' is not ready or database is unreachable",
+            )
+        return {
+            "status": "ready",
+            "version": __version__,
+            "graph_backend": eng.graph.backend_name,
+            "space_id": eng.space_id,
+        }
+
 
     # -----------------------------------------------------------------------
     # Space-aware Information & Diagnostics endpoints
@@ -287,6 +350,19 @@ def create_app(engine: Engine | None = None) -> FastAPI:
     def list_documents(eng: EngineDep) -> list[Document]:
         """List all ingested documents in the target space."""
         return eng.store.list_documents()
+
+    @app.delete("/docs/{doc_id}")
+    @app.delete("/spaces/{space_id}/docs/{doc_id}")
+    def delete_document(
+        doc_id: str,
+        eng: EngineDep,
+        space_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Delete an ingested document and its chunks, vectors, and graph relationships."""
+        deleted = eng.delete_document(doc_id)
+        if not deleted:
+            raise HTTPException(status_code=404, detail=f"Document '{doc_id}' not found")
+        return {"success": True, "deleted": doc_id}
 
     @app.get("/graph/stats", response_model=GraphStats)
     def graph_stats(eng: EngineDep) -> GraphStats:
@@ -312,13 +388,21 @@ def create_app(engine: Engine | None = None) -> FastAPI:
 
     @app.get("/status", response_model=ProviderStatus)
     def provider_status(eng: EngineDep) -> ProviderStatus:
-        """Return current provider, space directory, and demo-mode status."""
+        """Return current provider, space directory, graph backend, and demo-mode status."""
         is_demo = eng.config.provider == "fake"
+        diag = eng.graph.get_diagnostics()
+        neo4j_status = "disabled"
+        if eng.config.graph_backend == "neo4j":
+            neo4j_status = "connected" if eng.graph.ping() else "disconnected"
+
         return ProviderStatus(
             provider=eng.config.provider,
             demo_mode=is_demo,
             version=__version__,
             data_dir=str(eng.config.data_dir),
+            graph_backend=eng.graph.backend_name,
+            neo4j_status=neo4j_status,
+            graph_diagnostics=diag,
         )
 
     @app.get("/chunks/count")

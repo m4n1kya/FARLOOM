@@ -112,6 +112,33 @@ class DocumentStore:
             for r in rows
         ]
 
+    def get_document(self, doc_id_or_source: str) -> Document | None:
+        """Find a document by doc_id or source path."""
+        row = self._conn.execute(
+            "SELECT doc_id, source, title, fmt, num_chunks FROM documents WHERE doc_id = ? OR source = ?",
+            (doc_id_or_source, doc_id_or_source),
+        ).fetchone()
+        if not row:
+            return None
+        return Document(doc_id=row[0], source=row[1], title=row[2], fmt=row[3], num_chunks=row[4])
+
+    def get_chunk_ids_for_doc(self, doc_id_or_source: str) -> list[str]:
+        """Return all chunk IDs belonging to a document."""
+        rows = self._conn.execute(
+            "SELECT chunk_id FROM chunks WHERE doc_id = ? OR source = ?",
+            (doc_id_or_source, doc_id_or_source),
+        ).fetchall()
+        return [r[0] for r in rows]
+
+    def delete_document(self, doc_id_or_source: str) -> bool:
+        """Atomically delete a document and cascade-delete its chunks, triples, and mentions."""
+        with self._conn:
+            res = self._conn.execute(
+                "DELETE FROM documents WHERE doc_id = ? OR source = ?",
+                (doc_id_or_source, doc_id_or_source),
+            )
+            return res.rowcount > 0
+
     # -- triples -------------------------------------------------------------
 
     def add_triples(self, triples: list[Triple]) -> None:

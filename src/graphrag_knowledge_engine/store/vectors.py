@@ -33,6 +33,14 @@ class VectorIndex:
         # Embeddings are supplied explicitly - Chroma's default embedder never runs.
         self._collection.upsert(ids=chunk_ids, embeddings=cast(Any, embeddings))
 
+    def delete(self, chunk_ids: list[str]) -> None:
+        if not chunk_ids:
+            return
+        try:
+            self._collection.delete(ids=chunk_ids)
+        except Exception:
+            pass
+
     def query(self, embedding: list[float], top_k: int) -> list[tuple[str, float]]:
         """Return (chunk_id, cosine_similarity) pairs, best first."""
         if self.count() == 0 or top_k <= 0:

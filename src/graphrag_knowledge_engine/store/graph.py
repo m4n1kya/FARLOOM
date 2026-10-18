@@ -32,21 +32,42 @@ from __future__ import annotations
 
 import math
 from collections import deque
+from typing import Any
 
 import networkx as nx
 
 from graphrag_knowledge_engine.models import NeighborEdge, Triple
+from graphrag_knowledge_engine.store.base import BaseGraphStore
 
 
 def normalize_entity(name: str) -> str:
     return " ".join(name.casefold().split())
 
 
-class KnowledgeGraph:
+class NetworkXGraphStore(BaseGraphStore):
     def __init__(self) -> None:
         self._graph: nx.MultiDiGraph = nx.MultiDiGraph()
         # Reverse index: chunk_id -> entity keys mentioned in it (for focus).
         self._chunk_entities: dict[str, set[str]] = {}
+
+    @property
+    def backend_name(self) -> str:
+        return "networkx"
+
+    def ping(self) -> bool:
+        return True
+
+    def close(self) -> None:
+        pass
+
+    def get_diagnostics(self) -> dict[str, Any]:
+        return {
+            "backend": "networkx",
+            "status": "active",
+            "ready": True,
+            "num_nodes": self.num_nodes,
+            "num_edges": self.num_edges,
+        }
 
     @classmethod
     def from_store_rows(
@@ -210,6 +231,101 @@ class KnowledgeGraph:
                 )
         return sorted(edges, key=lambda e: (e.subject, e.relation, e.obj))
 
+    def overview(self, limit_entities: int = 30, max_edges: int = 100) -> list[NeighborEdge]:
+        """Curated subgraph of high-degree hub entities and their interconnections."""
+        if not self._graph:
+            return []
+        # Sort nodes by degree
+        top_nodes = sorted(
+            self._graph.nodes, key=lambda n: self._graph.degree(n), reverse=True
+        )[:limit_entities]
+        top_set = set(top_nodes)
+        edges: list[NeighborEdge] = []
+        for u, v, data in self._graph.edges(data=True):
+            if u in top_set and v in top_set:
+                edges.append(
+                    NeighborEdge(
+                        subject=str(self._graph.nodes[u]["label"]),
+                        relation=str(data.get("relation", "related_to")),
+                        obj=str(self._graph.nodes[v]["label"]),
+                        chunk_ids=sorted(data.get("chunk_ids", [])),
+                    )
+                )
+                if len(edges) >= max_edges:
+                    break
+        return sorted(edges, key=lambda e: (e.subject, e.relation, e.obj))
+
+    def find_path(self, source: str, target: str, max_depth: int = 4) -> list[NeighborEdge]:
+        """Find the shortest relationship path between two entities."""
+        s_key, t_key = normalize_entity(source), normalize_entity(target)
+        if s_key not in self._graph or t_key not in self._graph:
+            return []
+        try:
+            path_nodes = nx.shortest_path(self._graph.to_undirected(as_view=True), s_key, t_key)
+            if len(path_nodes) - 1 > max_depth:
+                return []
+        except (nx.NetworkXNoPath, nx.NodeNotFound):
+            return []
+
+        edges: list[NeighborEdge] = []
+        for i in range(len(path_nodes) - 1):
+            u, v = path_nodes[i], path_nodes[i + 1]
+            data_uv = self._graph.get_edge_data(u, v)
+            if data_uv:
+                for d in data_uv.values():
+                    edges.append(
+                        NeighborEdge(
+                            subject=str(self._graph.nodes[u]["label"]),
+                            relation=str(d.get("relation", "related_to")),
+                            obj=str(self._graph.nodes[v]["label"]),
+                            chunk_ids=sorted(d.get("chunk_ids", [])),
+                        )
+                    )
+                    break
+            else:
+                data_vu = self._graph.get_edge_data(v, u) or {}
+                for d in data_vu.values():
+                    edges.append(
+                        NeighborEdge(
+                            subject=str(self._graph.nodes[v]["label"]),
+                            relation=str(d.get("relation", "related_to")),
+                            obj=str(self._graph.nodes[u]["label"]),
+                            chunk_ids=sorted(d.get("chunk_ids", [])),
+                        )
+                    )
+                    break
+        return edges
+
+    def remove_chunks(self, chunk_ids: list[str]) -> None:
+        if not chunk_ids:
+            return
+        c_set = set(chunk_ids)
+
+        # 1. Clean edge provenance and drop edges that lose all chunks
+        edges_to_remove = []
+        for u, v, k, data in self._graph.edges(keys=True, data=True):
+            if "chunk_ids" in data:
+                data["chunk_ids"].difference_update(c_set)
+                if not data["chunk_ids"]:
+                    edges_to_remove.append((u, v, k))
+        for u, v, k in edges_to_remove:
+            self._graph.remove_edge(u, v, key=k)
+
+        # 2. Clean node provenance and drop orphaned isolated nodes
+        nodes_to_remove = []
+        for n, data in self._graph.nodes(data=True):
+            if "chunks" in data:
+                data["chunks"].difference_update(c_set)
+            if not data.get("chunks") and self._graph.degree(n) == 0:
+                nodes_to_remove.append(n)
+        for n in nodes_to_remove:
+            self._graph.remove_node(n)
+
+        # 3. Clean reverse index
+        for cid in chunk_ids:
+            self._chunk_entities.pop(cid, None)
+
+
 
 def _find_word(haystack: str, needle: str) -> int:
     """Index of `needle` in `haystack` at word boundaries, or -1."""
@@ -224,3 +340,10 @@ def _find_word(haystack: str, needle: str) -> int:
         if before_ok and after_ok:
             return idx
         start = idx + 1
+
+
+# Alias for backwards compatibility across existing callers and test fixtures
+KnowledgeGraph = NetworkXGraphStore
+
+__all__ = ["BaseGraphStore", "KnowledgeGraph", "NetworkXGraphStore", "normalize_entity"]
+

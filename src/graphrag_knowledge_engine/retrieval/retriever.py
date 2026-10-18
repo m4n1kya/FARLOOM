@@ -19,7 +19,7 @@ from graphrag_knowledge_engine.models import LegHit, RetrievalDebug, RetrievalMo
 from graphrag_knowledge_engine.providers.embeddings import EmbeddingProvider
 from graphrag_knowledge_engine.retrieval.bm25 import Bm25Index
 from graphrag_knowledge_engine.retrieval.fusion import reciprocal_rank_fusion
-from graphrag_knowledge_engine.store.graph import KnowledgeGraph
+from graphrag_knowledge_engine.store.base import BaseGraphStore
 from graphrag_knowledge_engine.store.vectors import VectorIndex
 
 _MODE_LEGS: dict[RetrievalMode, frozenset[str]] = {
@@ -37,7 +37,7 @@ class HybridRetriever:
         embedder: EmbeddingProvider,
         vectors: VectorIndex,
         bm25: Bm25Index,
-        graph: KnowledgeGraph,
+        graph: BaseGraphStore,
     ) -> None:
         self._config = config
         self._embedder = embedder

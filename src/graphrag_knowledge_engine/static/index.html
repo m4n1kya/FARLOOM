@@ -4,29 +4,92 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FARLOOM — Technical Knowledge Intelligence Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ------------------------------------------------------------------ */
     /* Design tokens                                                         */
     /* ------------------------------------------------------------------ */
+    /* Design tokens — OLED Dark Canvas & Epistemic Blue System             */
+    /* ------------------------------------------------------------------ */
     :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --surface2: #1c2330;
-      --border: #2d3748;
-      --border2: #374151;
-      --text: #e6edf3;
-      --text2: #8b949e;
-      --text3: #6e7681;
-      --accent: #2dd4bf;
-      --accent2: #0ea5e9;
-      --accent-dim: rgba(45, 212, 191, 0.12);
-      --accent-border: rgba(45, 212, 191, 0.3);
+      /* 1. Dark Canvas & Background Layers (Matte Black) */
+      --canvas-bg: #000000;
+      --bg-primary: #000000;
+      --bg-secondary: #080808;
+      --bg-tertiary: #101010;
+      --bg-elevated: #161616;
+      --bg-hover: #1e1e1e;
+
+      /* 2. Primary Accent (Minimalist Monochrome) */
+      --accent-primary: #ffffff;
+      --accent-dark: #e2e8f0;
+      --accent-subtle: rgba(255, 255, 255, 0.15);
+      --accent-glow: rgba(255, 255, 255, 0.30);
+      --accent: var(--accent-primary);
+      --accent2: #60a5fa;
+      --accent-dim: rgba(255, 255, 255, 0.04);
+      --accent-border: rgba(255, 255, 255, 0.15);
+
+      /* 3. Glassmorphic Surface System */
+      --glass-bg: rgba(255, 255, 255, 0.025);
+      --glass-bg-hover: rgba(255, 255, 255, 0.05);
+      --glass-bg-active: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --glass-border-hover: rgba(255, 255, 255, 0.12);
+      --glass-blur: blur(14px);
+
+      /* Surface aliases */
+      --bg: var(--bg-primary);
+      --surface: var(--bg-secondary);
+      --surface2: var(--bg-tertiary);
+      --surface3: var(--bg-elevated);
+      --border: var(--glass-border);
+      --border2: rgba(255, 255, 255, 0.10);
+
+      /* 4. Typography Palette */
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --text-accent: #60a5fa;
+      --text-inverse: #0f172a;
+
+      --text: var(--text-primary);
+      --text2: var(--text-secondary);
+      --text3: var(--text-muted);
+
+      /* 5. Semantic AI & Epistemic Relationship Palette (Blue Monochromatic Spectrum) */
+      --epistemic-consensus: #90CAF9;
+      --epistemic-consensus-bg: rgba(144, 202, 249, 0.08);
+      --epistemic-consensus-border: rgba(144, 202, 249, 0.25);
+
+      --epistemic-divergence: #2196F3;
+      --epistemic-divergence-bg: rgba(33, 150, 243, 0.08);
+      --epistemic-divergence-border: rgba(33, 150, 243, 0.25);
+
+      --epistemic-context: #E3F2FD;
+      --epistemic-context-bg: rgba(227, 242, 253, 0.08);
+      --epistemic-context-border: rgba(227, 242, 253, 0.25);
+
+      --epistemic-edgecase: #1565C0;
+      --epistemic-edgecase-bg: rgba(21, 101, 192, 0.20);
+      --epistemic-edgecase-border: rgba(21, 101, 192, 0.50);
+
+      --epistemic-retrieval: #38BDF8;
+      --epistemic-retrieval-bg: rgba(56, 189, 248, 0.08);
+      --epistemic-retrieval-border: rgba(56, 189, 248, 0.25);
+
+      --epistemic-insight: #818CF8;
+      --epistemic-insight-bg: rgba(129, 140, 248, 0.08);
+      --epistemic-insight-border: rgba(129, 140, 248, 0.25);
+
       --danger: #f87171;
       --warning: #fbbf24;
-      --success: #34d399;
+      --success: #38bdf8;
       --mono: 'SF Mono', 'Fira Code', 'Fira Mono', Consolas, monospace;
       --radius: 8px;
-      --radius2: 12px;
+      --radius2: 14px;
     }
 
     /* ------------------------------------------------------------------ */
@@ -34,30 +97,104 @@
     /* ------------------------------------------------------------------ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 15px; scroll-behavior: smooth; }
+
+    /* Dark OLED Scrollbars & Sliders System */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.22) #000000;
+    }
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 6px;
+      background: #000000;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000000;
+      border-left: 1px solid rgba(255, 255, 255, 0.04);
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.7);
+      transition: background 0.15s ease;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.42);
+    }
+    ::-webkit-scrollbar-thumb:active {
+      background: rgba(255, 255, 255, 0.60);
+    }
+    ::-webkit-scrollbar-corner {
+      background: #000000;
+    }
+
+    /* Minimalist Dark Sliders (Range inputs) */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #0a0a0a;
+      height: 5px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      border: 2px solid #000000;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.18);
+      background: #f1f5f9;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      border: 2px solid #000000;
+    }
+
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       line-height: 1.6;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
-    a { color: var(--accent); text-decoration: none; }
+    h1, h2, h3, .brand-name, .section-title, .upload-main-title, .doc-history-title, .footer-watermark {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    a { color: var(--text-accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
     button { cursor: pointer; font-family: inherit; }
     input, select, textarea { font-family: inherit; }
     pre, code { font-family: var(--mono); }
 
     /* ------------------------------------------------------------------ */
-    /* Layout                                                                */
+    /* Layout & Header                                                       */
     /* ------------------------------------------------------------------ */
-    .app { display: flex; flex-direction: column; min-height: 100vh; }
+    .app { display: flex; flex-direction: column; min-height: 100vh; background: var(--bg-primary); }
 
     /* Header */
     .header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
       padding: 0 1.5rem;
       display: flex;
       align-items: center;
@@ -70,75 +207,140 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      font-weight: 700;
-      font-size: 1.05rem;
-      letter-spacing: 0.03em;
-      color: var(--text);
+      user-select: none;
     }
-    .logo-icon {
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.85rem;
+    .logo-name {
+      color: #FFFFFF;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 1.15rem;
     }
-    .logo-name { color: var(--accent); letter-spacing: 0.06em; }
 
-    .nav { display: flex; gap: 0.25rem; flex: 1; }
+    /* Footer with Giant Screen-Wide Watermark (Exact Synaptica Style) */
+    .site-footer {
+      position: relative;
+      width: 100%;
+      margin-top: auto;
+      padding: 11rem 0 2.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      overflow: hidden;
+      user-select: none;
+      background: #000000;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .footer-watermark {
+      position: absolute;
+      bottom: 0.8vw;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      max-width: 100vw;
+      text-align: center;
+      font-size: clamp(4.5rem, 20.8vw, 26vw);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      line-height: 0.72;
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+      white-space: nowrap;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.035) 45%, rgba(255, 255, 255, 0.008) 80%, rgba(255, 255, 255, 0) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .footer-copyright {
+      position: relative;
+      z-index: 2;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.35);
+      text-align: center;
+    }
+
+    .nav { display: flex; gap: 0.35rem; flex: 1; }
     .nav-btn {
       background: none;
-      border: none;
-      color: var(--text2);
-      padding: 0.4rem 0.85rem;
-      border-radius: var(--radius);
-      font-size: 0.875rem;
-      transition: color 0.15s, background 0.15s;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      padding: 0.45rem 0.95rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .nav-btn:hover { color: var(--text); background: var(--surface2); }
-    .nav-btn.active { color: var(--accent); background: var(--accent-dim); }
+    .nav-btn:hover {
+      color: var(--text-primary);
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border);
+    }
+    .nav-btn.active {
+      color: var(--text-inverse);
+      background: var(--accent-primary);
+      font-weight: 600;
+      border-color: #ffffff;
+      box-shadow: 0 2px 14px rgba(255, 255, 255, 0.22);
+    }
 
     .header-status {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       font-size: 0.8rem;
-      color: var(--text2);
+      color: var(--text-secondary);
     }
     .status-dot {
       width: 8px; height: 8px;
       border-radius: 50%;
-      background: var(--text3);
+      background: var(--text-muted);
     }
-    .status-dot.ok { background: var(--success); }
-    .status-dot.demo { background: var(--warning); }
-    .status-dot.error { background: var(--danger); }
+    .status-dot.ok { background: var(--success); box-shadow: 0 0 8px rgba(56, 189, 248, 0.6); }
+    .status-dot.demo { background: var(--warning); box-shadow: 0 0 8px rgba(251, 191, 36, 0.6); }
+    .status-dot.error { background: var(--danger); box-shadow: 0 0 8px rgba(248, 113, 113, 0.6); }
 
     /* Main content */
     .main { flex: 1; padding: 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%; }
 
     /* Panels (tabs) */
     .panel { display: none; }
-    .panel.active { display: block; }
+    .panel.active { display: block; animation: panelFadeIn 0.2s ease-out; }
+    @keyframes panelFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     /* ------------------------------------------------------------------ */
-    /* Cards & surfaces                                                      */
+    /* Glassmorphic Cards & Surfaces                                         */
     /* ------------------------------------------------------------------ */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: rgba(18, 18, 18, 0.72);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius2);
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1rem;
+      padding: 1.35rem 1.6rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      border-color: var(--glass-border-hover);
     }
     .card-title {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--text3);
+      color: var(--text-muted);
       margin-bottom: 0.75rem;
+      font-weight: 600;
     }
 
     /* Stat grid */
@@ -149,39 +351,71 @@
       margin-bottom: 1rem;
     }
     .stat {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: rgba(26, 26, 26, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 1rem 1.25rem;
+      padding: 1.1rem 1.3rem;
+      transition: all 0.2s ease;
     }
-    .stat-label { font-size: 0.75rem; color: var(--text3); margin-bottom: 0.4rem; }
+    .stat:hover {
+      border-color: var(--glass-border-hover);
+      transform: translateY(-1px);
+    }
+    .stat-label {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
     .stat-value {
-      font-size: 1.75rem;
+      font-size: 1.85rem;
       font-weight: 700;
-      color: var(--accent);
+      color: #ffffff;
       font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 24px rgba(255, 255, 255, 0.15);
     }
-    .stat-sub { font-size: 0.75rem; color: var(--text2); margin-top: 0.2rem; }
+    .stat-sub { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
 
     /* ------------------------------------------------------------------ */
-    /* Banners                                                               */
+    /* Banners (Epistemic Monochromatic System)                             */
     /* ------------------------------------------------------------------ */
     .banner {
       border-radius: var(--radius);
-      padding: 0.75rem 1rem;
+      padding: 0.85rem 1.1rem;
       font-size: 0.875rem;
       margin-bottom: 1rem;
       display: flex;
       align-items: flex-start;
-      gap: 0.6rem;
+      gap: 0.65rem;
+      backdrop-filter: blur(10px);
     }
-    .banner.warning { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; }
-    .banner.info { background: var(--accent-dim); border: 1px solid var(--accent-border); color: var(--accent); }
-    .banner.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--danger); }
-    .banner.success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--success); }
+    .banner.warning {
+      background: rgba(251, 191, 36, 0.06);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      color: #fbbf24;
+    }
+    .banner.info {
+      background: var(--epistemic-consensus-bg);
+      border: 1px solid var(--epistemic-consensus-border);
+      color: var(--epistemic-consensus);
+    }
+    .banner.error {
+      background: rgba(248, 113, 113, 0.06);
+      border: 1px solid rgba(248, 113, 113, 0.25);
+      color: var(--danger);
+    }
+    .banner.success {
+      background: rgba(56, 189, 248, 0.06);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #38bdf8;
+    }
 
     /* ------------------------------------------------------------------ */
-    /* Query workspace                                                       */
+    /* Query Workspace & Form Elements                                       */
     /* ------------------------------------------------------------------ */
     .query-form {
       display: flex;
@@ -191,58 +425,76 @@
     }
     .query-input {
       flex: 1;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius);
-      color: var(--text);
+      color: var(--text-primary);
       padding: 0.65rem 1rem;
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.15s;
+      transition: all 0.15s ease;
       min-width: 0;
     }
-    .query-input:focus { border-color: var(--accent); }
-    .query-input::placeholder { color: var(--text3); }
+    .query-input:focus {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+    }
+    .query-input::placeholder { color: var(--text-muted); }
 
     .mode-select {
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--radius);
-      color: var(--text);
-      padding: 0.65rem 0.75rem;
+      color: var(--text-primary);
+      padding: 0.65rem 0.85rem;
       font-size: 0.875rem;
       outline: none;
       cursor: pointer;
+      transition: border-color 0.15s;
     }
-    .mode-select:focus { border-color: var(--accent); }
+    .mode-select:focus { border-color: #ffffff; }
 
+    /* Minimalist Monochrome Buttons */
     .btn {
-      background: var(--accent);
-      color: #0d1117;
-      border: none;
+      background: var(--accent-primary);
+      color: var(--text-inverse);
+      border: 1px solid rgba(255, 255, 255, 0.8);
       border-radius: var(--radius);
       padding: 0.65rem 1.25rem;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      transition: opacity 0.15s, transform 0.1s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       white-space: nowrap;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 0 18px rgba(255, 255, 255, 0.12);
     }
-    .btn:hover { opacity: 0.88; }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 24px rgba(255, 255, 255, 0.28);
+    }
+    .btn:active { transform: translateY(0) scale(0.98); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-secondary {
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border2);
+      background: var(--glass-bg);
+      color: var(--text-primary);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      box-shadow: none;
     }
-    .btn-secondary:hover { background: var(--border); }
+    .btn-secondary:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-hover);
+      color: #ffffff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
 
     /* Answer box */
     .answer-box {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: rgba(26, 26, 26, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 1.25rem 1.5rem;
+      padding: 1.35rem 1.6rem;
       margin-bottom: 1rem;
       line-height: 1.7;
     }
@@ -251,15 +503,15 @@
       color: var(--warning);
       margin-bottom: 0.5rem;
     }
-    .answer-text { white-space: pre-wrap; word-break: break-word; }
+    .answer-text { white-space: pre-wrap; word-break: break-word; color: var(--text-primary); }
 
     /* Citations */
     .citation-list { display: flex; flex-direction: column; gap: 0.6rem; }
     .citation {
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      background: rgba(26, 26, 26, 0.65);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius);
-      padding: 0.85rem 1rem;
+      padding: 0.9rem 1.1rem;
     }
     .citation-header {
       display: flex;
@@ -268,24 +520,24 @@
       margin-bottom: 0.4rem;
     }
     .citation-tag {
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-border);
-      color: var(--accent);
+      background: var(--epistemic-consensus-bg);
+      border: 1px solid var(--epistemic-consensus-border);
+      color: var(--epistemic-consensus);
       border-radius: 4px;
-      padding: 0.1rem 0.5rem;
+      padding: 0.15rem 0.55rem;
       font-size: 0.8rem;
       font-weight: 700;
       font-family: var(--mono);
     }
-    .citation-source { font-size: 0.85rem; color: var(--text2); }
+    .citation-source { font-size: 0.85rem; color: var(--text-secondary); }
     .citation-snippet {
       font-size: 0.82rem;
-      color: var(--text2);
+      color: var(--text-secondary);
       font-family: var(--mono);
-      background: var(--bg);
+      background: #000000;
       border-radius: 4px;
-      padding: 0.5rem 0.75rem;
-      border-left: 2px solid var(--accent);
+      padding: 0.55rem 0.85rem;
+      border-left: 2px solid var(--epistemic-consensus);
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -297,19 +549,19 @@
       gap: 0.5rem;
     }
     .example-q {
-      background: var(--surface2);
-      border: 1px solid var(--border2);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
       border-radius: 20px;
-      color: var(--text2);
-      padding: 0.35rem 0.9rem;
+      color: var(--text-secondary);
+      padding: 0.35rem 0.95rem;
       font-size: 0.8rem;
       transition: all 0.15s;
       cursor: pointer;
     }
     .example-q:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-dim);
+      border-color: #ffffff;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.09);
     }
 
     /* ------------------------------------------------------------------ */
@@ -320,21 +572,21 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.7rem 1rem;
-      background: var(--surface2);
-      border: 1px solid var(--border);
+      padding: 0.75rem 1.1rem;
+      background: rgba(26, 26, 26, 0.7);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius);
       cursor: pointer;
       user-select: none;
     }
-    .diag-header:hover { border-color: var(--border2); }
-    .diag-title { font-size: 0.875rem; font-weight: 600; }
-    .diag-toggle { color: var(--text3); font-size: 0.75rem; }
+    .diag-header:hover { border-color: var(--glass-border-hover); }
+    .diag-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+    .diag-toggle { color: var(--text-muted); font-size: 0.75rem; }
     .diag-body {
       display: none;
       padding: 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      border: 1px solid var(--glass-border);
       border-top: none;
       border-radius: 0 0 var(--radius) var(--radius);
     }
@@ -346,88 +598,509 @@
       gap: 0.5rem;
       font-size: 0.8rem;
       font-family: var(--mono);
-      color: var(--text2);
+      color: var(--text-secondary);
       padding: 0.25rem 0.5rem;
-      background: var(--bg);
+      background: #000000;
       border-radius: 4px;
     }
-    .leg-rank { color: var(--accent); min-width: 2rem; }
-    .leg-score { color: var(--text3); min-width: 5rem; }
+    .leg-rank { color: #ffffff; min-width: 2rem; font-weight: 700; }
+    .leg-score { color: var(--text-muted); min-width: 5rem; }
 
     /* ------------------------------------------------------------------ */
     /* Graph explorer                                                        */
     /* ------------------------------------------------------------------ */
-    .graph-search {
+    /* ------------------------------------------------------------------ */
+    /* Knowledge Universe Styles                                            */
+    /* ------------------------------------------------------------------ */
+    /* ------------------------------------------------------------------ */
+    /* Knowledge Universe Styles (OLED Dark Canvas & Epistemic System)       */
+    /* ------------------------------------------------------------------ */
+    .universe-header-bar {
       display: flex;
-      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
       margin-bottom: 1rem;
+    }
+    .universe-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      letter-spacing: -0.01em;
+    }
+    .universe-icon {
+      font-size: 1.3rem;
+      filter: drop-shadow(0 0 10px rgba(144, 202, 249, 0.6));
+    }
+    .universe-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      background: var(--epistemic-consensus-bg);
+      border: 1px solid var(--epistemic-consensus-border);
+      color: var(--epistemic-consensus);
+      letter-spacing: 0.04em;
+    }
+    .universe-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--epistemic-consensus);
+      box-shadow: 0 0 8px var(--epistemic-consensus);
+      animation: universePulse 2s infinite ease-in-out;
+    }
+    @keyframes universePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    .universe-meta-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .universe-stat-pill {
+      font-size: 0.76rem;
+      font-family: var(--mono);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+    }
+
+    .universe-search-bar {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(18, 18, 18, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      padding: 0.6rem 0.85rem;
+      border-radius: var(--radius2);
+      margin-bottom: 0.75rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    .universe-search-input {
+      background: var(--bg-tertiary) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: var(--text-primary) !important;
+      font-size: 0.85rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 6px;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+    .universe-search-input:focus {
+      border-color: #ffffff !important;
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.22) !important;
+      outline: none;
+    }
+    .universe-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--glass-border-hover);
+      border-radius: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+    }
+    .universe-dropdown-item {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.15s;
+    }
+    .universe-dropdown-item:hover {
+      background: var(--glass-bg-hover);
+      color: #ffffff;
+    }
+    .universe-select {
+      background: var(--bg-tertiary);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border-radius: 6px;
+      font-size: 0.82rem;
+    }
+    .universe-glow-btn {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      font-weight: 700 !important;
+      border: none !important;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.35) !important;
+      transition: transform 0.15s, box-shadow 0.15s !important;
+    }
+    .universe-glow-btn:hover {
+      transform: translateY(-1px);
+      background: #e2e8f0 !important;
+      box-shadow: 0 0 28px rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .universe-chips-container {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.85rem;
+      overflow-x: auto;
+      padding-bottom: 0.45rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.25) #000000;
+    }
+    .universe-chips-container::-webkit-scrollbar {
+      height: 5px;
+      background: #000000;
+    }
+    .universe-chips-container::-webkit-scrollbar-track {
+      background: #000000;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+    }
+    .universe-chips-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      transition: background 0.15s ease;
+    }
+    .universe-chips-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .universe-chips-scroll {
+      display: flex;
+      gap: 0.4rem;
       align-items: center;
     }
-
-    #graph-canvas {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      width: 100%;
-      height: 480px;
-      position: relative;
-      overflow: hidden;
+    .universe-chip {
+      background: rgba(26, 26, 26, 0.7);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      font-size: 0.74rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+    .universe-chip:hover {
+      color: #ffffff;
+      border-color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
     }
 
-    .graph-node {
+    /* Canvas Viewport */
+    .universe-viewport {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 220px);
+      min-height: 640px;
+      background: var(--canvas-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius2);
+      overflow: hidden;
+      box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.95), 0 12px 40px rgba(0, 0, 0, 0.6);
+    }
+    .universe-viewport.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 99999;
+      border-radius: 0;
+      border: none;
+    }
+
+    #universe-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    #universe-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Tooltip */
+    .universe-tooltip {
       position: absolute;
-      background: var(--surface);
-      border: 1.5px solid var(--border2);
-      border-radius: 20px;
-      padding: 0.3rem 0.7rem;
+      pointer-events: none;
+      background: rgba(18, 18, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--epistemic-consensus);
+      padding: 0.55rem 0.85rem;
+      border-radius: 8px;
       font-size: 0.78rem;
+      color: var(--text-primary);
+      z-index: 100;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.8), 0 0 16px rgba(144, 202, 249, 0.25);
+      transform: translate(-50%, -120%);
+      transition: opacity 0.15s;
       white-space: nowrap;
-      color: var(--text);
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      z-index: 2;
+    }
+
+    /* Interactive Legend */
+    .universe-legend {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(18, 18, 18, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 0.65rem 0.85rem;
+      max-width: 290px;
+      z-index: 20;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
       user-select: none;
     }
-    .graph-node.seed {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-dim);
-      font-weight: 600;
+    .legend-header {
+      font-size: 0.76rem;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
     }
-    .graph-node:hover { border-color: var(--accent2); }
-
-    #graph-svg {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      pointer-events: none;
+    .legend-body {
+      margin-top: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .legend-body.collapsed {
+      display: none;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px currentColor;
+    }
+    .legend-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 0.35rem 0;
     }
 
-    .edge-label {
+    /* Inspector Drawer */
+    .universe-inspector {
       position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 340px;
+      max-height: calc(100% - 32px);
+      background: rgba(18, 18, 18, 0.92);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--epistemic-consensus-border);
+      border-radius: var(--radius2);
+      padding: 1.15rem;
+      z-index: 25;
+      overflow-y: auto;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8), 0 0 24px rgba(144, 202, 249, 0.12);
+      animation: inspectorSlideIn 0.25s ease-out;
+    }
+    @keyframes inspectorSlideIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .inspector-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.85rem;
+    }
+    .inspector-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.25rem;
+      word-break: break-word;
+    }
+    .inspector-type-badge {
       font-size: 0.68rem;
-      color: var(--text3);
-      font-family: var(--mono);
-      background: var(--surface2);
-      padding: 0.1rem 0.3rem;
-      border-radius: 3px;
-      z-index: 3;
-      white-space: nowrap;
-      pointer-events: none;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.06em;
+      display: inline-block;
     }
-
-    .graph-empty {
+    .inspector-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 0.2rem;
+      transition: color 0.15s;
+    }
+    .inspector-close:hover { color: #ffffff; }
+    .inspector-close:hover {
+      color: #F1F5FF;
+    }
+    .inspector-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .inspector-metric-card {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      border-radius: 6px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .inspector-metric-card .metric-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--epistemic-consensus);
+      font-family: var(--mono);
+    }
+    .inspector-metric-card .metric-lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 0.1rem;
+    }
+    .inspector-actions {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+    .universe-action-btn {
+      flex: 1;
+      font-size: 0.76rem !important;
+      padding: 0.35rem 0.5rem !important;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100%;
-      color: var(--text3);
-      font-size: 0.875rem;
-      flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.3rem;
     }
-    .graph-empty-icon { font-size: 2.5rem; opacity: 0.4; }
+    .inspector-section-title {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 0.45rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .inspector-edges-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    .inspector-edge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.74rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      padding: 0.3rem 0.5rem;
+    }
+    .inspector-edge-rel {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--epistemic-consensus);
+    }
+    .inspector-neighbor-chip {
+      color: var(--text-primary);
+      cursor: pointer;
+      text-decoration: underline;
+      text-decoration-color: var(--epistemic-consensus-border);
+      transition: color 0.15s;
+    }
+    .inspector-neighbor-chip:hover {
+      color: var(--epistemic-consensus);
+    }
+    .inspector-chunks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+    .inspector-chunk-pill {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      background: var(--epistemic-consensus-bg);
+      border: 1px solid var(--epistemic-consensus-border);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      color: var(--epistemic-consensus);
+    }
+
+    /* Modal */
+    .universe-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+    }
+    .universe-modal-content {
+      background: var(--bg-secondary);
+      border: 1px solid var(--glass-border-hover);
+      border-radius: var(--radius2);
+      width: 440px;
+      max-width: 90%;
+      padding: 1.5rem;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), 0 0 24px rgba(144, 202, 249, 0.15);
+    }
+    .universe-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
 
     /* ------------------------------------------------------------------ */
     /* Corpus panel                                                          */
@@ -711,52 +1384,191 @@
       border-color: var(--accent);
     }
 
-    /* Upload & Drop zone */
-    .upload-card { border: 1px solid var(--accent-border); }
-    .card-header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-      gap: 1rem;
+    /* Upload Section (Synaptica Visual Style) */
+    .upload-container {
+      max-width: 820px;
+      margin: 0 auto 3rem;
+      width: 100%;
+    }
+    .upload-header-section {
+      margin-bottom: 2rem;
+    }
+    .upload-main-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+    .upload-main-sub {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
     }
     .drop-zone {
-      border: 2px dashed var(--border2);
-      border-radius: var(--radius2);
-      padding: 1.75rem 1.5rem;
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      padding: 3.5rem 2rem 2.5rem;
       text-align: center;
       cursor: pointer;
-      background: var(--surface2);
-      transition: all 0.2s ease;
+      background: #080808;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
     .drop-zone:hover, .drop-zone.dragover {
-      border-color: var(--accent);
-      background: var(--accent-dim);
+      border-color: rgba(255, 255, 255, 0.4);
+      background: #0f0f0f;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.04);
     }
-    .drop-zone-icon { font-size: 2.2rem; margin-bottom: 0.5rem; }
-    .drop-zone-prompt { font-size: 0.95rem; font-weight: 600; color: var(--text); }
-    .browse-link { color: var(--accent); text-decoration: underline; }
-    .drop-zone-sub { font-size: 0.8rem; color: var(--text2); margin-top: 0.35rem; }
-    
+    .drop-zone-icon-svg {
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 1.25rem;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+    .drop-zone:hover .drop-zone-icon-svg {
+      transform: translateY(-3px);
+      color: #ffffff;
+    }
+    .drop-zone-prompt {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.35rem;
+    }
+    .drop-zone-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .btn-browse {
+      background: #1c1c1c;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 0.55rem 1.6rem;
+      border-radius: 24px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-browse:hover {
+      background: #282828;
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+    .drop-zone-footnote {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.3);
+      margin-top: 1.4rem;
+    }
+
+    /* Routing Bar & File Bar */
+    .upload-routing-bar {
+      background: #0b0b0b;
+      padding: 0.85rem 1.15rem;
+      border-radius: 12px;
+      margin-top: 1.25rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
     .selected-file-bar {
       margin-top: 1rem;
       display: flex;
       align-items: center;
-      background: var(--surface3);
-      padding: 0.6rem 1rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
+      justify-content: space-between;
+      gap: 1rem;
+      background: #101010;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    /* Document History Section (Synaptica Style) */
+    .doc-history-section {
+      margin-top: 2.75rem;
+    }
+    .doc-history-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+    .doc-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .doc-history-item {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      padding: 1rem 1.35rem;
+      background: #090909;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+    .doc-history-item:hover {
+      background: #111111;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .doc-history-icon {
+      color: rgba(255, 255, 255, 0.45);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .doc-history-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .doc-history-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .doc-history-meta {
+      font-size: 0.76rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 0.2rem;
+    }
+    .doc-history-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
     }
     .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.8rem; }
+    .btn-danger-subtle {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.28);
+      color: #fca5a5;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.15s ease;
+    }
+    .btn-danger-subtle:hover {
+      background: rgba(239, 68, 68, 0.22);
+      border-color: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+    }
     .space-badge {
       display: inline-block;
       padding: 0.15rem 0.55rem;
-      background: var(--accent-dim);
-      border: 1px solid var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 12px;
-      font-size: 0.8rem;
-      color: var(--accent);
-      font-weight: 600;
+      font-size: 0.78rem;
+      color: #ffffff;
+      font-weight: 500;
     }
 
     /* Spaces Hub Grid */
@@ -833,9 +1645,9 @@
     <div class="modal-card">
       <div class="modal-header">
         <div style="font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:0.5rem;">
-          <span>🪐</span> Create Knowledge Space
+          <span>Create Knowledge Space</span>
         </div>
-        <button class="modal-close" onclick="closeCreateSpaceModal()">✕</button>
+        <button class="modal-close" onclick="closeCreateSpaceModal()">&times;</button>
       </div>
       <div class="modal-body">
         <p class="text-muted mb">
@@ -852,10 +1664,10 @@
         <div style="margin-bottom:0.85rem;">
           <label class="form-label">Environment Preset</label>
           <select id="new-space-preset" class="form-select">
-            <option value="blank">⚪ Blank Clean Slate (100% Isolated, Starts Empty)</option>
-            <option value="tech_docs">🔵 Technical Documentation (Architecture Specs)</option>
-            <option value="api_specs">🟣 Code & API Reference (Dense Symbol Matching)</option>
-            <option value="research">🟢 Academic Research & Whitepapers (Semantic Search)</option>
+            <option value="blank">Blank Clean Slate (100% Isolated, Starts Empty)</option>
+            <option value="tech_docs">Technical Documentation (Architecture Specs)</option>
+            <option value="api_specs">Code & API Reference (Dense Symbol Matching)</option>
+            <option value="research">Academic Research & Whitepapers (Semantic Search)</option>
           </select>
         </div>
         <div style="margin-bottom:0.85rem;">
@@ -878,11 +1690,11 @@
   <!-- ===== HEADER ===== -->
   <header class="header">
     <div class="logo">
-      <div class="logo-icon">⬡</div>
       <span class="logo-name">FARLOOM</span>
     </div>
     <nav class="nav">
       <button class="nav-btn active" data-panel="dashboard">Dashboard</button>
+      <button class="nav-btn" data-panel="upload">Upload</button>
       <button class="nav-btn" data-panel="query">Query</button>
       <button class="nav-btn" data-panel="graph">Graph Explorer</button>
       <button class="nav-btn" data-panel="corpus">Corpus</button>
@@ -891,10 +1703,9 @@
     </nav>
     <div class="space-selector-wrap" id="space-selector-wrap">
       <button class="space-btn" id="space-dropdown-btn" onclick="toggleSpaceDropdown()">
-        <span class="space-pill-icon">🪐</span>
         <span class="space-pill-label">Space:</span>
         <strong id="active-space-name">Default Space</strong>
-        <span class="space-arrow">▾</span>
+        <span class="space-arrow">&blacktriangledown;</span>
       </button>
       <div class="space-dropdown hidden" id="space-dropdown">
         <div class="space-dropdown-header">
@@ -907,6 +1718,10 @@
       </div>
     </div>
     <div class="header-status">
+      <span class="badge" id="header-backend-badge" style="font-size:0.75rem;padding:0.2rem 0.55rem;border-radius:4px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;gap:0.35rem;">
+        <span class="status-dot ok" id="header-backend-dot" style="width:6px;height:6px;"></span>
+        <span id="header-backend-label">NetworkX</span>
+      </span>
       <div class="status-dot" id="health-dot"></div>
       <span id="health-label">connecting…</span>
     </div>
@@ -933,12 +1748,15 @@
       </div>
 
       <div id="demo-banner" class="banner warning hidden">
-        ⚠ <span><strong>Offline demonstration mode</strong> — no generative model configured.
+        <span><strong>Notice: Offline demonstration mode</strong> — no generative model configured.
         Retrieval, graph exploration, and citations work fully.
         Answers are extractive (keyword-scored sentences from retrieved chunks).</span>
       </div>
       <div id="gemini-banner" class="banner info hidden">
-        ✦ <span>Gemini free-tier active — real LLM answers enabled.</span>
+        <span><strong>Notice: Gemini free-tier active</strong> — real LLM answers enabled.</span>
+      </div>
+      <div id="neo4j-paused-banner" class="banner warning hidden" style="border-left: 4px solid var(--warning);">
+        <span><strong>Notice: Neo4j AuraDB</strong> — Remote knowledge graph connection is degraded or paused. Free AuraDB instances pause after inactivity. Resume your instance in the <a href="https://console.neo4j.io" target="_blank" rel="noopener noreferrer" style="text-decoration:underline;color:var(--accent);">Neo4j Console</a>.</span>
       </div>
 
       <div class="stat-grid" id="stats-grid">
@@ -967,14 +1785,22 @@
           <div class="stat-value" id="stat-provider" style="font-size:1.1rem;">–</div>
           <div class="stat-sub" id="stat-mode">–</div>
         </div>
+        <div class="stat">
+          <div class="stat-label">Graph Backend</div>
+          <div class="stat-value" id="stat-graph-backend" style="font-size:1.05rem;display:flex;align-items:center;gap:0.4rem;">
+            <span class="status-dot ok" id="graph-backend-dot" style="width:7px;height:7px;"></span>
+            <span id="stat-graph-name">NetworkX</span>
+          </div>
+          <div class="stat-sub" id="stat-graph-status">in-memory offline</div>
+        </div>
       </div>
 
       <!-- Document Upload Card -->
       <div class="card upload-card" style="margin-bottom:1.5rem;">
         <div class="card-header-flex">
           <div>
-            <div class="card-title" style="display:flex;align-items:center;gap:0.5rem;">
-              <span>📁</span> Upload & Weave Documents
+            <div class="card-title">
+              Upload & Weave Documents
             </div>
             <div class="text-muted">
               Add technical files to <span class="space-badge" id="upload-target-space-badge">Default Space</span>. They will be parsed, embedded, and linked into the graph.
@@ -991,8 +1817,8 @@
 
         <!-- Destination Space Options -->
         <div style="background:var(--surface2);padding:0.85rem 1rem;border-radius:var(--radius);margin-bottom:1rem;border:1px solid var(--border);">
-          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem;">
-            <span>🎯</span> Destination Knowledge Space:
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.5rem;">
+            Destination Knowledge Space:
           </div>
           <div class="flex-row flex-wrap" style="gap:1.5rem;font-size:0.85rem;">
             <label style="display:flex;align-items:center;gap:0.45rem;cursor:pointer;">
@@ -1001,7 +1827,7 @@
             </label>
             <label style="display:flex;align-items:center;gap:0.45rem;cursor:pointer;">
               <input type="radio" name="upload-dest-type" value="new" onchange="toggleUploadDest(this.value)">
-              <span style="color:var(--accent);font-weight:600;">✨ Create a Brand New Isolated Space for this document</span>
+              <span style="color:var(--accent);font-weight:600;">Create a Brand New Isolated Space for this document</span>
             </label>
           </div>
 
@@ -1015,29 +1841,39 @@
               <div>
                 <label class="form-label">Environment Preset</label>
                 <select id="inline-space-preset" class="form-select">
-                  <option value="blank">⚪ Blank Clean Slate (100% Isolated, Starts Empty)</option>
-                  <option value="tech_docs">🔵 Technical Documentation (Architecture Specs)</option>
-                  <option value="api_specs">🟣 Code & API Reference (Dense Symbol Matching)</option>
-                  <option value="research">🟢 Academic Research & Whitepapers (Semantic Search)</option>
+                  <option value="blank">Blank Clean Slate (100% Isolated, Starts Empty)</option>
+                  <option value="tech_docs">Technical Documentation (Architecture Specs)</option>
+                  <option value="api_specs">Code & API Reference (Dense Symbol Matching)</option>
+                  <option value="research">Academic Research & Whitepapers (Semantic Search)</option>
                 </select>
               </div>
             </div>
             <div class="text-small" style="color:var(--text2);margin-top:0.4rem;">
-              ℹ <strong>The Default Space will not be modified.</strong> A clean isolated environment will be created for this document.
+              The Default Space will not be modified. A clean isolated environment will be created for this document.
             </div>
           </div>
         </div>
 
-        <div class="drop-zone" id="drop-zone">
-          <div class="drop-zone-icon">📥</div>
-          <div class="drop-zone-prompt">Drag & drop files here, or <span class="browse-link">browse your computer</span></div>
+        <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <div class="drop-zone-icon-svg">
+            <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="11"></line>
+              <polyline points="9 14 12 11 15 14"></polyline>
+            </svg>
+          </div>
+          <div class="drop-zone-prompt">Drag & Drop files here, or <span class="browse-link">browse your computer</span></div>
           <div class="drop-zone-sub">Supported formats: Markdown (.md), PDF (.pdf), Plain Text (.txt)</div>
           <input type="file" id="file-input" class="hidden" accept=".pdf,.md,.txt" />
         </div>
 
         <div id="selected-file-info" class="selected-file-bar hidden">
-          <div class="flex-row">
-            <span style="font-size:1.2rem;">📄</span>
+          <div class="flex-row" style="gap:0.75rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
             <div>
               <span id="selected-file-name" style="font-weight:600;font-size:0.9rem;">filename.md</span>
               <span id="selected-file-size" class="text-muted" style="font-size:0.8rem;margin-left:0.5rem;">(0 KB)</span>
@@ -1066,20 +1902,125 @@
         <div class="card-title">How it works</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
           <div>
-            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ Dense Retrieval</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">Dense Retrieval</div>
             <div class="text-muted">Feature-hashing embeddings stored in ChromaDB. Finds semantically similar passages even without exact keyword matches.</div>
           </div>
           <div>
-            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ BM25 Retrieval</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">BM25 Retrieval</div>
             <div class="text-muted">Okapi BM25 for exact terms, identifiers, version strings, and package names where semantic similarity fails.</div>
           </div>
           <div>
-            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ Graph Expansion</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">Graph Expansion</div>
             <div class="text-muted">Knowledge graph BFS from query entities. Discovers evidence across multi-hop relationships.</div>
           </div>
           <div>
-            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">⬡ RRF Fusion</div>
+            <div style="color:var(--accent);font-weight:600;margin-bottom:0.3rem;">RRF Fusion</div>
             <div class="text-muted">Reciprocal Rank Fusion combines all retrieval legs without requiring comparable score scales.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- UPLOAD (Dedicated Synaptica-style experience)                    -->
+    <!-- ================================================================ -->
+    <div class="panel" id="panel-upload">
+      <div class="upload-container">
+        <div class="upload-header-section">
+          <h1 class="upload-main-title">Upload Documents</h1>
+          <p class="upload-main-sub">Add PDF, Markdown, or text documents to build your knowledge layer.</p>
+        </div>
+
+        <!-- Central Drag & Drop Zone -->
+        <div class="drop-zone" id="panel-upload-drop-zone" onclick="document.getElementById('panel-upload-file-input').click()">
+          <div class="drop-zone-icon-svg">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="11"></line>
+              <polyline points="9 14 12 11 15 14"></polyline>
+            </svg>
+          </div>
+          <div class="drop-zone-prompt">Drag & Drop PDFs here</div>
+          <div class="drop-zone-sub">or click to browse your files</div>
+          <button type="button" class="btn-browse" onclick="event.stopPropagation();document.getElementById('panel-upload-file-input').click()">Browse Files</button>
+          <div class="drop-zone-footnote">Supports PDF, Markdown, and text files up to 100MB</div>
+          <input type="file" id="panel-upload-file-input" class="hidden" accept=".pdf,.md,.txt" />
+        </div>
+
+        <!-- Space Destination Routing -->
+        <div class="upload-routing-bar">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
+            <div style="font-size:0.84rem;font-weight:600;color:var(--text-primary);">
+              Target Knowledge Space:
+            </div>
+            <div class="flex-row" style="gap:1rem;">
+              <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:var(--text-secondary);cursor:pointer;">
+                <input type="radio" name="upload-panel-dest-type" value="current" checked onchange="togglePanelUploadDest(this.value)">
+                <span>Active space (<strong id="upload-panel-active-space-label">Default Space</strong>)</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.82rem;color:var(--text-primary);cursor:pointer;">
+                <input type="radio" name="upload-panel-dest-type" value="new" onchange="togglePanelUploadDest(this.value)">
+                <span style="font-weight:600;">Create New Isolated Space</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- New space inline inputs -->
+          <div id="upload-panel-inline-new-space" class="hidden" style="margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid rgba(255,255,255,0.06);">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;">
+              <div>
+                <label class="form-label">New Space Name *</label>
+                <input type="text" id="upload-panel-inline-space-name" class="form-input" placeholder="e.g. My Private Notes, Kubernetes Architecture" maxlength="60" />
+              </div>
+              <div>
+                <label class="form-label">Environment Preset</label>
+                <select id="upload-panel-inline-space-preset" class="form-select">
+                  <option value="blank">Blank Clean Slate (100% Isolated, Starts Empty)</option>
+                  <option value="tech_docs">Technical Documentation (Architecture Specs)</option>
+                  <option value="api_specs">Code & API Reference (Dense Symbol Matching)</option>
+                  <option value="research">Academic Research & Whitepapers (Semantic Search)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Selected file bar & actions -->
+        <div id="upload-panel-selected-file-info" class="selected-file-bar hidden">
+          <div class="flex-row" style="gap:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-secondary);">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <div>
+              <span id="upload-panel-selected-file-name" style="font-weight:600;font-size:0.9rem;color:#ffffff;">filename.pdf</span>
+              <span id="upload-panel-selected-file-size" style="font-size:0.8rem;color:var(--text-muted);margin-left:0.5rem;">(0 KB)</span>
+            </div>
+          </div>
+          <div class="flex-row" style="gap:0.75rem;">
+            <select id="upload-panel-strategy" class="form-select" style="width:auto;padding:0.35rem 0.65rem;font-size:0.8rem;">
+              <option value="recursive">Recursive (PDFs & text)</option>
+              <option value="heading">Heading-aware (Markdown specs)</option>
+            </select>
+            <button class="btn btn-sm btn-primary" id="btn-upload-panel-start" onclick="startFileUploadFromPanel()">Upload & Ingest</button>
+          </div>
+        </div>
+
+        <!-- Progress wrap -->
+        <div id="upload-panel-progress-wrap" class="hidden mt">
+          <div class="loading">
+            <div class="spinner"></div>
+            <span>Parsing document, chunking, and extracting knowledge graph entities…</span>
+          </div>
+        </div>
+        <div id="upload-panel-result-alert" class="banner hidden mt"></div>
+
+        <!-- Document History Section (Synaptica Style) -->
+        <div class="doc-history-section">
+          <h2 class="doc-history-title">Document History</h2>
+          <div id="upload-panel-doc-history" class="doc-history-list">
+            <div class="loading"><div class="spinner"></div>Loading document history…</div>
           </div>
         </div>
       </div>
@@ -1089,7 +2030,7 @@
     <!-- QUERY WORKSPACE                                                    -->
     <!-- ================================================================ -->
     <div class="panel" id="panel-query">
-      <div class="section-title">⬡ AI Query Workspace</div>
+      <div class="section-title">AI Query Workspace</div>
 
       <div class="query-form">
         <input
@@ -1120,10 +2061,10 @@
         <div class="divider"></div>
 
         <div id="query-refused-banner" class="banner warning hidden">
-          ⚠ Low retrieval confidence — the engine could not find sufficiently relevant evidence.
+          Notice: Low retrieval confidence — the engine could not find sufficiently relevant evidence.
         </div>
         <div id="query-demo-banner" class="banner warning hidden">
-          ⚠ Offline demonstration mode — answer is extractive, not generative.
+          Notice: Offline demonstration mode — answer is extractive, not generative.
         </div>
 
         <div class="card">
@@ -1172,7 +2113,7 @@
       <div id="query-error" class="hidden">
         <div class="divider"></div>
         <div class="banner error">
-          ✖ <span id="query-error-msg">Error</span>
+          Error: <span id="query-error-msg"></span>
         </div>
       </div>
     </div>
@@ -1181,48 +2122,195 @@
     <!-- GRAPH EXPLORER                                                     -->
     <!-- ================================================================ -->
     <div class="panel" id="panel-graph">
-      <div class="section-title">⬡ Knowledge Graph Explorer</div>
+      <!-- Universe Header Bar -->
+      <div class="universe-header-bar">
+        <div>
+          <h2 class="universe-title">
+            Knowledge Universe
+            <span class="universe-badge" id="universe-backend-pill">
+              <span class="universe-pulse"></span>
+              <span id="universe-backend-text">Neo4j AuraDB</span>
+            </span>
+          </h2>
+          <p class="text-muted" style="font-size:0.85rem;margin-top:0.15rem;">
+            Explore living knowledge nebulae, multi-hop neural pathways, and interactive clusters.
+          </p>
+        </div>
 
-      <div class="graph-search">
-        <input
-          type="text"
-          id="graph-entity-input"
-          class="query-input"
-          placeholder="Search entity name…"
-          style="max-width:360px;"
-          autocomplete="off"
-        />
-        <select id="graph-depth" class="mode-select">
-          <option value="1">Depth 1</option>
-          <option value="2">Depth 2</option>
-          <option value="3">Depth 3</option>
-        </select>
-        <button class="btn" onclick="exploreGraph()">Explore</button>
-        <button class="btn btn-secondary" onclick="clearGraph()">Clear</button>
-      </div>
-
-      <div class="card" style="padding:0.75rem 1rem;">
-        <div class="card-title">Entity suggestions</div>
-        <div id="entity-suggestions" style="display:flex;flex-wrap:wrap;gap:0.4rem;max-height:80px;overflow-y:auto;">
-          <div class="loading"><div class="spinner"></div></div>
+        <!-- Universe Meta Stats & Quick Tools -->
+        <div class="universe-meta-group">
+          <div class="universe-stat-pill" title="Currently rendered knowledge bubbles and neural links">
+            <span id="universe-node-count">0</span> nodes · <span id="universe-edge-count">0</span> links
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-toggle-motion" onclick="universeEngine.toggleMotion()" title="Pause/Resume Force Physics">
+            <span id="motion-text">Pause</span>
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="universeEngine.fitView()" title="Fit all bubbles to viewport">
+            Fit View
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="universeEngine.loadOverview()" title="Reset to Galaxy Overview">
+            Overview
+          </button>
+          <button class="btn btn-secondary btn-sm" id="btn-fullscreen" onclick="toggleUniverseFullscreen()" title="Toggle Fullscreen Universe">
+            Fullscreen
+          </button>
         </div>
       </div>
 
-      <div id="graph-canvas">
-        <svg id="graph-svg"></svg>
-        <div class="graph-empty" id="graph-empty">
-          <div class="graph-empty-icon">⬡</div>
-          <div>Search for an entity to explore its graph neighborhood</div>
+      <!-- Universe Floating Search & Navigation Bar -->
+      <div class="universe-search-bar">
+        <div style="position:relative;flex:1;max-width:380px;">
+          <input
+            type="text"
+            id="graph-entity-input"
+            class="query-input universe-search-input"
+            placeholder="Search knowledge entity (e.g. Helios Sync, FastAPI)..."
+            autocomplete="off"
+            oninput="handleUniverseSearchInput(this.value)"
+            onkeydown="if(event.key==='Enter') exploreGraph()"
+          />
+          <div id="universe-search-dropdown" class="universe-dropdown hidden"></div>
+        </div>
+
+        <div class="flex-row" style="gap:0.4rem;align-items:center;">
+          <label style="font-size:0.8rem;color:var(--text2);">Hops:</label>
+          <select id="graph-depth" class="mode-select universe-select" style="padding:0.4rem 0.6rem;">
+            <option value="1">1 Hop</option>
+            <option value="2" selected>2 Hops</option>
+            <option value="3">3 Hops</option>
+          </select>
+        </div>
+
+        <button class="btn universe-glow-btn" onclick="exploreGraph()">
+          Explore
+        </button>
+
+        <button class="btn btn-secondary" onclick="openPathModal()" title="Trace shortest path between 2 concepts">
+          Trace Path
+        </button>
+
+        <button class="btn btn-secondary" onclick="universeEngine.clearUniverse()" title="Clear visualization">
+          Clear
+        </button>
+      </div>
+
+      <!-- Quick Suggestion Chips Carousel -->
+      <div class="universe-chips-container">
+        <span style="font-size:0.75rem;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-right:0.25rem;">Key Hubs:</span>
+        <div id="entity-suggestions" class="universe-chips-scroll">
+          <div class="loading" style="padding:0.2rem;"><div class="spinner" style="width:14px;height:14px;"></div></div>
         </div>
       </div>
 
-      <div id="graph-edge-list" class="hidden mt">
-        <div class="card-title">Edges</div>
-        <div id="graph-edge-table" style="font-size:0.82rem;font-family:var(--mono);"></div>
-      </div>
+      <!-- Universe Canvas Viewport -->
+      <div id="universe-wrapper" class="universe-viewport">
+        <canvas id="universe-canvas"></canvas>
 
-      <div id="graph-not-found" class="banner error hidden mt">
-        ✖ Entity not found in the knowledge graph.
+        <!-- Tooltip -->
+        <div id="universe-tooltip" class="universe-tooltip hidden"></div>
+
+        <!-- Legend (Bottom-Left) -->
+        <div id="universe-legend" class="universe-legend">
+          <div class="legend-header" onclick="toggleLegendCollapse()">
+            <span style="font-weight:600;">Universe Legend</span>
+            <span id="legend-toggle-icon" style="font-size:0.7rem;opacity:0.7;">▼</span>
+          </div>
+          <div id="legend-body" class="legend-body">
+            <div class="legend-item"><span class="legend-dot" style="background:#90CAF9;"></span><span>Corroborates (Consensus Core)</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#2196F3;"></span><span>Contradicts (Divergence Systems)</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#E3F2FD;"></span><span>Contextual Difference (Protocols)</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#1565C0;"></span><span>Extraction Edge Case (Infra/DB)</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#38BDF8;"></span><span>Synthesis & Graph Intelligence</span></div>
+            <div class="legend-item"><span class="legend-dot" style="background:#FFFFFF;"></span><span>Verified Grounded Standards</span></div>
+            <div class="legend-divider"></div>
+            <div style="font-size:0.72rem;color:var(--text3);line-height:1.4;">
+              <strong>Node Radius</strong> = Degree & Evidence density<br>
+              <strong>Scroll</strong> = Zoom · <strong>Drag</strong> = Pan/Move
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Glassmorphic Inspector Drawer (Top-Right) -->
+        <div id="universe-inspector" class="universe-inspector hidden">
+          <div class="inspector-header">
+            <div>
+              <span id="inspector-badge" class="inspector-type-badge">Core Entity</span>
+              <h3 id="inspector-title" class="inspector-title">Entity Name</h3>
+            </div>
+            <button class="inspector-close" onclick="closeInspector()" title="Close Inspector">&times;</button>
+          </div>
+
+          <div class="inspector-metrics-grid">
+            <div class="inspector-metric-card">
+              <div class="metric-val" id="inspector-degree">0</div>
+              <div class="metric-lbl">Connections</div>
+            </div>
+            <div class="inspector-metric-card">
+              <div class="metric-val" id="inspector-chunks">0</div>
+              <div class="metric-lbl">Citations</div>
+            </div>
+            <div class="inspector-metric-card">
+              <div class="metric-val" id="inspector-community">#1</div>
+              <div class="metric-lbl">Cluster</div>
+            </div>
+          </div>
+
+          <!-- Inspector Action Buttons -->
+          <div class="inspector-actions">
+            <button class="btn btn-sm universe-action-btn" onclick="expandCurrentEntity()" title="Expand 1 Hop in Graph">
+              Expand 1 Hop
+            </button>
+            <button class="btn btn-secondary btn-sm universe-action-btn" onclick="focusCurrentEntity()" title="Center Camera on Node">
+              Center Camera
+            </button>
+            <button class="btn btn-secondary btn-sm universe-action-btn" onclick="startPathFromCurrent()" title="Find Path from this Entity">
+              Trace Path
+            </button>
+          </div>
+
+          <!-- Relationships Section -->
+          <div class="inspector-section">
+            <div class="inspector-section-title">
+              Relationships (<span id="inspector-edges-count">0</span>)
+            </div>
+            <div id="inspector-edges-list" class="inspector-edges-list"></div>
+          </div>
+
+          <!-- Provenance Chunks Section -->
+          <div class="inspector-section" style="margin-top:0.75rem;">
+            <div class="inspector-section-title">
+              Supporting Evidence (<span id="inspector-chunks-count">0</span>)
+            </div>
+            <div id="inspector-chunks-list" class="inspector-chunks-list"></div>
+          </div>
+        </div>
+
+        <!-- Path Tracing Modal (Embedded in Universe) -->
+        <div id="path-trace-modal" class="universe-modal hidden">
+          <div class="universe-modal-content">
+            <div class="flex-between" style="margin-bottom:1rem;">
+              <h4 style="font-size:1.05rem;font-weight:700;">Trace Shortest Knowledge Path</h4>
+              <button class="inspector-close" onclick="closePathModal()">&times;</button>
+            </div>
+            <p style="font-size:0.8rem;color:var(--text2);margin-bottom:1rem;">
+              Discover the real multi-hop reasoning path connecting any two concepts in the knowledge graph.
+            </p>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.25rem;">
+              <div>
+                <label style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;">Source Concept:</label>
+                <input type="text" id="path-source-input" class="query-input" placeholder="e.g. Helios Sync" style="width:100%;margin-top:0.25rem;">
+              </div>
+              <div>
+                <label style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;">Target Concept:</label>
+                <input type="text" id="path-target-input" class="query-input" placeholder="e.g. Sentinel Dashboard" style="width:100%;margin-top:0.25rem;">
+              </div>
+            </div>
+            <div class="flex-row" style="justify-content:flex-end;gap:0.5rem;">
+              <button class="btn btn-secondary" onclick="closePathModal()">Cancel</button>
+              <button class="btn universe-glow-btn" onclick="executePathTrace()">Find Path</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1230,16 +2318,16 @@
     <!-- CORPUS                                                             -->
     <!-- ================================================================ -->
     <div class="panel" id="panel-corpus">
-      <div class="section-title">⬡ Document Corpus</div>
+      <div class="section-title">Document Corpus</div>
       <div class="banner info">
-        ℹ The corpus is pre-loaded at startup. The bundled documents are re-ingested
+        The corpus is pre-loaded at startup. The bundled documents are re-ingested
         automatically if the runtime index is empty (e.g. after a service restart).
       </div>
       <div id="corpus-loading" class="loading">
         <div class="spinner"></div> Loading documents…
       </div>
       <div id="corpus-empty" class="hidden banner warning">
-        ⚠ No documents found. The index may still be initializing.
+        No documents found. The index may still be initializing.
       </div>
       <div class="doc-list" id="doc-list"></div>
     </div>
@@ -1250,7 +2338,7 @@
     <div class="panel" id="panel-spaces">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
         <div>
-          <div class="section-title" style="margin-bottom:0.25rem;">⬡ Knowledge Spaces Hub</div>
+          <div class="section-title" style="margin-bottom:0.25rem;">Knowledge Spaces Hub</div>
           <div class="text-muted">Manage your isolated documentation environments. Documents in one space never cross into another.</div>
         </div>
         <button class="btn btn-primary" onclick="openCreateSpaceModal()">+ Create New Isolated Space</button>
@@ -1265,9 +2353,9 @@
     <!-- EVALUATION                                                         -->
     <!-- ================================================================ -->
     <div class="panel" id="panel-eval">
-      <div class="section-title">⬡ Retrieval Evaluation</div>
+      <div class="section-title">Retrieval Evaluation</div>
       <div class="banner info">
-        ℹ Runs the full retrieval benchmark across all four modes on the bundled gold
+        Runs the full retrieval benchmark across all four modes on the bundled gold
         QA pairs. Each mode is scored on Hit@k, MRR, Context Precision, and
         Answer Faithfulness. Results are real measurements — not simulated.
       </div>
@@ -1321,6 +2409,12 @@
     </div>
 
   </main>
+
+  <!-- ===== FOOTER (Like Synaptica) ===== -->
+  <footer class="site-footer">
+    <div class="footer-watermark" aria-hidden="true">FARLOOM</div>
+    <div class="footer-copyright">COPYRIGHT © 2026 FARLOOM. ALL RIGHTS RESERVED.</div>
+  </footer>
 </div>
 
 <script>
@@ -1363,8 +2457,12 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.add('active');
     document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
     if (btn.dataset.panel === 'corpus') loadCorpus();
-    if (btn.dataset.panel === 'graph') loadEntitySuggestions();
+    if (btn.dataset.panel === 'graph') {
+      loadEntitySuggestions();
+      if (universeEngine) universeEngine.ensureInitialized();
+    }
     if (btn.dataset.panel === 'spaces') loadSpacesHub();
+    if (btn.dataset.panel === 'upload') loadUploadHistory();
   });
 });
 
@@ -1401,6 +2499,8 @@ async function loadSpaces() {
       if (targetBadge) targetBadge.textContent = activeSpace.name;
       const activeRadioLbl = document.getElementById('upload-active-space-label');
       if (activeRadioLbl) activeRadioLbl.textContent = activeSpace.name;
+      const uploadPanelActiveRadioLbl = document.getElementById('upload-panel-active-space-label');
+      if (uploadPanelActiveRadioLbl) uploadPanelActiveRadioLbl.textContent = activeSpace.name;
     }
     renderSpacesDropdown();
   } catch (err) {
@@ -1422,7 +2522,7 @@ function renderSpacesDropdown() {
     
     const info = document.createElement('div');
     info.innerHTML = `
-      <div class="space-item-name">${escHtml(s.name)} ${s.id === currentSpace ? '✓' : ''}</div>
+      <div class="space-item-name">${escHtml(s.name)} ${s.id === currentSpace ? '<span class="space-badge" style="font-size:0.7rem;padding:0.1rem 0.4rem;margin-left:0.3rem;">Active</span>' : ''}</div>
       <div class="space-item-sub">${s.doc_count || 0} docs · ${s.chunk_count || 0} chunks · ${s.entity_count || 0} nodes</div>
     `;
     item.appendChild(info);
@@ -1431,7 +2531,7 @@ function renderSpacesDropdown() {
       const delBtn = document.createElement('button');
       delBtn.className = 'space-item-del';
       delBtn.title = 'Delete this space';
-      delBtn.textContent = '🗑';
+      delBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
       delBtn.onclick = (e) => {
         e.stopPropagation();
         deleteSpace(s.id, s.name);
@@ -1463,7 +2563,7 @@ async function loadSpacesHub() {
       <div class="space-card-header">
         <div>
           <div class="space-card-title">
-            <span>${isActive ? '🪐' : '📁'}</span> ${escHtml(s.name)}
+            <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-2px;margin-right:4px;"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span> ${escHtml(s.name)}
           </div>
           <div style="margin-top:0.25rem;">${presetBadge}</div>
         </div>
@@ -1491,9 +2591,13 @@ function quickUploadToSpace(spaceId) {
   switchSpace(spaceId);
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelector('[data-panel="dashboard"]').classList.add('active');
-  document.getElementById('panel-dashboard').classList.add('active');
-  document.getElementById('drop-zone').scrollIntoView({ behavior: 'smooth' });
+  const uploadNav = document.querySelector('[data-panel="upload"]');
+  if (uploadNav) uploadNav.classList.add('active');
+  const uploadPanel = document.getElementById('panel-upload');
+  if (uploadPanel) uploadPanel.classList.add('active');
+  loadUploadHistory();
+  const dropZone = document.getElementById('panel-upload-drop-zone');
+  if (dropZone) dropZone.scrollIntoView({ behavior: 'smooth' });
 }
 
 function exploreSpaceGraph(spaceId) {
@@ -1503,6 +2607,10 @@ function exploreSpaceGraph(spaceId) {
   document.querySelector('[data-panel="graph"]').classList.add('active');
   document.getElementById('panel-graph').classList.add('active');
   loadEntitySuggestions();
+  if (universeEngine) {
+    universeEngine.ensureInitialized();
+    universeEngine.loadOverview();
+  }
 }
 
 async function switchSpace(spaceId) {
@@ -1513,6 +2621,7 @@ async function switchSpace(spaceId) {
   await loadSpaces();
   await initDashboard();
   loadCorpus();
+  loadUploadHistory();
   loadEntitySuggestions();
   if (document.getElementById('panel-spaces').classList.contains('active')) {
     loadSpacesHub();
@@ -1520,6 +2629,9 @@ async function switchSpace(spaceId) {
   const queryAnswer = document.getElementById('query-answer-wrap');
   if (queryAnswer) queryAnswer.classList.add('hidden');
   clearGraph();
+  if (universeEngine && document.getElementById('panel-graph').classList.contains('active')) {
+    universeEngine.loadOverview();
+  }
 }
 
 function toggleSpaceDropdown() {
@@ -1689,7 +2801,7 @@ async function startFileUpload() {
     const destSpaceId = r.headers.get('x-farloom-space-id') || currentSpace;
 
     alertEl.className = 'banner info mt';
-    alertEl.innerHTML = `✓ Successfully ingested <strong>${escHtml(res.source)}</strong>: <strong>${res.num_chunks}</strong> chunks and <strong>${res.num_triples}</strong> graph relationships woven into isolated space!`;
+    alertEl.innerHTML = `Successfully ingested <strong>${escHtml(res.source)}</strong>: <strong>${res.num_chunks}</strong> chunks and <strong>${res.num_triples}</strong> graph relationships woven into isolated space!`;
     alertEl.classList.remove('hidden');
     
     pendingFile = null;
@@ -1716,6 +2828,258 @@ async function startFileUpload() {
 }
 
 /* ========================================================================= */
+/* Dedicated Upload Panel Logic (Synaptica Style)                             */
+/* ========================================================================= */
+let pendingPanelFile = null;
+
+function togglePanelUploadDest(val) {
+  const inlineWrap = document.getElementById('upload-panel-inline-new-space');
+  if (!inlineWrap) return;
+  if (val === 'new') {
+    inlineWrap.classList.remove('hidden');
+    const input = document.getElementById('upload-panel-inline-space-name');
+    if (input) input.focus();
+  } else {
+    inlineWrap.classList.add('hidden');
+  }
+}
+
+function initPanelUploadHandlers() {
+  const dropZone = document.getElementById('panel-upload-drop-zone');
+  const fileInput = document.getElementById('panel-upload-file-input');
+
+  if (dropZone && fileInput) {
+    fileInput.onchange = (e) => {
+      if (e.target.files.length) handlePanelSelectedFile(e.target.files[0]);
+    };
+    ['dragenter', 'dragover'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('dragover');
+      });
+    });
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length) handlePanelSelectedFile(files[0]);
+    });
+  }
+}
+
+function handlePanelSelectedFile(file) {
+  pendingPanelFile = file;
+  const nameEl = document.getElementById('upload-panel-selected-file-name');
+  const sizeEl = document.getElementById('upload-panel-selected-file-size');
+  const infoEl = document.getElementById('upload-panel-selected-file-info');
+  const alertEl = document.getElementById('upload-panel-result-alert');
+
+  if (nameEl) nameEl.textContent = file.name;
+  if (sizeEl) {
+    const kb = Math.round(file.size / 1024);
+    sizeEl.textContent = `(${kb} KB)`;
+  }
+  if (infoEl) infoEl.classList.remove('hidden');
+  if (alertEl) alertEl.classList.add('hidden');
+}
+
+async function startFileUploadFromPanel() {
+  if (!pendingPanelFile) return;
+  const strategyEl = document.getElementById('upload-panel-strategy');
+  const strategy = strategyEl ? strategyEl.value : 'recursive';
+  const progressWrap = document.getElementById('upload-panel-progress-wrap');
+  const alertEl = document.getElementById('upload-panel-result-alert');
+  const btn = document.getElementById('btn-upload-panel-start');
+
+  const destTypeEl = document.querySelector('input[name="upload-panel-dest-type"]:checked');
+  const destType = destTypeEl ? destTypeEl.value : 'current';
+  const isNewSpace = destType === 'new';
+  let newSpaceName = '';
+  let newSpacePreset = 'blank';
+
+  if (isNewSpace) {
+    newSpaceName = document.getElementById('upload-panel-inline-space-name').value.trim();
+    newSpacePreset = document.getElementById('upload-panel-inline-space-preset').value;
+    if (!newSpaceName) {
+      alertEl.className = 'banner error mt';
+      alertEl.textContent = 'Please enter a name for your new space, or select active space.';
+      alertEl.classList.remove('hidden');
+      return;
+    }
+  }
+
+  if (progressWrap) progressWrap.classList.remove('hidden');
+  if (alertEl) alertEl.classList.add('hidden');
+  if (btn) btn.disabled = true;
+
+  const formData = new FormData();
+  formData.append('file', pendingPanelFile);
+  formData.append('strategy', strategy);
+  if (isNewSpace) {
+    formData.append('create_new_space', 'true');
+    formData.append('new_space_name', newSpaceName);
+    formData.append('new_space_preset', newSpacePreset);
+  } else {
+    formData.append('target_space', currentSpace);
+  }
+
+  try {
+    const r = await fetch(API + '/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    if (!r.ok) {
+      const err = await r.json().catch(() => ({ detail: r.statusText }));
+      throw new Error(err.detail || r.statusText);
+    }
+    const res = await r.json();
+    const destSpaceId = r.headers.get('x-farloom-space-id') || currentSpace;
+
+    if (alertEl) {
+      alertEl.className = 'banner info mt';
+      alertEl.innerHTML = `Successfully ingested <strong>${escHtml(res.source)}</strong>: <strong>${res.num_chunks}</strong> chunks and <strong>${res.num_triples}</strong> graph relationships woven into isolated space!`;
+      alertEl.classList.remove('hidden');
+    }
+
+    pendingPanelFile = null;
+    const infoEl = document.getElementById('upload-panel-selected-file-info');
+    if (infoEl) infoEl.classList.add('hidden');
+    const fileInput = document.getElementById('panel-upload-file-input');
+    if (fileInput) fileInput.value = '';
+
+    const currentRadio = document.querySelector('input[name="upload-panel-dest-type"][value="current"]');
+    if (currentRadio) currentRadio.checked = true;
+    togglePanelUploadDest('current');
+    const inlineNameInput = document.getElementById('upload-panel-inline-space-name');
+    if (inlineNameInput) inlineNameInput.value = '';
+
+    await switchSpace(destSpaceId);
+    await loadUploadHistory();
+  } catch (err) {
+    if (alertEl) {
+      alertEl.className = 'banner error mt';
+      alertEl.textContent = 'Upload failed: ' + err.message;
+      alertEl.classList.remove('hidden');
+    }
+  } finally {
+    if (progressWrap) progressWrap.classList.add('hidden');
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function loadUploadHistory() {
+  const container = document.getElementById('upload-panel-doc-history');
+  if (!container) return;
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading document history…</div>';
+
+  try {
+    const docs = await apiFetch('/docs/list');
+    if (!docs || docs.length === 0) {
+      container.innerHTML = `
+        <div style="padding:2.5rem 1.5rem;text-align:center;color:var(--text-muted);background:rgba(255,255,255,0.02);border:1px dashed rgba(255,255,255,0.08);border-radius:12px;">
+          <div style="font-size:0.95rem;font-weight:500;color:var(--text-secondary);margin-bottom:0.35rem;">No documents in this space yet</div>
+          <div style="font-size:0.8rem;color:rgba(255,255,255,0.35);">Drop a PDF or Markdown file into the drop zone above to start building this space's knowledge layer.</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = '';
+    const activeSpaceObj = (spacesList || []).find(s => s.id === currentSpace);
+    const spaceName = activeSpaceObj ? activeSpaceObj.name : 'Default Space';
+
+    docs.forEach(doc => {
+      const item = document.createElement('div');
+      item.className = 'doc-history-item';
+      const fmtUpper = (doc.fmt || 'pdf').toUpperCase();
+      const numChunks = doc.num_chunks || 0;
+      const title = doc.title || doc.source;
+
+      item.innerHTML = `
+        <div class="doc-history-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div class="doc-history-info">
+          <div class="doc-history-name" title="${escHtml(title)}">${escHtml(title)}</div>
+          <div class="doc-history-meta">
+            <span>${fmtUpper}</span> · 
+            <span>${numChunks} Chunks</span> · 
+            <span class="space-badge" style="font-size:0.7rem;padding:0.05rem 0.45rem;">${escHtml(spaceName)}</span>
+          </div>
+        </div>
+        <div class="doc-history-actions">
+          <button class="btn btn-sm btn-secondary" onclick="exploreDocInUniverse('${escHtml(doc.source)}')">
+            Explore Graph
+          </button>
+          <button class="btn btn-sm btn-danger-subtle" onclick="confirmDeleteDoc('${escHtml(doc.doc_id)}', '${escHtml(title)}')" title="Delete this document from this space">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>Delete
+          </button>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  } catch (err) {
+    container.innerHTML = `
+      <div style="padding:1.5rem;color:var(--danger);font-size:0.85rem;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.2);border-radius:10px;">
+        Failed to load document history: ${escHtml(err.message)}
+      </div>
+    `;
+  }
+}
+
+async function confirmDeleteDoc(docId, docTitle) {
+  if (!confirm(`Are you sure you want to delete "${docTitle}"?\n\nThis will remove its chunks, vectors, and graph relationships from this space.`)) {
+    return;
+  }
+  try {
+    const res = await apiFetch(`/docs/${encodeURIComponent(docId)}`, {
+      method: 'DELETE'
+    });
+    if (res && res.success) {
+      await loadUploadHistory();
+      const corpusPanel = document.getElementById('panel-corpus');
+      if (corpusPanel && corpusPanel.classList.contains('active')) {
+        await loadCorpus();
+      }
+      await initDashboard();
+      await loadSpaces();
+      if (universeEngine && universeEngine.nodes.size > 0) {
+        universeEngine.loadOverview();
+      }
+    }
+  } catch (err) {
+    alert(`Failed to delete document: ${err.message}`);
+  }
+}
+
+function exploreDocInUniverse(source) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const graphNav = document.querySelector('[data-panel="graph"]');
+  if (graphNav) graphNav.classList.add('active');
+  const graphPanel = document.getElementById('panel-graph');
+  if (graphPanel) graphPanel.classList.add('active');
+
+  loadEntitySuggestions();
+  if (universeEngine) {
+    universeEngine.ensureInitialized();
+    universeEngine.loadOverview();
+  }
+}
+
+/* ========================================================================= */
 /* Health + Status                                                             */
 /* ========================================================================= */
 async function initDashboard() {
@@ -1737,7 +3101,7 @@ async function initDashboard() {
       document.getElementById('health-label').textContent = 'unreachable';
     }
 
-    // Provider status
+    // Provider status & Graph backend
     if (status.status === 'fulfilled') {
       const s = status.value;
       document.getElementById('stat-provider').textContent = s.provider;
@@ -1747,7 +3111,39 @@ async function initDashboard() {
       } else if (s.provider === 'gemini') {
         document.getElementById('gemini-banner').classList.remove('hidden');
       }
+
+      // Graph Backend diagnostics
+      const isNeo4j = s.graph_backend === 'neo4j';
+      const isConnected = s.neo4j_status === 'connected';
+      const pausedBanner = document.getElementById('neo4j-paused-banner');
+
+      if (isNeo4j) {
+        document.getElementById('header-backend-label').textContent = 'Neo4j AuraDB';
+        document.getElementById('header-backend-dot').className = isConnected ? 'status-dot ok' : 'status-dot error';
+        document.getElementById('stat-graph-name').textContent = 'Neo4j AuraDB';
+        document.getElementById('stat-graph-status').textContent = isConnected ? 'connected & verified' : 'unreachable / paused';
+        document.getElementById('graph-backend-dot').className = isConnected ? 'status-dot ok' : 'status-dot error';
+        const universeBackend = document.getElementById('universe-backend-text');
+        if (universeBackend) universeBackend.textContent = isConnected ? 'Neo4j AuraDB' : 'Neo4j (Paused)';
+        if (pausedBanner) {
+          if (!isConnected) {
+            pausedBanner.classList.remove('hidden');
+          } else {
+            pausedBanner.classList.add('hidden');
+          }
+        }
+      } else {
+        document.getElementById('header-backend-label').textContent = 'NetworkX';
+        document.getElementById('header-backend-dot').className = 'status-dot ok';
+        document.getElementById('stat-graph-name').textContent = 'NetworkX';
+        document.getElementById('stat-graph-status').textContent = 'in-memory offline';
+        document.getElementById('graph-backend-dot').className = 'status-dot ok';
+        const universeBackend = document.getElementById('universe-backend-text');
+        if (universeBackend) universeBackend.textContent = 'NetworkX (Offline)';
+        if (pausedBanner) pausedBanner.classList.add('hidden');
+      }
     }
+
 
     // Stats
     if (docs.status === 'fulfilled') {
@@ -1927,218 +3323,1428 @@ function toggleDiag(id) {
 }
 
 /* ========================================================================= */
-/* Graph Explorer                                                              */
+/* Knowledge Universe Engine & Graph Explorer                                */
 /* ========================================================================= */
-async function loadEntitySuggestions() {
-  try {
-    const data = await apiFetch('/graph/entities?limit=80');
-    const container = document.getElementById('entity-suggestions');
-    container.innerHTML = '';
-    data.entities.forEach(e => {
-      const el = document.createElement('button');
-      el.className = 'example-q';
-      el.style.fontSize = '0.75rem';
-      el.textContent = e;
-      el.onclick = () => {
-        document.getElementById('graph-entity-input').value = e;
-        exploreGraph();
-      };
-      container.appendChild(el);
-    });
-    if (data.entities.length === 0) {
-      container.innerHTML = '<span class="text-muted">No entities yet — ingest documents first.</span>';
+
+class KnowledgeUniverseEngine {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+    this.nodes = new Map(); // id -> Node
+    this.edges = []; // Edge[]
+    this.photons = []; // Photon[]
+    this.stars = []; // Stellar dust particles
+    this.clusters = []; // Community clusters
+
+    // Camera
+    this.camera = { x: 0, y: 0, scale: 1.0 };
+    this.targetCamera = null;
+
+    // Interaction state
+    this.hoveredNode = null;
+    this.hoveredEdge = null;
+    this.selectedNode = null;
+    this.highlightPath = null; // Set of node ids and edge ids for shortest path
+    this.draggedNode = null;
+    this.isPanning = false;
+    this.panStart = { x: 0, y: 0 };
+    this.mouse = { x: 0, y: 0, worldX: 0, worldY: 0 };
+
+    // Motion & Simulation
+    const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.isMotionEnabled = !prefersReducedMotion;
+    this.alpha = 1.0;
+    this.minAlpha = 0.003;
+    this.dpr = window.devicePixelRatio || 1;
+    this.isInitialized = false;
+    this.animFrameId = null;
+
+    // Curated Semantic AI & Epistemic Relationship Palette
+    this.palette = {
+      consensus: { color: '#90CAF9', label: 'Corroborates (Consensus Core)', glow: 'rgba(144, 202, 249, 0.55)', bg: 'rgba(144, 202, 249, 0.08)' },
+      divergence: { color: '#2196F3', label: 'Contradicts (Divergence Systems)', glow: 'rgba(33, 150, 243, 0.55)', bg: 'rgba(33, 150, 243, 0.08)' },
+      context: { color: '#E3F2FD', label: 'Contextual Difference (Protocols)', glow: 'rgba(227, 242, 253, 0.55)', bg: 'rgba(227, 242, 253, 0.08)' },
+      edgecase: { color: '#1565C0', label: 'Extraction Edge Case (Infra/DB)', glow: 'rgba(21, 101, 192, 0.65)', bg: 'rgba(21, 101, 192, 0.20)' },
+      retrieval: { color: '#38BDF8', label: 'Synthesis & Graph Intelligence', glow: 'rgba(56, 189, 248, 0.55)', bg: 'rgba(56, 189, 248, 0.08)' },
+      verified: { color: '#FFFFFF', label: 'Verified Grounded Standards', glow: 'rgba(255, 255, 255, 0.65)', bg: 'rgba(255, 255, 255, 0.10)' },
+      relational: { color: '#60A5FA', label: 'Relational Interface', glow: 'rgba(96, 165, 250, 0.55)', bg: 'rgba(96, 165, 250, 0.08)' },
+      insight: { color: '#818CF8', label: 'Cross-Domain Insight', glow: 'rgba(129, 140, 248, 0.55)', bg: 'rgba(129, 140, 248, 0.08)' },
+
+      // Backward-compatibility aliases
+      core: { color: '#90CAF9', label: 'Corroborates (Consensus Core)', glow: 'rgba(144, 202, 249, 0.55)', bg: 'rgba(144, 202, 249, 0.08)' },
+      library: { color: '#60A5FA', label: 'Relational Interface', glow: 'rgba(96, 165, 250, 0.55)', bg: 'rgba(96, 165, 250, 0.08)' },
+      api: { color: '#E3F2FD', label: 'Contextual Difference (Protocols)', glow: 'rgba(227, 242, 253, 0.55)', bg: 'rgba(227, 242, 253, 0.08)' },
+      rag: { color: '#38BDF8', label: 'Synthesis & Graph Intelligence', glow: 'rgba(56, 189, 248, 0.55)', bg: 'rgba(56, 189, 248, 0.08)' },
+      infra: { color: '#1565C0', label: 'Extraction Edge Case (Infra/DB)', glow: 'rgba(21, 101, 192, 0.65)', bg: 'rgba(21, 101, 192, 0.20)' },
+      org: { color: '#2196F3', label: 'Contradicts (Divergence Systems)', glow: 'rgba(33, 150, 243, 0.55)', bg: 'rgba(33, 150, 243, 0.08)' },
+      doc: { color: '#FFFFFF', label: 'Verified Grounded Standards', glow: 'rgba(255, 255, 255, 0.65)', bg: 'rgba(255, 255, 255, 0.10)' },
+    };
+
+    if (this.canvas) {
+      this.initStellarDust();
+      this.bindEvents();
+      this.updateMotionButton();
     }
-  } catch (e) {
-    document.getElementById('entity-suggestions').innerHTML =
-      `<span class="text-muted">Could not load: ${e.message}</span>`;
+  }
+
+  ensureInitialized() {
+    if (!this.canvas) return;
+    this.resizeCanvas();
+    if (!this.isInitialized) {
+      this.isInitialized = true;
+      this.animate();
+      if (this.nodes.size === 0) {
+        this.loadOverview();
+      }
+    }
+  }
+
+  initStellarDust() {
+    this.stars = [];
+    for (let i = 0; i < 90; i++) {
+      this.stars.push({
+        x: (Math.random() - 0.5) * 2600,
+        y: (Math.random() - 0.5) * 2000,
+        radius: Math.random() * 1.5 + 0.4,
+        alpha: Math.random() * 0.5 + 0.2,
+        twinkleSpeed: Math.random() * 0.003 + 0.001,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+
+  resizeCanvas() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const width = rect.width || this.canvas.parentElement.clientWidth || 800;
+    const height = rect.height || this.canvas.parentElement.clientHeight || 640;
+    this.dpr = window.devicePixelRatio || 1;
+    this.canvas.width = Math.round(width * this.dpr);
+    this.canvas.height = Math.round(height * this.dpr);
+  }
+
+  categorizeEntity(name, type) {
+    const n = (name || '').toLowerCase();
+    const t = (type || '').toLowerCase();
+
+    if (t === 'consensus' || t === 'core' || n.includes('engine') || n.includes('platform') || n.includes('system') || n.includes('server') || n.includes('meridian') || n.includes('pulse') || n.includes('farloom')) {
+      return 'consensus';
+    }
+    if (t === 'divergence' || t === 'org' || n.includes('team') || n.includes('division') || n.includes('campus') || n.includes('foundry') || n.includes('aurora') || n.includes('dynamics') || n.includes('labs') || n.includes('contradict')) {
+      return 'divergence';
+    }
+    if (t === 'context' || t === 'api' || n.includes('api') || n.includes('beacon') || n.includes('sync') || n.includes('rest') || n.includes('grpc') || n.includes('jwt') || n.includes('auth') || n.includes('token') || n.includes('http')) {
+      return 'context';
+    }
+    if (t === 'edgecase' || t === 'infra' || n.includes('database') || n.includes('cluster') || n.includes('redis') || n.includes('sql') || n.includes('mysql') || n.includes('hardware') || n.includes('energyplus') || n.includes('neo4j') || n.includes('chroma')) {
+      return 'edgecase';
+    }
+    if (t === 'retrieval' || t === 'rag' || n.includes('rag') || n.includes('retrieval') || n.includes('embedding') || n.includes('vector') || n.includes('graph') || n.includes('bm25') || n.includes('rrf') || n.includes('llm') || n.includes('qwen') || n.includes('gemini') || n.includes('ollama') || n.includes('ai')) {
+      return 'retrieval';
+    }
+    if (t === 'verified' || t === 'doc' || n.includes('policy') || n.includes('standard') || n.includes('spec') || n.includes('guide') || n.includes('rule') || n.includes('manual') || n.includes('cert') || n.includes('skill')) {
+      return 'verified';
+    }
+    if (t === 'relational' || t === 'library' || n.includes('python') || n.includes('react') || n.includes('pytorch') || n.includes('fastapi') || n.includes('docker') || n.includes('networkx')) {
+      return 'relational';
+    }
+    const cats = ['consensus', 'divergence', 'context', 'edgecase', 'retrieval', 'verified', 'relational', 'insight'];
+    let hash = 0;
+    for (let i = 0; i < n.length; i++) hash = (hash * 31 + n.charCodeAt(i)) & 0xffffffff;
+    return cats[Math.abs(hash) % cats.length];
+  }
+
+  calculateRadius(degree, citations, isSeed = false) {
+    const d = Math.max(1, degree || 1);
+    const c = Math.max(0, citations || 0);
+    // Logarithmic scale: 14px leaf to 38px super-hub
+    let r = 14 + 5.5 * Math.log(1 + d * 0.85 + c * 0.4);
+    if (isSeed) r = Math.max(r, 26);
+    return Math.min(38, Math.max(14, r));
+  }
+
+  async loadOverview() {
+    try {
+      const data = await apiFetch('/graph/overview?limit=45&max_edges=90');
+      this.clearUniverse();
+      if (!data.edges || data.edges.length === 0) return;
+
+      const nodeMap = new Map();
+      data.edges.forEach(e => {
+        if (!nodeMap.has(e.subject)) nodeMap.set(e.subject, { degree: 0, citations: 0, chunks: [] });
+        if (!nodeMap.has(e.obj)) nodeMap.set(e.obj, { degree: 0, citations: 0, chunks: [] });
+        nodeMap.get(e.subject).degree++;
+        nodeMap.get(e.obj).degree++;
+        if (e.chunk_ids) {
+          nodeMap.get(e.subject).citations += e.chunk_ids.length;
+          nodeMap.get(e.obj).citations += e.chunk_ids.length;
+          nodeMap.get(e.subject).chunks.push(...e.chunk_ids);
+          nodeMap.get(e.obj).chunks.push(...e.chunk_ids);
+        }
+      });
+
+      let idx = 0;
+      nodeMap.forEach((meta, name) => {
+        const catKey = this.categorizeEntity(name);
+        const radius = this.calculateRadius(meta.degree, meta.citations, meta.degree >= 5);
+        const angle = (idx / nodeMap.size) * Math.PI * 2;
+        const dist = 180 + Math.random() * 240;
+        this.nodes.set(name, {
+          id: name,
+          label: name,
+          category: catKey,
+          radius: radius,
+          degree: meta.degree,
+          citations: meta.citations,
+          chunk_ids: Array.from(new Set(meta.chunks)),
+          x: Math.cos(angle) * dist,
+          y: Math.sin(angle) * dist,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          pinned: false,
+          floatSeed: Math.random() * Math.PI * 2,
+          isSeed: meta.degree >= 5
+        });
+        idx++;
+      });
+
+      // Populate edges
+      this.edges = (data.edges || []).map((e, eIdx) => ({
+        id: `${e.subject}__${e.relation}__${e.obj}__${eIdx}`,
+        source: e.subject,
+        target: e.obj,
+        relation: e.relation || 'related_to',
+        chunk_ids: e.chunk_ids || [],
+        curvature: ((eIdx % 3) - 1) * 0.16
+      }));
+
+      this.initPhotons();
+      this.detectClusters();
+      this.updateStats();
+      this.alpha = 1.0;
+      setTimeout(() => this.fitView(), 450);
+    } catch (err) {
+      console.error('Failed to load overview graph:', err);
+    }
+  }
+
+  async exploreSeed(seedEntity, depth = 2) {
+    if (!seedEntity) return;
+    try {
+      const data = await apiFetch(`/graph/neighbors?entity=${encodeURIComponent(seedEntity)}&depth=${depth}`);
+      if (!data.found || !data.edges || data.edges.length === 0) {
+        alert(`Entity "${seedEntity}" was not found in the knowledge graph.`);
+        return;
+      }
+      this.clearUniverse();
+      const nodeSet = new Map();
+      nodeSet.set(seedEntity, { degree: 0, citations: 0, chunks: [] });
+
+      data.edges.forEach(e => {
+        if (!nodeSet.has(e.subject)) nodeSet.set(e.subject, { degree: 0, citations: 0, chunks: [] });
+        if (!nodeSet.has(e.obj)) nodeSet.set(e.obj, { degree: 0, citations: 0, chunks: [] });
+        nodeSet.get(e.subject).degree++;
+        nodeSet.get(e.obj).degree++;
+        if (e.chunk_ids) {
+          nodeSet.get(e.subject).citations += e.chunk_ids.length;
+          nodeSet.get(e.obj).citations += e.chunk_ids.length;
+          nodeSet.get(e.subject).chunks.push(...e.chunk_ids);
+          nodeSet.get(e.obj).chunks.push(...e.chunk_ids);
+        }
+      });
+
+      let idx = 0;
+      nodeSet.forEach((meta, name) => {
+        const isSeed = name.toLowerCase() === seedEntity.toLowerCase();
+        const catKey = this.categorizeEntity(name);
+        const radius = this.calculateRadius(meta.degree, meta.citations, isSeed);
+        const angle = isSeed ? 0 : (idx / nodeSet.size) * Math.PI * 2;
+        const dist = isSeed ? 0 : 210 + Math.random() * 150;
+        this.nodes.set(name, {
+          id: name,
+          label: name,
+          category: catKey,
+          radius: radius,
+          degree: meta.degree,
+          citations: meta.citations,
+          chunk_ids: Array.from(new Set(meta.chunks)),
+          x: isSeed ? 0 : Math.cos(angle) * dist,
+          y: isSeed ? 0 : Math.sin(angle) * dist,
+          vx: 0,
+          vy: 0,
+          pinned: isSeed,
+          floatSeed: Math.random() * Math.PI * 2,
+          isSeed: isSeed
+        });
+        idx++;
+      });
+
+      this.edges = data.edges.map((e, eIdx) => ({
+        id: `${e.subject}__${e.relation}__${e.obj}__${eIdx}`,
+        source: e.subject,
+        target: e.obj,
+        relation: e.relation || 'related_to',
+        chunk_ids: e.chunk_ids || [],
+        curvature: ((eIdx % 3) - 1) * 0.16
+      }));
+
+      this.initPhotons();
+      this.detectClusters();
+      this.updateStats();
+      this.alpha = 1.0;
+      const seedNode = this.nodes.get(seedEntity);
+      if (seedNode) {
+        this.selectNode(seedNode);
+        this.flyTo(0, 0, 1.25);
+      } else {
+        setTimeout(() => this.fitView(), 300);
+      }
+    } catch (err) {
+      console.error('Failed to explore seed entity:', err);
+    }
+  }
+
+  async expandEntity(entityName) {
+    if (!entityName) return;
+    try {
+      const data = await apiFetch(`/graph/neighbors?entity=${encodeURIComponent(entityName)}&depth=1`);
+      if (!data.found || !data.edges) return;
+
+      const centerNode = this.nodes.get(entityName) || { x: 0, y: 0 };
+      let newCount = 0;
+
+      data.edges.forEach((e, idx) => {
+        [e.subject, e.obj].forEach(name => {
+          if (!this.nodes.has(name)) {
+            const cat = this.categorizeEntity(name);
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 120 + Math.random() * 100;
+            this.nodes.set(name, {
+              id: name,
+              label: name,
+              category: cat,
+              radius: 17,
+              degree: 1,
+              citations: e.chunk_ids ? e.chunk_ids.length : 0,
+              chunk_ids: e.chunk_ids || [],
+              x: centerNode.x + Math.cos(angle) * dist,
+              y: centerNode.y + Math.sin(angle) * dist,
+              vx: (Math.random() - 0.5) * 4,
+              vy: (Math.random() - 0.5) * 4,
+              pinned: false,
+              floatSeed: Math.random() * Math.PI * 2,
+              isSeed: false
+            });
+            newCount++;
+          } else {
+            const n = this.nodes.get(name);
+            n.degree++;
+            if (e.chunk_ids) {
+              n.citations += e.chunk_ids.length;
+              n.chunk_ids = Array.from(new Set([...n.chunk_ids, ...e.chunk_ids]));
+            }
+            n.radius = this.calculateRadius(n.degree, n.citations, n.isSeed);
+          }
+        });
+
+        // Add edge if not already present
+        const edgeExists = this.edges.some(
+          ex => (ex.source === e.subject && ex.target === e.obj) || (ex.source === e.obj && ex.target === e.subject)
+        );
+        if (!edgeExists) {
+          this.edges.push({
+            id: `${e.subject}__${e.relation}__${e.obj}__exp_${this.edges.length}`,
+            source: e.subject,
+            target: e.obj,
+            relation: e.relation || 'related_to',
+            chunk_ids: e.chunk_ids || [],
+            curvature: ((idx % 3) - 1) * 0.16
+          });
+        }
+      });
+
+      this.initPhotons();
+      this.detectClusters();
+      this.updateStats();
+      this.alpha = Math.max(this.alpha, 0.7);
+      if (this.selectedNode) this.openInspector(this.selectedNode);
+    } catch (err) {
+      console.error('Failed to expand entity:', err);
+    }
+  }
+
+  async tracePath(source, target) {
+    if (!source || !target) return;
+    try {
+      const data = await apiFetch(`/graph/path?source=${encodeURIComponent(source)}&target=${encodeURIComponent(target)}`);
+      if (!data.found || !data.edges || data.edges.length === 0) {
+        alert(`No path found between "${source}" and "${target}".`);
+        return;
+      }
+
+      const pathNodes = new Set();
+      const pathEdges = new Set();
+
+      data.edges.forEach((e, idx) => {
+        pathNodes.add(e.subject);
+        pathNodes.add(e.obj);
+
+        [e.subject, e.obj].forEach(name => {
+          if (!this.nodes.has(name)) {
+            const cat = this.categorizeEntity(name);
+            this.nodes.set(name, {
+              id: name,
+              label: name,
+              category: cat,
+              radius: 24,
+              degree: 2,
+              citations: e.chunk_ids ? e.chunk_ids.length : 0,
+              chunk_ids: e.chunk_ids || [],
+              x: (idx - data.edges.length / 2) * 160 + (Math.random() - 0.5) * 40,
+              y: (Math.random() - 0.5) * 100,
+              vx: 0,
+              vy: 0,
+              pinned: false,
+              floatSeed: Math.random() * Math.PI * 2,
+              isSeed: true
+            });
+          }
+        });
+
+        const edgeId = `${e.subject}__${e.relation}__${e.obj}__path_${idx}`;
+        pathEdges.add(edgeId);
+        const existing = this.edges.find(ex => (ex.source === e.subject && ex.target === e.obj) || (ex.source === e.obj && ex.target === e.subject));
+        if (!existing) {
+          this.edges.push({
+            id: edgeId,
+            source: e.subject,
+            target: e.obj,
+            relation: e.relation || 'related_to',
+            chunk_ids: e.chunk_ids || [],
+            curvature: 0
+          });
+        } else {
+          pathEdges.add(existing.id);
+        }
+      });
+
+      this.highlightPath = { nodes: pathNodes, edges: pathEdges };
+      this.initPhotons();
+      this.updateStats();
+      this.alpha = 0.8;
+
+      // Frame the path
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      pathNodes.forEach(id => {
+        const n = this.nodes.get(id);
+        if (n) {
+          minX = Math.min(minX, n.x);
+          maxX = Math.max(maxX, n.x);
+          minY = Math.min(minY, n.y);
+          maxY = Math.max(maxY, n.y);
+        }
+      });
+      const midX = (minX + maxX) / 2;
+      const midY = (minY + maxY) / 2;
+      this.flyTo(midX, midY, 1.2);
+    } catch (err) {
+      console.error('Failed to trace path:', err);
+    }
+  }
+
+  initPhotons() {
+    this.photons = [];
+    this.edges.forEach(e => {
+      // 1 or 2 photons per edge
+      const count = (this.highlightPath && this.highlightPath.edges.has(e.id)) ? 3 : 1;
+      for (let i = 0; i < count; i++) {
+        this.photons.push({
+          edge: e,
+          progress: Math.random(),
+          speed: (this.highlightPath && this.highlightPath.edges.has(e.id)) ? 0.012 : 0.003 + Math.random() * 0.004
+        });
+      }
+    });
+  }
+
+  detectClusters() {
+    // Simple connected community clustering
+    const visited = new Set();
+    const clusters = [];
+    const adj = new Map();
+
+    this.nodes.forEach(n => adj.set(n.id, []));
+    this.edges.forEach(e => {
+      if (adj.has(e.source) && adj.has(e.target)) {
+        adj.get(e.source).push(e.target);
+        adj.get(e.target).push(e.source);
+      }
+    });
+
+    this.nodes.forEach(node => {
+      if (!visited.has(node.id)) {
+        const clusterNodes = [];
+        const queue = [node.id];
+        visited.add(node.id);
+
+        while (queue.length > 0) {
+          const curr = queue.shift();
+          clusterNodes.push(curr);
+          (adj.get(curr) || []).forEach(nbr => {
+            if (!visited.has(nbr)) {
+              visited.add(nbr);
+              queue.push(nbr);
+            }
+          });
+        }
+
+        if (clusterNodes.length >= 2) {
+          // Determine dominant category
+          const catCounts = {};
+          clusterNodes.forEach(id => {
+            const n = this.nodes.get(id);
+            if (n) catCounts[n.category] = (catCounts[n.category] || 0) + 1;
+          });
+          let dominantCat = 'consensus';
+          let maxCount = 0;
+          Object.entries(catCounts).forEach(([c, cnt]) => {
+            if (cnt > maxCount) { maxCount = cnt; dominantCat = c; }
+          });
+
+          clusters.push({
+            id: clusters.length + 1,
+            nodeIds: clusterNodes,
+            category: dominantCat,
+            cx: 0,
+            cy: 0,
+            radius: 80
+          });
+        }
+      }
+    });
+
+    this.clusters = clusters;
+  }
+
+  updateClustersGeometry() {
+    this.clusters.forEach(c => {
+      let sumX = 0, sumY = 0, valid = 0;
+      c.nodeIds.forEach(id => {
+        const n = this.nodes.get(id);
+        if (n) { sumX += n.x; sumY += n.y; valid++; }
+      });
+      if (valid > 0) {
+        c.cx = sumX / valid;
+        c.cy = sumY / valid;
+        let maxDist = 40;
+        c.nodeIds.forEach(id => {
+          const n = this.nodes.get(id);
+          if (n) {
+            const d = Math.hypot(n.x - c.cx, n.y - c.cy) + n.radius;
+            if (d > maxDist) maxDist = d;
+          }
+        });
+        c.radius = maxDist + 35;
+      }
+    });
+  }
+
+  clearUniverse() {
+    this.nodes.clear();
+    this.edges = [];
+    this.photons = [];
+    this.clusters = [];
+    this.hoveredNode = null;
+    this.selectedNode = null;
+    this.highlightPath = null;
+    this.closeInspector();
+    this.updateStats();
+  }
+
+  updateStats() {
+    const nodeEl = document.getElementById('universe-node-count');
+    const edgeEl = document.getElementById('universe-edge-count');
+    if (nodeEl) nodeEl.textContent = this.nodes.size;
+    if (edgeEl) edgeEl.textContent = this.edges.length;
+  }
+
+  toggleMotion() {
+    this.isMotionEnabled = !this.isMotionEnabled;
+    this.updateMotionButton();
+    if (this.isMotionEnabled) {
+      this.alpha = Math.max(this.alpha, 0.4);
+    }
+  }
+
+  updateMotionButton() {
+    const icon = document.getElementById('motion-icon');
+    const text = document.getElementById('motion-text');
+    if (icon) icon.innerHTML = this.isMotionEnabled 
+      ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>' 
+      : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:-1px;"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+    if (text) text.textContent = this.isMotionEnabled ? 'Pause' : 'Resume';
+  }
+
+  fitView() {
+    if (this.nodes.size === 0) return;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    this.nodes.forEach(n => {
+      minX = Math.min(minX, n.x - n.radius);
+      maxX = Math.max(maxX, n.x + n.radius);
+      minY = Math.min(minY, n.y - n.radius);
+      maxY = Math.max(maxY, n.y + n.radius);
+    });
+
+    const w = this.canvas.width / this.dpr;
+    const h = this.canvas.height / this.dpr;
+    const graphW = Math.max(maxX - minX, 100);
+    const graphH = Math.max(maxY - minY, 100);
+
+    const padding = 70;
+    const scaleX = (w - padding * 2) / graphW;
+    const scaleY = (h - padding * 2) / graphH;
+    const targetScale = Math.min(1.20, Math.max(0.35, Math.min(scaleX, scaleY)));
+
+    const midX = (minX + maxX) / 2;
+    const midY = (minY + maxY) / 2;
+    this.flyTo(midX, midY, targetScale);
+  }
+
+  flyTo(worldX, worldY, targetScale = 1.0, duration = 600) {
+    const w = this.canvas.width / this.dpr;
+    const h = this.canvas.height / this.dpr;
+    this.targetCamera = {
+      startX: this.camera.x,
+      startY: this.camera.y,
+      startScale: this.camera.scale,
+      targetX: -worldX * targetScale + w / 2,
+      targetY: -worldY * targetScale + h / 2,
+      targetScale: targetScale,
+      startTime: performance.now(),
+      duration: duration
+    };
+  }
+
+  simulate() {
+    if (this.nodes.size === 0) return;
+    if (!this.isMotionEnabled && this.alpha <= this.minAlpha) return;
+
+    const nodesArr = Array.from(this.nodes.values());
+    const N = nodesArr.length;
+    const kRepulse = 7600;
+    const kSpring = 0.026;
+    const defaultDist = 185;
+    const damping = 0.86;
+    const gravity = 0.0038;
+
+    // Node-Node Coulomb Repulsion & Collision
+    for (let i = 0; i < N; i++) {
+      const n1 = nodesArr[i];
+      for (let j = i + 1; j < N; j++) {
+        const n2 = nodesArr[j];
+        const dx = n2.x - n1.x;
+        const dy = n2.y - n1.y;
+        const distSq = dx * dx + dy * dy + 80;
+        const dist = Math.sqrt(distSq);
+
+        const minDist = n1.radius + n2.radius + 44;
+        let force = (kRepulse / distSq) * this.alpha;
+        if (dist < minDist) {
+          force += ((minDist - dist) * 0.32) * this.alpha;
+        }
+
+        const fx = (dx / dist) * force;
+        const fy = (dy / dist) * force;
+
+        if (!n1.pinned && n1 !== this.draggedNode) { n1.vx -= fx; n1.vy -= fy; }
+        if (!n2.pinned && n2 !== this.draggedNode) { n2.vx += fx; n2.vy += fy; }
+      }
+    }
+
+    // Edge Hooke Spring Attraction
+    this.edges.forEach(e => {
+      const s = this.nodes.get(e.source);
+      const t = this.nodes.get(e.target);
+      if (!s || !t) return;
+      const dx = t.x - s.x;
+      const dy = t.y - s.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const targetLen = defaultDist + s.radius + t.radius;
+      const force = (dist - targetLen) * kSpring * this.alpha;
+      const fx = (dx / dist) * force;
+      const fy = (dy / dist) * force;
+
+      if (!s.pinned && s !== this.draggedNode) { s.vx += fx; s.vy += fy; }
+      if (!t.pinned && t !== this.draggedNode) { t.vx -= fx; t.vy -= fy; }
+    });
+
+    // Center Gravity and Gentle Organic Wave Float
+    const now = performance.now();
+    nodesArr.forEach(n => {
+      if (n.pinned || n === this.draggedNode) return;
+
+      n.vx -= n.x * gravity * this.alpha;
+      n.vy -= n.y * gravity * this.alpha;
+
+      if (this.isMotionEnabled) {
+        n.vx += Math.cos(now * 0.0012 + n.floatSeed) * 0.14 * this.alpha;
+        n.vy += Math.sin(now * 0.0014 + n.floatSeed) * 0.14 * this.alpha;
+      }
+
+      n.vx *= damping;
+      n.vy *= damping;
+      n.x += n.vx;
+      n.y += n.vy;
+    });
+
+    if (this.alpha > this.minAlpha) {
+      this.alpha *= 0.985;
+    }
+
+    this.updateClustersGeometry();
+  }
+
+  animate() {
+    this.animFrameId = requestAnimationFrame(() => this.animate());
+
+    // Update smooth camera
+    if (this.targetCamera) {
+      const elapsed = performance.now() - this.targetCamera.startTime;
+      const t = Math.min(1.0, elapsed / this.targetCamera.duration);
+      // Smooth ease-in-out curve
+      const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      this.camera.x = this.targetCamera.startX + (this.targetCamera.targetX - this.targetCamera.startX) * ease;
+      this.camera.y = this.targetCamera.startY + (this.targetCamera.targetY - this.targetCamera.startY) * ease;
+      this.camera.scale = this.targetCamera.startScale + (this.targetCamera.targetScale - this.targetCamera.startScale) * ease;
+      if (t >= 1.0) this.targetCamera = null;
+    }
+
+    // Step physics
+    this.simulate();
+
+    // Render frame
+    this.render();
+  }
+
+  render() {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    const w = this.canvas.width / this.dpr;
+    const h = this.canvas.height / this.dpr;
+
+    ctx.save();
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+
+    // OLED Canvas Background (#000000 Pure Canvas)
+    const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, Math.max(w, h));
+    bgGrad.addColorStop(0, '#040812');
+    bgGrad.addColorStop(0.55, '#020306');
+    bgGrad.addColorStop(1, '#000000');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Apply Camera Transform
+    ctx.translate(this.camera.x, this.camera.y);
+    ctx.scale(this.camera.scale, this.camera.scale);
+
+    // 1. Ambient Stellar Dust
+    this.drawStars(ctx);
+
+    // 2. Chromatic Knowledge Nebulae (Clusters)
+    this.drawNebulae(ctx);
+
+    // 3. Neural Edges and Energy Photons
+    this.drawEdges(ctx);
+
+    // 4. Knowledge Entity Bubbles
+    this.drawNodes(ctx);
+
+    ctx.restore();
+  }
+
+  drawStars(ctx) {
+    const now = performance.now();
+    ctx.save();
+    this.stars.forEach(s => {
+      const tw = Math.sin(now * s.twinkleSpeed + s.phase) * 0.25 + s.alpha;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(210, 230, 255, ${Math.max(0.1, tw)})`;
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  drawNebulae(ctx) {
+    ctx.save();
+    this.clusters.forEach(c => {
+      const cat = this.palette[c.category] || this.palette.consensus;
+      const grad = ctx.createRadialGradient(c.cx, c.cy, 10, c.cx, c.cy, c.radius);
+      grad.addColorStop(0, cat.glow.replace('0.55', '0.12').replace('0.65', '0.12'));
+      grad.addColorStop(0.65, cat.bg.replace('0.08', '0.03').replace('0.20', '0.04').replace('0.10', '0.03'));
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.beginPath();
+      ctx.arc(c.cx, c.cy, c.radius, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  drawEdges(ctx) {
+    ctx.save();
+    const isHoverActive = !!this.hoveredNode;
+    const isSelectedActive = !!this.selectedNode;
+
+    this.edges.forEach(e => {
+      const s = this.nodes.get(e.source);
+      const t = this.nodes.get(e.target);
+      if (!s || !t) return;
+
+      const isPathEdge = this.highlightPath && this.highlightPath.edges.has(e.id);
+      const isConnected = (isHoverActive && (e.source === this.hoveredNode.id || e.target === this.hoveredNode.id)) ||
+                          (isSelectedActive && (e.source === this.selectedNode.id || e.target === this.selectedNode.id));
+
+      let strokeAlpha = 0.22;
+      let lineWidth = 1.4;
+      if (isPathEdge) {
+        strokeAlpha = 0.95;
+        lineWidth = 3.2;
+      } else if (isConnected) {
+        strokeAlpha = 0.85;
+        lineWidth = 2.4;
+      } else if (isHoverActive || isSelectedActive || this.highlightPath) {
+        strokeAlpha = 0.06;
+      }
+
+      // Bezier Control Point with curvature
+      const midX = (s.x + t.x) / 2;
+      const midY = (s.y + t.y) / 2;
+      const dx = t.x - s.x;
+      const dy = t.y - s.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const perpX = -dy / dist;
+      const perpY = dx / dist;
+      const curveOffset = dist * (e.curvature || 0.15);
+      const cpX = midX + perpX * curveOffset;
+      const cpY = midY + perpY * curveOffset;
+
+      // Color Gradient along edge from Source to Target
+      const sCat = this.palette[s.category] || this.palette.consensus;
+      const tCat = this.palette[t.category] || this.palette.consensus;
+
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y);
+      ctx.quadraticCurveTo(cpX, cpY, t.x, t.y);
+
+      if (isPathEdge) {
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.shadowColor = '#90CAF9';
+        ctx.shadowBlur = 14;
+      } else {
+        const edgeGrad = ctx.createLinearGradient(s.x, s.y, t.x, t.y);
+        edgeGrad.addColorStop(0, sCat.color);
+        edgeGrad.addColorStop(1, tCat.color);
+        ctx.strokeStyle = edgeGrad;
+        ctx.shadowBlur = isConnected ? 8 : 0;
+        ctx.shadowColor = tCat.color;
+      }
+      ctx.globalAlpha = strokeAlpha;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+
+      // Directional Arrow Head near target perimeter
+      const arrowT = 1.0 - (t.radius + 6) / dist;
+      if (arrowT > 0.1 && arrowT < 0.98) {
+        const oneMinusT = 1 - arrowT;
+        const ax = oneMinusT * oneMinusT * s.x + 2 * oneMinusT * arrowT * cpX + arrowT * arrowT * t.x;
+        const ay = oneMinusT * oneMinusT * s.y + 2 * oneMinusT * arrowT * cpY + arrowT * arrowT * t.y;
+        // Tangent
+        const tanX = 2 * oneMinusT * (cpX - s.x) + 2 * arrowT * (t.x - cpX);
+        const tanY = 2 * oneMinusT * (cpY - s.y) + 2 * arrowT * (t.y - cpY);
+        const angle = Math.atan2(tanY, tanX);
+        const arrowLen = isConnected || isPathEdge ? 8 : 6;
+
+        ctx.beginPath();
+        ctx.moveTo(ax, ay);
+        ctx.lineTo(ax - arrowLen * Math.cos(angle - 0.4), ay - arrowLen * Math.sin(angle - 0.4));
+        ctx.lineTo(ax - arrowLen * Math.cos(angle + 0.4), ay - arrowLen * Math.sin(angle + 0.4));
+        ctx.closePath();
+        ctx.fillStyle = isPathEdge ? '#FFFFFF' : tCat.color;
+        ctx.fill();
+      }
+
+      // Relationship Text Labels (visible when zoomed in or hovering)
+      if (this.camera.scale >= 0.75 || isConnected || isPathEdge) {
+        const labelT = 0.5;
+        const lx = 0.25 * s.x + 0.5 * cpX + 0.25 * t.x;
+        const ly = 0.25 * s.y + 0.5 * cpY + 0.25 * t.y;
+        const relText = (e.relation || '').replace(/_/g, ' ');
+
+        ctx.font = '600 9px system-ui, sans-serif';
+        const txtWidth = ctx.measureText(relText).width;
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.92)';
+        ctx.fillRect(lx - txtWidth / 2 - 4, ly - 7, txtWidth + 8, 14);
+        ctx.fillStyle = isPathEdge ? '#FFFFFF' : (isConnected ? '#F1F5F9' : '#94A3B8');
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(relText, lx, ly);
+      }
+    });
+
+    // Draw Photon Pulses along curves
+    if (this.isMotionEnabled) {
+      this.photons.forEach(p => {
+        p.progress += p.speed;
+        if (p.progress >= 1.0) p.progress = 0;
+        const s = this.nodes.get(p.edge.source);
+        const t = this.nodes.get(p.edge.target);
+        if (!s || !t) return;
+
+        const isPathEdge = this.highlightPath && this.highlightPath.edges.has(p.edge.id);
+        const dx = t.x - s.x;
+        const dy = t.y - s.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const perpX = -dy / dist;
+        const perpY = dx / dist;
+        const cpX = (s.x + t.x) / 2 + perpX * dist * (p.edge.curvature || 0.15);
+        const cpY = (s.y + t.y) / 2 + perpY * dist * (p.edge.curvature || 0.15);
+
+        const u = 1 - p.progress;
+        const px = u * u * s.x + 2 * u * p.progress * cpX + p.progress * p.progress * t.x;
+        const py = u * u * s.y + 2 * u * p.progress * cpY + p.progress * p.progress * t.y;
+        const tCat = this.palette[t.category] || this.palette.consensus;
+
+        ctx.beginPath();
+        ctx.arc(px, py, isPathEdge ? 3.5 : 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = isPathEdge ? '#FFFFFF' : tCat.color;
+        ctx.shadowColor = isPathEdge ? '#FFFFFF' : tCat.color;
+        ctx.shadowBlur = 10;
+        ctx.globalAlpha = 0.95;
+        ctx.fill();
+      });
+    }
+
+    ctx.restore();
+  }
+
+  drawNodes(ctx) {
+    ctx.save();
+    const isHoverActive = !!this.hoveredNode;
+    const isSelectedActive = !!this.selectedNode;
+    const now = performance.now();
+
+    this.nodes.forEach(n => {
+      const isHovered = this.hoveredNode && this.hoveredNode.id === n.id;
+      const isSelected = this.selectedNode && this.selectedNode.id === n.id;
+      const isPathNode = this.highlightPath && this.highlightPath.nodes.has(n.id);
+      const isConnected = (isHoverActive && this.areNodesConnected(this.hoveredNode.id, n.id)) ||
+                          (isSelectedActive && this.areNodesConnected(this.selectedNode.id, n.id));
+
+      let nodeAlpha = 1.0;
+      if ((isHoverActive || isSelectedActive || this.highlightPath) && !isHovered && !isSelected && !isConnected && !isPathNode) {
+        nodeAlpha = 0.22;
+      }
+
+      ctx.save();
+      ctx.globalAlpha = nodeAlpha;
+
+      const cat = this.palette[n.category] || this.palette.consensus;
+
+      // Pulsing outer halo for Hovered / Selected / Path hubs
+      if (isHovered || isSelected || isPathNode) {
+        const pulse = Math.sin(now * 0.005) * 4 + 7;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.radius + pulse, 0, Math.PI * 2);
+        ctx.strokeStyle = isPathNode ? '#FFFFFF' : cat.color;
+        ctx.lineWidth = 2.0;
+        ctx.shadowColor = isPathNode ? '#90CAF9' : cat.color;
+        ctx.shadowBlur = 18;
+        ctx.stroke();
+      }
+
+      // 3D Spherical Radial Gradient Body
+      const lightX = n.x - n.radius * 0.35;
+      const lightY = n.y - n.radius * 0.35;
+      const sphereGrad = ctx.createRadialGradient(lightX, lightY, n.radius * 0.1, n.x, n.y, n.radius);
+      sphereGrad.addColorStop(0, '#FFFFFF');
+      sphereGrad.addColorStop(0.3, cat.color);
+      sphereGrad.addColorStop(0.85, this.darkenHex(cat.color, 0.45));
+      sphereGrad.addColorStop(1, '#000000');
+
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+      ctx.fillStyle = sphereGrad;
+      ctx.shadowColor = cat.color;
+      ctx.shadowBlur = isHovered || isSelected ? 22 : 10;
+      ctx.fill();
+
+      // Sharp High-Contrast Boundary Ring
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+      ctx.strokeStyle = isSelected ? '#FFFFFF' : cat.color;
+      ctx.lineWidth = isSelected ? 2.8 : (n.isSeed ? 2.2 : 1.5);
+      ctx.stroke();
+
+      // Degree Badge on Top Hubs (Radius > 24)
+      if (n.radius >= 24) {
+        ctx.beginPath();
+        ctx.arc(n.x + n.radius * 0.72, n.y - n.radius * 0.72, 7.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.92)';
+        ctx.fill();
+        ctx.strokeStyle = cat.color;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        ctx.font = '700 8.5px system-ui, sans-serif';
+        ctx.fillStyle = '#F1F5F9';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(n.degree), n.x + n.radius * 0.72, n.y - n.radius * 0.72);
+      }
+
+      // Node Label Typography
+      const shouldShowLabel = isHovered || isSelected || isPathNode || isConnected || n.radius >= 22 || this.camera.scale >= 0.7;
+      if (shouldShowLabel) {
+        const labelText = n.label.length > 20 ? n.label.substring(0, 18) + '…' : n.label;
+        ctx.font = `${n.radius > 26 ? '700 12px' : '600 10.5px'} system-ui, -apple-system, sans-serif`;
+        const metrics = ctx.measureText(labelText);
+        const textY = n.y + n.radius + 14;
+
+        // Text Pill Backdrop
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.92)';
+        ctx.beginPath();
+        ctx.roundRect(n.x - metrics.width / 2 - 5, textY - 8, metrics.width + 10, 16, 4);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.fillStyle = isSelected ? '#FFFFFF' : '#F1F5F9';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labelText, n.x, textY);
+      }
+
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+
+  areNodesConnected(id1, id2) {
+    if (id1 === id2) return true;
+    return this.edges.some(
+      e => (e.source === id1 && e.target === id2) || (e.source === id2 && e.target === id1)
+    );
+  }
+
+  darkenHex(hex, factor = 0.5) {
+    const c = hex.replace('#', '');
+    const r = Math.round(parseInt(c.substring(0, 2), 16) * factor);
+    const g = Math.round(parseInt(c.substring(2, 4), 16) * factor);
+    const b = Math.round(parseInt(c.substring(4, 6), 16) * factor);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  bindEvents() {
+    const c = this.canvas;
+    if (!c) return;
+
+    window.addEventListener('resize', () => this.resizeCanvas());
+
+    c.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = c.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+      const newScale = Math.min(3.8, Math.max(0.25, this.camera.scale * zoomFactor));
+
+      // Zoom towards mouse pointer
+      this.camera.x = mouseX - (mouseX - this.camera.x) * (newScale / this.camera.scale);
+      this.camera.y = mouseY - (mouseY - this.camera.y) * (newScale / this.camera.scale);
+      this.camera.scale = newScale;
+      this.targetCamera = null;
+    }, { passive: false });
+
+    c.addEventListener('pointerdown', e => {
+      const rect = c.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      const worldX = (clickX - this.camera.x) / this.camera.scale;
+      const worldY = (clickY - this.camera.y) / this.camera.scale;
+
+      const hit = this.hitTest(worldX, worldY);
+      if (hit) {
+        this.draggedNode = hit;
+        hit.pinned = true;
+        this.alpha = Math.max(this.alpha, 0.4);
+        c.setPointerCapture(e.pointerId);
+      } else {
+        this.isPanning = true;
+        this.panStart = { x: clickX - this.camera.x, y: clickY - this.camera.y };
+        c.style.cursor = 'grabbing';
+      }
+    });
+
+    c.addEventListener('pointermove', e => {
+      const rect = c.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const worldX = (mouseX - this.camera.x) / this.camera.scale;
+      const worldY = (mouseY - this.camera.y) / this.camera.scale;
+      this.mouse = { x: mouseX, y: mouseY, worldX, worldY };
+
+      if (this.draggedNode) {
+        this.draggedNode.x = worldX;
+        this.draggedNode.y = worldY;
+        this.alpha = Math.max(this.alpha, 0.3);
+        c.style.cursor = 'grabbing';
+        return;
+      }
+
+      if (this.isPanning) {
+        this.camera.x = mouseX - this.panStart.x;
+        this.camera.y = mouseY - this.panStart.y;
+        this.targetCamera = null;
+        return;
+      }
+
+      const hit = this.hitTest(worldX, worldY);
+      if (hit !== this.hoveredNode) {
+        this.hoveredNode = hit;
+        c.style.cursor = hit ? 'pointer' : 'default';
+        this.updateTooltip(hit, e.clientX, e.clientY);
+      }
+    });
+
+    const pointerUpHandler = e => {
+      if (this.draggedNode) {
+        this.draggedNode.pinned = false;
+        this.draggedNode = null;
+      }
+      this.isPanning = false;
+      c.style.cursor = this.hoveredNode ? 'pointer' : 'default';
+    };
+
+    c.addEventListener('pointerup', pointerUpHandler);
+    c.addEventListener('pointercancel', pointerUpHandler);
+
+    c.addEventListener('click', e => {
+      const rect = c.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      const worldX = (clickX - this.camera.x) / this.camera.scale;
+      const worldY = (clickY - this.camera.y) / this.camera.scale;
+
+      const hit = this.hitTest(worldX, worldY);
+      if (hit) {
+        this.selectNode(hit);
+      } else {
+        // Deselect if clicked empty cosmic void
+        this.selectedNode = null;
+        this.closeInspector();
+      }
+    });
+  }
+
+  hitTest(worldX, worldY) {
+    let matched = null;
+    let minDist = Infinity;
+    this.nodes.forEach(n => {
+      const d = Math.hypot(n.x - worldX, n.y - worldY);
+      if (d <= n.radius + 6 && d < minDist) {
+        minDist = d;
+        matched = n;
+      }
+    });
+    return matched;
+  }
+
+  updateTooltip(node, screenX, screenY) {
+    const tooltip = document.getElementById('universe-tooltip');
+    if (!tooltip) return;
+    if (!node) {
+      tooltip.classList.add('hidden');
+      return;
+    }
+
+    const cat = this.palette[node.category] || this.palette.consensus;
+    tooltip.innerHTML = `
+      <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.25rem;">
+        <span style="width:8px;height:8px;border-radius:50%;background:${cat.color};"></span>
+        <span style="font-weight:700;color:var(--text-primary);font-size:0.85rem;">${escHtml(node.label)}</span>
+      </div>
+      <div style="font-size:0.75rem;color:var(--text-secondary);">
+        ${cat.label}<br>
+        <strong>${node.degree}</strong> connections · <strong>${node.citations}</strong> citations
+      </div>
+    `;
+
+    const viewport = document.getElementById('universe-wrapper').getBoundingClientRect();
+    const relX = screenX - viewport.left + 14;
+    const relY = screenY - viewport.top + 14;
+
+    tooltip.style.left = `${Math.min(relX, viewport.width - 200)}px`;
+    tooltip.style.top = `${Math.min(relY, viewport.height - 80)}px`;
+    tooltip.classList.remove('hidden');
+  }
+
+  selectNode(node) {
+    this.selectedNode = node;
+    this.openInspector(node);
+  }
+
+  openInspector(node) {
+    const drawer = document.getElementById('universe-inspector');
+    if (!drawer) return;
+
+    const cat = this.palette[node.category] || this.palette.consensus;
+    const badge = document.getElementById('inspector-badge');
+    const title = document.getElementById('inspector-title');
+    const degreeEl = document.getElementById('inspector-degree');
+    const chunksEl = document.getElementById('inspector-chunks');
+    const commEl = document.getElementById('inspector-community');
+
+    if (badge) {
+      badge.textContent = cat.label;
+      badge.style.background = cat.bg;
+      badge.style.color = cat.color;
+      badge.style.borderColor = cat.color;
+    }
+    if (title) title.textContent = node.label;
+    if (degreeEl) degreeEl.textContent = node.degree;
+    if (chunksEl) chunksEl.textContent = node.citations;
+
+    // Find cluster
+    const cluster = this.clusters.find(c => c.nodeIds.includes(node.id));
+    if (commEl) commEl.textContent = cluster ? `#${cluster.id}` : 'Core';
+
+    // Render 1-hop relationships
+    const edgesList = document.getElementById('inspector-edges-list');
+    if (edgesList) {
+      edgesList.innerHTML = '';
+      const connectedEdges = this.edges.filter(e => e.source === node.id || e.target === node.id);
+      document.getElementById('inspector-edges-count').textContent = connectedEdges.length;
+
+      if (connectedEdges.length === 0) {
+        edgesList.innerHTML = '<div style="font-size:0.75rem;color:var(--text3);padding:0.4rem;">No immediate relationships.</div>';
+      } else {
+        connectedEdges.forEach(e => {
+          const isOut = e.source === node.id;
+          const otherId = isOut ? e.target : e.source;
+          const otherNode = this.nodes.get(otherId);
+          const otherCat = otherNode ? (this.palette[otherNode.category] || this.palette.consensus) : this.palette.consensus;
+
+          const item = document.createElement('div');
+          item.className = 'inspector-edge-item';
+          item.innerHTML = `
+            <span style="color:${isOut ? 'var(--accent)' : 'var(--text3)'};font-size:0.8rem;">${isOut ? '→' : '←'}</span>
+            <span style="font-weight:600;color:var(--text2);font-size:0.75rem;">${escHtml(e.relation.replace(/_/g, ' '))}</span>
+            <span class="inspector-edge-tag" style="border-color:${otherCat.color};color:${otherCat.color};margin-left:auto;">
+              ${escHtml(otherId)}
+            </span>
+          `;
+          item.onclick = () => {
+            if (otherNode) {
+              this.selectNode(otherNode);
+              this.flyTo(otherNode.x, otherNode.y, 1.3);
+            }
+          };
+          edgesList.appendChild(item);
+        });
+      }
+    }
+
+    // Render supporting chunks
+    const chunksList = document.getElementById('inspector-chunks-list');
+    if (chunksList) {
+      chunksList.innerHTML = '';
+      const uniqueChunks = Array.from(new Set(node.chunk_ids || []));
+      document.getElementById('inspector-chunks-count').textContent = uniqueChunks.length;
+
+      if (uniqueChunks.length === 0) {
+        chunksList.innerHTML = '<div style="font-size:0.75rem;color:var(--text3);padding:0.4rem;">Inferred entity without direct chunk citations.</div>';
+      } else {
+        uniqueChunks.forEach(cid => {
+          const item = document.createElement('div');
+          item.className = 'inspector-chunk-item';
+          item.innerHTML = `
+            <span style="display:inline-flex;align-items:center;color:var(--text-accent);">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </span>
+            <span style="font-family:monospace;font-size:0.75rem;">${escHtml(cid)}</span>
+          `;
+          chunksList.appendChild(item);
+        });
+      }
+    }
+
+    drawer.classList.remove('hidden');
+  }
+
+  closeInspector() {
+    const drawer = document.getElementById('universe-inspector');
+    if (drawer) drawer.classList.add('hidden');
   }
 }
 
-document.getElementById('graph-entity-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') exploreGraph();
+// Global Universe Instance
+let universeEngine = null;
+
+// Initialize Universe Engine on load
+window.addEventListener('DOMContentLoaded', () => {
+  universeEngine = new KnowledgeUniverseEngine('universe-canvas');
 });
 
-// Live search in entity suggestions
-document.getElementById('graph-entity-input').addEventListener('input', async function() {
-  const q = this.value.trim();
-  if (!q) return loadEntitySuggestions();
-  try {
-    const data = await apiFetch(`/graph/entities?q=${encodeURIComponent(q)}&limit=30`);
-    const container = document.getElementById('entity-suggestions');
-    container.innerHTML = '';
-    data.entities.forEach(e => {
-      const el = document.createElement('button');
-      el.className = 'example-q';
-      el.style.fontSize = '0.75rem';
-      el.textContent = e;
-      el.onclick = () => {
-        document.getElementById('graph-entity-input').value = e;
-        exploreGraph();
-      };
-      container.appendChild(el);
-    });
-  } catch(_) {}
-});
-
-async function exploreGraph() {
-  const entity = document.getElementById('graph-entity-input').value.trim();
-  const depth = parseInt(document.getElementById('graph-depth').value);
-  if (!entity) return;
-
-  document.getElementById('graph-not-found').classList.add('hidden');
-  document.getElementById('graph-edge-list').classList.add('hidden');
-  document.getElementById('graph-empty').innerHTML = '<div class="spinner" style="width:20px;height:20px;"></div>';
-
-  try {
-    const data = await apiFetch(
-      `/graph/neighbors?entity=${encodeURIComponent(entity)}&depth=${depth}`
-    );
-    if (!data.found) {
-      document.getElementById('graph-not-found').classList.remove('hidden');
-      document.getElementById('graph-empty').innerHTML =
-        '<div class="graph-empty"><div class="graph-empty-icon">⬡</div><div>Entity not found in graph</div></div>';
-      return;
-    }
-    renderGraph(entity, data.edges);
-  } catch (e) {
-    document.getElementById('graph-empty').innerHTML =
-      `<div class="graph-empty"><div>Error: ${escHtml(e.message)}</div></div>`;
-  }
+// Top-Level UI Callbacks
+function exploreGraph(seedEntity) {
+  const entity = seedEntity || document.getElementById('graph-entity-input').value.trim();
+  const depth = parseInt(document.getElementById('graph-depth').value, 10) || 2;
+  if (!entity || !universeEngine) return;
+  universeEngine.exploreSeed(entity, depth);
 }
 
 function clearGraph() {
-  document.getElementById('graph-entity-input').value = '';
-  document.getElementById('graph-not-found').classList.add('hidden');
-  document.getElementById('graph-edge-list').classList.add('hidden');
-  document.getElementById('graph-empty').innerHTML = `
-    <div class="graph-empty-icon">⬡</div>
-    <div>Search for an entity to explore its graph neighborhood</div>
-  `;
-  const canvas = document.getElementById('graph-canvas');
-  canvas.querySelectorAll('.graph-node, .edge-label').forEach(el => el.remove());
-  const svg = document.getElementById('graph-svg');
-  svg.innerHTML = '';
+  if (universeEngine) universeEngine.clearUniverse();
 }
 
-function renderGraph(seedEntity, edges) {
-  const canvas = document.getElementById('graph-canvas');
-  const svg = document.getElementById('graph-svg');
-
-  // Clear previous
-  canvas.querySelectorAll('.graph-node, .edge-label').forEach(el => el.remove());
-  svg.innerHTML = '';
-  document.getElementById('graph-empty').style.display = 'none';
-
-  // Collect unique nodes
-  const nodeSet = new Set();
-  nodeSet.add(seedEntity.toLowerCase());
-  edges.forEach(e => {
-    nodeSet.add(e.subject.toLowerCase());
-    nodeSet.add(e.obj.toLowerCase());
-  });
-
-  const nodeList = Array.from(nodeSet);
-  const nodeLabels = {};
-  // Prefer display labels from edges
-  edges.forEach(e => {
-    nodeLabels[e.subject.toLowerCase()] = e.subject;
-    nodeLabels[e.obj.toLowerCase()] = e.obj;
-  });
-  nodeLabels[seedEntity.toLowerCase()] = seedEntity;
-
-  // Position nodes in a radial layout
-  const W = canvas.offsetWidth;
-  const H = canvas.offsetHeight;
-  const cx = W / 2, cy = H / 2;
-  const positions = {};
-
-  // Seed at center
-  positions[seedEntity.toLowerCase()] = { x: cx, y: cy };
-
-  // Others in circle
-  const others = nodeList.filter(n => n !== seedEntity.toLowerCase());
-  const r = Math.min(W, H) * 0.35;
-  others.forEach((node, i) => {
-    const angle = (2 * Math.PI * i) / others.length - Math.PI / 2;
-    positions[node] = {
-      x: cx + r * Math.cos(angle),
-      y: cy + r * Math.sin(angle),
-    };
-  });
-
-  // Draw edges first (SVG lines)
-  edges.forEach(e => {
-    const sk = e.subject.toLowerCase();
-    const ok = e.obj.toLowerCase();
-    const p1 = positions[sk];
-    const p2 = positions[ok];
-    if (!p1 || !p2) return;
-
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', p1.x);
-    line.setAttribute('y1', p1.y);
-    line.setAttribute('x2', p2.x);
-    line.setAttribute('y2', p2.y);
-    line.setAttribute('stroke', '#2d3748');
-    line.setAttribute('stroke-width', '1.5');
-    svg.appendChild(line);
-
-    // Arrow
-    const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-    const arrowX = p2.x - 22 * Math.cos(angle);
-    const arrowY = p2.y - 22 * Math.sin(angle);
-    const arrowSize = 6;
-    const ax1 = arrowX - arrowSize * Math.cos(angle - 0.4);
-    const ay1 = arrowY - arrowSize * Math.sin(angle - 0.4);
-    const ax2 = arrowX - arrowSize * Math.cos(angle + 0.4);
-    const ay2 = arrowY - arrowSize * Math.sin(angle + 0.4);
-    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-    poly.setAttribute('points', `${arrowX},${arrowY} ${ax1},${ay1} ${ax2},${ay2}`);
-    poly.setAttribute('fill', '#2d3748');
-    svg.appendChild(poly);
-
-    // Edge label
-    const midX = (p1.x + p2.x) / 2;
-    const midY = (p1.y + p2.y) / 2;
-    const label = document.createElement('div');
-    label.className = 'edge-label';
-    label.textContent = e.relation.replace(/_/g, ' ');
-    label.style.left = (midX - 30) + 'px';
-    label.style.top = (midY - 10) + 'px';
-    canvas.appendChild(label);
-  });
-
-  // Draw nodes
-  nodeList.forEach(nodeKey => {
-    const pos = positions[nodeKey];
-    if (!pos) return;
-    const label = nodeLabels[nodeKey] || nodeKey;
-    const node = document.createElement('div');
-    node.className = 'graph-node' + (nodeKey === seedEntity.toLowerCase() ? ' seed' : '');
-    node.textContent = label;
-    node.style.left = (pos.x - 50) + 'px';
-    node.style.top = (pos.y - 14) + 'px';
-    node.style.transform = 'translateX(-50%)';
-    node.onclick = () => {
-      document.getElementById('graph-entity-input').value = label;
-      exploreGraph();
-    };
-    canvas.appendChild(node);
-  });
-
-  // Edge list
-  if (edges.length > 0) {
-    document.getElementById('graph-edge-list').classList.remove('hidden');
-    const tableDiv = document.getElementById('graph-edge-table');
-    tableDiv.innerHTML = edges.map(e =>
-      `<div style="padding:0.25rem 0;color:var(--text2);">
-         <span style="color:var(--text);">${escHtml(e.subject)}</span>
-         <span style="color:var(--text3);margin:0 0.4rem;">–[${escHtml(e.relation.replace(/_/g,' '))}]→</span>
-         <span style="color:var(--text);">${escHtml(e.obj)}</span>
-       </div>`
-    ).join('');
+async function loadEntitySuggestions() {
+  try {
+    const data = await apiFetch('/graph/entities?limit=40');
+    const container = document.getElementById('entity-suggestions');
+    if (!container) return;
+    container.innerHTML = '';
+    (data.entities || []).forEach(e => {
+      const chip = document.createElement('button');
+      chip.className = 'universe-chip';
+      chip.textContent = e;
+      chip.onclick = () => {
+        document.getElementById('graph-entity-input').value = e;
+        exploreGraph(e);
+      };
+      container.appendChild(chip);
+    });
+  } catch (err) {
+    console.error('Failed to load entity suggestions:', err);
   }
 }
+
+async function handleUniverseSearchInput(q) {
+  const dropdown = document.getElementById('universe-search-dropdown');
+  if (!dropdown) return;
+  const val = (q || '').trim();
+  if (!val) {
+    dropdown.classList.add('hidden');
+    return;
+  }
+
+  try {
+    const data = await apiFetch(`/graph/entities?q=${encodeURIComponent(val)}&limit=10`);
+    if (!data.entities || data.entities.length === 0) {
+      dropdown.classList.add('hidden');
+      return;
+    }
+    dropdown.innerHTML = '';
+    data.entities.forEach(ent => {
+      const item = document.createElement('div');
+      item.className = 'universe-dropdown-item';
+      item.innerHTML = `<span style="display:inline-flex;align-items:center;margin-right:6px;color:var(--text-accent);"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg></span><span>${escHtml(ent)}</span>`;
+      item.onclick = () => {
+        document.getElementById('graph-entity-input').value = ent;
+        dropdown.classList.add('hidden');
+        exploreGraph(ent);
+      };
+      dropdown.appendChild(item);
+    });
+    dropdown.classList.remove('hidden');
+  } catch (err) {
+    dropdown.classList.add('hidden');
+  }
+}
+
+document.addEventListener('click', e => {
+  const dropdown = document.getElementById('universe-search-dropdown');
+  const input = document.getElementById('graph-entity-input');
+  if (dropdown && !dropdown.contains(e.target) && e.target !== input) {
+    dropdown.classList.add('hidden');
+  }
+});
+
+function toggleUniverseFullscreen() {
+  const wrapper = document.getElementById('universe-wrapper');
+  if (!wrapper) return;
+  wrapper.classList.toggle('fullscreen');
+  if (universeEngine) {
+    setTimeout(() => {
+      universeEngine.resizeCanvas();
+      universeEngine.fitView();
+    }, 150);
+  }
+}
+
+function toggleLegendCollapse() {
+  const body = document.getElementById('legend-body');
+  const icon = document.getElementById('legend-toggle-icon');
+  if (body) {
+    body.classList.toggle('hidden');
+    if (icon) icon.textContent = body.classList.contains('hidden') ? '▲' : '▼';
+  }
+}
+
+function closeInspector() {
+  if (universeEngine) universeEngine.closeInspector();
+}
+
+function expandCurrentEntity() {
+  if (universeEngine && universeEngine.selectedNode) {
+    universeEngine.expandEntity(universeEngine.selectedNode.id);
+  }
+}
+
+function focusCurrentEntity() {
+  if (universeEngine && universeEngine.selectedNode) {
+    universeEngine.flyTo(universeEngine.selectedNode.x, universeEngine.selectedNode.y, 1.4);
+  }
+}
+
+function startPathFromCurrent() {
+  if (universeEngine && universeEngine.selectedNode) {
+    openPathModal(universeEngine.selectedNode.id);
+  }
+}
+
+function openPathModal(sourceDefault = '') {
+  const modal = document.getElementById('path-trace-modal');
+  if (!modal) return;
+  if (sourceDefault) {
+    document.getElementById('path-source-input').value = sourceDefault;
+    document.getElementById('path-target-input').focus();
+  } else {
+    document.getElementById('path-source-input').focus();
+  }
+  modal.classList.remove('hidden');
+}
+
+function closePathModal() {
+  const modal = document.getElementById('path-trace-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function executePathTrace() {
+  const source = document.getElementById('path-source-input').value.trim();
+  const target = document.getElementById('path-target-input').value.trim();
+  if (!source || !target) {
+    alert('Please provide both Source and Target concepts.');
+    return;
+  }
+  closePathModal();
+  if (universeEngine) universeEngine.tracePath(source, target);
+}
+
 
 /* ========================================================================= */
 /* Corpus                                                                      */
@@ -2156,24 +4762,27 @@ async function loadCorpus() {
       return;
     }
     const list = document.getElementById('doc-list');
+    const docSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
     docs.forEach(doc => {
-      const icons = { pdf: '📄', markdown: '📝', text: '📃' };
       const el = document.createElement('div');
       el.className = 'doc-item';
       el.innerHTML = `
-        <div class="doc-icon">${icons[doc.fmt] || '📄'}</div>
+        <div class="doc-icon">${docSvg}</div>
         <div class="doc-info">
           <div class="doc-name">${escHtml(doc.title || doc.source)}</div>
           <div class="doc-meta">${escHtml(doc.source)} · ${doc.fmt}</div>
         </div>
         <div class="doc-badge">${doc.num_chunks} chunks</div>
+        <button class="btn btn-sm btn-danger-subtle" onclick="confirmDeleteDoc('${escHtml(doc.doc_id)}', '${escHtml(doc.title || doc.source)}')" title="Delete this document" style="padding:0.25rem 0.55rem;margin-left:0.6rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
       `;
       list.appendChild(el);
     });
   } catch (e) {
     document.getElementById('corpus-loading').style.display = 'none';
     document.getElementById('corpus-empty').classList.remove('hidden');
-    document.getElementById('corpus-empty').innerHTML = `⚠ Error loading corpus: ${escHtml(e.message)}`;
+    document.getElementById('corpus-empty').innerHTML = `Error loading corpus: ${escHtml(e.message)}`;
   }
 }
 
@@ -2199,7 +4808,7 @@ async function runEval() {
     renderEvalResults(report);
   } catch (e) {
     document.getElementById('eval-error').classList.remove('hidden');
-    document.getElementById('eval-error').innerHTML = `✖ ${escHtml(e.message)}`;
+    document.getElementById('eval-error').innerHTML = `Error: ${escHtml(e.message)}`;
   } finally {
     document.getElementById('eval-loading').classList.add('hidden');
     document.getElementById('eval-run-btn').disabled = false;
@@ -2219,7 +4828,7 @@ function renderEvalResults(report) {
     const tr = document.createElement('tr');
     if (r.mode === best.mode) tr.className = 'eval-best';
     tr.innerHTML = `
-      <td>${r.mode}${r.mode === best.mode ? ' ★' : ''}</td>
+      <td>${r.mode}${r.mode === best.mode ? ' <span class="tag-pill" style="font-size:0.68rem;padding:0.1rem 0.35rem;margin-left:0.25rem;">Best</span>' : ''}</td>
       <td>${r.hit_at_k.toFixed(3)}</td>
       <td>${r.mrr.toFixed(3)}</td>
       <td>${r.context_precision.toFixed(3)}</td>
@@ -2255,6 +4864,8 @@ function escHtml(str) {
   renderExamples('dash-examples');
   renderExamples('query-examples');
   initUploadHandlers();
+  initPanelUploadHandlers();
+  loadUploadHistory();
 })();
 </script>
 </body>

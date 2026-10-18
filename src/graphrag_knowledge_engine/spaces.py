@@ -117,7 +117,7 @@ class SpaceManager:
         space_config = self.base_config.model_copy(
             update={"data_dir": space_dir, "chunk_size": meta.chunk_size}
         )
-        engine = create_engine(space_config)
+        engine = create_engine(space_config, space_id=clean_id)
         self._engines[clean_id] = engine
         return engine
 
@@ -215,8 +215,13 @@ class SpaceManager:
         return True
 
     def close(self) -> None:
-        """Close all cached space engines."""
+        """Close all cached space engines and database drivers."""
         for eng in self._engines.values():
             with suppress(Exception):
                 eng.close()
         self._engines.clear()
+        from graphrag_knowledge_engine.store.neo4j_store import close_all_drivers
+
+        with suppress(Exception):
+            close_all_drivers()
+

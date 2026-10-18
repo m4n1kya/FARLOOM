@@ -88,3 +88,25 @@ def test_detect_query_entities_longest_match_wins() -> None:
 
 def test_normalize_entity() -> None:
     assert normalize_entity("  Beacon   API ") == "beacon api"
+
+
+def test_overview_returns_top_connected_subgraph() -> None:
+    kg = chain_graph()
+    overview = kg.overview(limit_entities=4, max_edges=10)
+    assert len(overview) > 0
+    # Edges contain subjects and objects
+    subjects = {e.subject for e in overview}
+    assert any("B1" in subjects or "C1" in subjects or "D1" in subjects for s in subjects)
+
+
+def test_find_path_returns_shortest_chain() -> None:
+    kg = chain_graph()
+    path = kg.find_path("A1", "C1", max_depth=3)
+    assert len(path) == 2
+    assert path[0].subject == "A1" and path[0].obj == "B1"
+    assert path[1].subject == "B1" and path[1].obj == "C1"
+
+    # Nonexistent path or beyond max_depth
+    no_path = kg.find_path("A1", "Nonexistent", max_depth=3)
+    assert no_path == []
+

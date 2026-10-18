@@ -90,3 +90,27 @@ def test_eval_run_endpoint_scores_all_modes(client: TestClient) -> None:
     body = resp.json()
     assert [r["mode"] for r in body["results"]] == ["dense", "bm25", "hybrid", "hybrid_graph"]
     assert all(0.0 <= r["hit_at_k"] <= 1.0 for r in body["results"])
+
+
+def test_delete_document_endpoint(client: TestClient) -> None:
+    # 1. Fetch documents
+    docs_resp = client.get("/docs/list")
+    assert docs_resp.status_code == 200
+    docs = docs_resp.json()
+    assert len(docs) > 0
+    target_doc = docs[0]
+    doc_id = target_doc["doc_id"]
+
+    # 2. Delete document
+    del_resp = client.delete(f"/docs/{doc_id}")
+    assert del_resp.status_code == 200
+    assert del_resp.json() == {"success": True, "deleted": doc_id}
+
+    # 3. Verify removed from list
+    docs_resp2 = client.get("/docs/list")
+    assert not any(d["doc_id"] == doc_id for d in docs_resp2.json())
+
+    # 4. Deleting non-existent returns 404
+    del_missing = client.delete("/docs/non_existent_doc_id_123")
+    assert del_missing.status_code == 404
+

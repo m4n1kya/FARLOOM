@@ -31,8 +31,9 @@ from graphrag_knowledge_engine.providers.embeddings import (
 from graphrag_knowledge_engine.providers.llm import FakeLLM, LLMProvider, OpenAILLM
 from graphrag_knowledge_engine.retrieval.bm25 import Bm25Index
 from graphrag_knowledge_engine.retrieval.retriever import HybridRetriever
+from graphrag_knowledge_engine.store.base import BaseGraphStore
 from graphrag_knowledge_engine.store.documents import DocumentStore
-from graphrag_knowledge_engine.store.graph import KnowledgeGraph
+from graphrag_knowledge_engine.store.factory import create_graph_store
 from graphrag_knowledge_engine.store.vectors import VectorIndex
 
 
@@ -42,15 +43,20 @@ class Engine:
         config: EngineConfig,
         embedder: EmbeddingProvider,
         llm: LLMProvider,
+        space_id: str = "default",
     ) -> None:
         self.config = config
         self.embedder = embedder
         self.llm = llm
+        self.space_id = space_id
         config.data_dir.mkdir(parents=True, exist_ok=True)
         self.store = DocumentStore(config.data_dir / "store.sqlite")
         self.vectors = VectorIndex(config.data_dir / "chroma")
-        self.graph = KnowledgeGraph.from_store_rows(
-            self.store.all_triples(), self.store.all_mentions()
+        self.graph: BaseGraphStore = create_graph_store(
+            config=config,
+            space_id=space_id,
+            triples=self.store.all_triples(),
+            mentions=self.store.all_mentions(),
         )
         self._bm25 = self._build_bm25()
         self._retriever = self._build_retriever()
@@ -116,6 +122,24 @@ class Engine:
             strategy=strategy,
         )
 
+    def delete_document(self, doc_id_or_source: str) -> bool:
+        """Delete a document and atomically clean its chunks, vectors, and graph elements."""
+        doc = self.store.get_document(doc_id_or_source)
+        if not doc:
+            return False
+
+        chunk_ids = self.store.get_chunk_ids_for_doc(doc.doc_id)
+        # 1. Cascade-delete from SQLite store
+        self.store.delete_document(doc.doc_id)
+        # 2. Delete vectors from ChromaDB
+        self.vectors.delete(chunk_ids)
+        # 3. Clean graph edges & orphaned nodes
+        self.graph.remove_chunks(chunk_ids)
+        # 4. Rebuild BM25 sparse index & hybrid retriever
+        self._bm25 = self._build_bm25()
+        self._retriever = self._build_retriever()
+        return True
+
     # -- querying ------------------------------------------------------------
 
     def ask(self, question: str, mode: RetrievalMode = "hybrid_graph") -> AskResponse:
@@ -131,9 +155,10 @@ class Engine:
 
     def close(self) -> None:
         self.store.close()
+        self.graph.close()
 
 
-def create_engine(config: EngineConfig) -> Engine:
+def create_engine(config: EngineConfig, space_id: str = "default") -> Engine:
     """Construct an engine with providers chosen by config."""
     embedder: EmbeddingProvider
     llm: LLMProvider
@@ -160,4 +185,5 @@ def create_engine(config: EngineConfig) -> Engine:
     else:
         embedder = FakeEmbedder(dim=config.embed_dim)
         llm = FakeLLM()
-    return Engine(config, embedder, llm)
+    return Engine(config, embedder, llm, space_id=space_id)
+

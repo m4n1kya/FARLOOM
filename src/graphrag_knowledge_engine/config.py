@@ -11,9 +11,11 @@ import os
 from pathlib import Path
 from typing import Literal
 
+from dotenv import load_dotenv
 from pydantic import BaseModel, ConfigDict, Field
 
 ProviderName = Literal["fake", "openai", "gemini"]
+GraphBackend = Literal["networkx", "neo4j"]
 
 
 class EngineConfig(BaseModel):
@@ -23,6 +25,14 @@ class EngineConfig(BaseModel):
 
     data_dir: Path = Field(default=Path("artifacts/runtime"))
     provider: ProviderName = "fake"
+
+    # Graph Backend
+    graph_backend: GraphBackend = "networkx"
+    neo4j_uri: str = ""
+    neo4j_username: str = ""
+    neo4j_password: str = ""
+    neo4j_database: str = "neo4j"
+    neo4j_connection_timeout: float = 10.0
 
     # Embeddings
     embed_dim: int = 512  # FakeEmbedder dimension; real providers report their own.
@@ -59,6 +69,7 @@ class EngineConfig(BaseModel):
 
 def config_from_env(data_dir: Path | None = None) -> EngineConfig:
     """Build a config from environment variables (see .env.example)."""
+    load_dotenv()
     raw_provider = os.environ.get("GRAPHRAG_PROVIDER", "fake").lower()
     if raw_provider == "openai":
         provider: ProviderName = "openai"
@@ -67,9 +78,18 @@ def config_from_env(data_dir: Path | None = None) -> EngineConfig:
     else:
         provider = "fake"
 
+    raw_backend = os.environ.get("GRAPH_BACKEND", "networkx").strip().lower()
+    graph_backend: GraphBackend = "neo4j" if raw_backend == "neo4j" else "networkx"
+
     return EngineConfig(
         data_dir=data_dir or Path(os.environ.get("GRAPHRAG_DATA_DIR", "artifacts/runtime")),
         provider=provider,
+        graph_backend=graph_backend,
+        neo4j_uri=(os.environ.get("NEO4J_URI") or os.environ.get("NEO4J_URL") or "").strip(),
+        neo4j_username=(os.environ.get("NEO4J_USERNAME") or os.environ.get("NEO4J_USER") or "").strip(),
+        neo4j_password=os.environ.get("NEO4J_PASSWORD", "").strip(),
+        neo4j_database=(os.environ.get("NEO4J_DATABASE") or "neo4j").strip(),
+        neo4j_connection_timeout=float(os.environ.get("NEO4J_CONNECTION_TIMEOUT", "10.0")),
         min_confidence=float(os.environ.get("GRAPHRAG_MIN_CONFIDENCE", "0.4")),
         openai_api_key=os.environ.get("OPENAI_API_KEY", ""),
         openai_base_url=os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1"),
@@ -78,3 +98,4 @@ def config_from_env(data_dir: Path | None = None) -> EngineConfig:
         gemini_api_key=os.environ.get("GEMINI_API_KEY", ""),
         gemini_chat_model=os.environ.get("GRAPHRAG_GEMINI_MODEL", "gemini-2.0-flash-lite"),
     )
+

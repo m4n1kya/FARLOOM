@@ -22,6 +22,8 @@ dependencies = [
     "pydantic==2.13.4",
     "httpx==0.28.1",
     "python-multipart>=0.0.9",
+    "neo4j>=5.28.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
@@ -55,7 +57,7 @@ warn_unreachable = true
 mypy_path = "src"
 
 [[tool.mypy.overrides]]
-module = ["chromadb.*", "rank_bm25.*", "networkx.*", "pypdf.*"]
+module = ["chromadb.*", "rank_bm25.*", "networkx.*", "pypdf.*", "neo4j.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

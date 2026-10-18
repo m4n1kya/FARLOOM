@@ -21,12 +21,10 @@ Documents (PDF / Markdown / TXT)
     │   Ingest    │  load → chunk → embed → extract entities+triples
     └──────┬──────┘
            │
-     ┌─────┼─────┐
-     ▼     ▼     ▼
-  ChromaDB SQLite NetworkX
-  (vectors) (chunks, (knowledge
-           triples,  graph)
-           mentions)
+     ┌─────┼──────────────────────┐
+     ▼     ▼                      ▼
+  ChromaDB SQLite    NetworkX / Neo4j AuraDB
+  (vectors) (chunks) (knowledge graph backend)
            │
            ▼
     ┌─────────────────────────────────┐
@@ -44,6 +42,45 @@ Documents (PDF / Markdown / TXT)
                    ▼
          AskResponse { answer, citations, debug }
 ```
+
+## Knowledge Graph Backends
+
+FARLOOM supports dual knowledge graph storage backends selected explicitly via configuration:
+
+| Backend | Configuration | Characteristics |
+|---|---|---|
+| **NetworkX** (Default) | `GRAPH_BACKEND=networkx` | Fast, in-memory graph hydrated from SQLite. 100% offline with zero external dependencies. |
+| **Neo4j / AuraDB** | `GRAPH_BACKEND=neo4j` | Persistent distributed graph database, official `neo4j` Python driver, parameterized Cypher queries, multi-space tenancy, and cloud persistence. |
+
+### Connecting to Neo4j AuraDB (Free Tier)
+
+1. **Create Free Database**:
+   Visit [Neo4j AuraDB Console](https://console.neo4j.io) and create an **AuraDB Free** instance.
+2. **Download Credentials**:
+   Save your connection URI (e.g. `neo4j+s://<instance-id>.databases.neo4j.io`) and password generated during instance setup.
+3. **Configure Environment Variables**:
+   In your `.env` file or hosting secrets:
+   ```bash
+   GRAPH_BACKEND=neo4j
+   NEO4J_URI=neo4j+s://<instance-id>.databases.neo4j.io
+   NEO4J_USERNAME=neo4j
+   NEO4J_PASSWORD=your_secure_password
+   NEO4J_DATABASE=neo4j
+   ```
+4. **Automatic Schema & Verification**:
+   When started in Neo4j mode, FARLOOM automatically:
+   - Verifies driver connectivity on startup and reports state in `/health/ready` and `/status`.
+   - Idempotently creates uniqueness constraints: `CREATE CONSTRAINT entity_uid IF NOT EXISTS FOR (e:Entity) REQUIRE e.uid IS UNIQUE`.
+   - Creates composite indexes on `(space_id, key)` for multi-tenant query performance.
+   - Syncs existing triples and chunk provenance without duplicates using parameterized `MERGE`.
+
+### AuraDB Inactivity and Resumption
+
+Free-tier Neo4j AuraDB instances automatically pause after periods of inactivity. FARLOOM includes built-in detection for paused instances:
+- System diagnostics report instance status and suggest resuming via the console.
+- The web UI displays an interactive notice with a direct link to `https://console.neo4j.io`.
+- Inability to reach Neo4j returns a clear 503 on `/health/ready` rather than failing silently or presenting a false healthy state.
+
 
 ## Retrieval Modes
 
@@ -274,17 +311,24 @@ Technical documentation corpus (Python, FastAPI, ChromaDB, NetworkX):
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/health` | Health check |
-| `GET` | `/status` | Provider and demo-mode status |
-| `POST` | `/ingest` | Ingest a document |
-| `GET` | `/ask?q=&mode=` | Answer a question |
-| `GET` | `/graph/neighbors?entity=&depth=` | Graph neighbors |
-| `GET` | `/graph/stats` | Entity/edge counts |
+| `GET` | `/health` | Health check (returns process & graph status) |
+| `GET` | `/health/ready` | Readiness check (fails with 503 if graph backend is unreachable) |
+| `GET` | `/status` | Active provider, graph backend, space directory, and demo-mode status |
+| `GET` | `/spaces` | List all isolated Knowledge Spaces |
+| `POST` | `/spaces` | Create a new isolated Knowledge Space |
+| `DELETE`| `/spaces/{space_id}` | Delete an isolated Knowledge Space and its index |
+| `POST` | `/spaces/{space_id}/upload` | Upload and ingest a document into a Knowledge Space |
+| `POST` | `/upload` | Upload and ingest a document with new or target space selection |
+| `POST` | `/ingest` | Ingest a local filesystem path |
+| `GET` | `/ask?q=&mode=` | Hybrid GraphRAG answer synthesis with citations |
+| `GET` | `/graph/neighbors?entity=&depth=` | Ego-network graph neighbors |
+| `GET` | `/graph/stats` | Entity/edge counts and graph nodes |
 | `GET` | `/graph/entities?q=&limit=` | Search entity labels |
-| `GET` | `/docs/list` | List ingested documents |
-| `GET` | `/chunks/count` | Total indexed chunk count |
+| `GET` | `/docs/list` | List ingested documents in the target space |
+| `GET` | `/chunks/count` | Total indexed chunk count in the target space |
 | `POST` | `/eval/run` | Run evaluation benchmark |
-| `GET` | `/docs` | OpenAPI / Swagger UI |
+| `GET` | `/docs` | OpenAPI / Swagger interactive UI |
+
 
 ## Known Limitations
 
