@@ -6,7 +6,7 @@
   <title>FARLOOM — Technical Knowledge Intelligence Engine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ------------------------------------------------------------------ */
     /* Design tokens                                                         */
@@ -357,81 +357,53 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 280px;
     }
-
-    /* React Bits TechText Component Styling */
-    .tech-text {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      touch-action: pan-y;
+    .dashboard-hero-title {
+      font-size: clamp(4.2rem, 15vw, 11rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      line-height: 0.88;
+      white-space: nowrap;
       user-select: none;
+      background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.82) 50%, rgba(255, 255, 255, 0.45) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 70px rgba(255, 255, 255, 0.15);
+      margin: 0;
     }
-    .tech-text-canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* Minimalist Scroll Down Animation: Ellipse Circle with Inner Animated Circle */
-    .scroll-down-wrap {
-      display: flex;
+    .dashboard-hero-scroll {
+      display: inline-flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
+      gap: 0.45rem;
+      color: rgba(255, 255, 255, 0.45);
       cursor: pointer;
-      padding: 0.85rem 1.5rem;
+      transition: all 0.25s ease;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
       margin-top: auto;
-      margin-bottom: 1.25rem;
-      user-select: none;
-      z-index: 10;
-      transition: transform 0.25s ease, opacity 0.25s ease;
+      margin-bottom: 0.5rem;
     }
-    .scroll-down-wrap:hover {
-      transform: translateY(3px);
+    .dashboard-hero-scroll:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.05);
     }
-    .scroll-down-ellipse {
-      width: 22px;
-      height: 38px;
-      border: 1.5px solid rgba(255, 255, 255, 0.42);
-      border-radius: 12px;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-      background: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(4px);
+    .dashboard-hero-scroll-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-weight: 600;
     }
-    .scroll-down-wrap:hover .scroll-down-ellipse {
-      border-color: #ffffff;
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.4);
+    .dashboard-hero-scroll-arrow {
+      animation: heroScrollBounce 2s infinite ease-in-out;
     }
-    .scroll-down-circle {
-      width: 5px;
-      height: 5px;
-      background: #ffffff;
-      border-radius: 50%;
-      position: absolute;
-      top: 6px;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-      animation: scrollDownCircleAnim 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-    }
-    @keyframes scrollDownCircleAnim {
-      0% {
-        opacity: 0;
-        transform: translateY(0);
-      }
-      20% {
-        opacity: 1;
-      }
-      70% {
-        opacity: 1;
-        transform: translateY(16px);
-      }
-      90%, 100% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
+    @keyframes heroScrollBounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(6px); }
+      60% { transform: translateY(3px); }
     }
     .dashboard-content-body {
       scroll-margin-top: 72px;
@@ -1879,16 +1851,17 @@
     <!-- ================================================================ -->
     <div class="panel active" id="panel-dashboard">
 
-      <!-- Hero Section (One Screen Size with Cinematic TechText FARLOOM & Ellipse Scroll Indicator) -->
+      <!-- Hero Section (One Screen Size with Big Centered FARLOOM) -->
       <section class="dashboard-hero" id="dashboard-hero">
         <div class="dashboard-hero-center">
-          <div id="techtext-mount" class="tech-text" style="width: 100%; height: 320px; max-width: 1100px; margin: 0 auto; position: relative;">
-            <canvas id="techtext-canvas" class="tech-text-canvas"></canvas>
-          </div>
+          <h1 class="dashboard-hero-title">FARLOOM</h1>
         </div>
-        <div class="scroll-down-wrap" onclick="scrollToDashboardContent()" role="button" aria-label="Scroll down">
-          <div class="scroll-down-ellipse">
-            <div class="scroll-down-circle"></div>
+        <div class="dashboard-hero-scroll" onclick="scrollToDashboardContent()">
+          <span class="dashboard-hero-scroll-label">Scroll to explore</span>
+          <div class="dashboard-hero-scroll-arrow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
         </div>
       </section>
@@ -5044,6 +5017,5 @@ function escHtml(str) {
 })();
 </script>
 <script src="/static/lightfall.js"></script>
-<script src="/static/techtext.js"></script>
 </body>
 </html>
