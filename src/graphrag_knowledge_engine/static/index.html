@@ -198,7 +198,7 @@
       padding: 0 1.5rem;
       display: flex;
       align-items: center;
-      gap: 2rem;
+      justify-content: space-between;
       height: 56px;
       position: sticky;
       top: 0;
@@ -208,6 +208,7 @@
       display: flex;
       align-items: center;
       user-select: none;
+      z-index: 2;
     }
     .logo-name {
       color: #FFFFFF;
@@ -266,7 +267,42 @@
       text-align: center;
     }
 
-    .nav { display: flex; gap: 0.35rem; flex: 1; }
+    .nav {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      z-index: 1;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-left: auto;
+      z-index: 2;
+    }
+    @media (max-width: 1080px) {
+      .header {
+        position: relative;
+        height: auto;
+        padding: 0.75rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .nav {
+        position: static;
+        transform: none;
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        overflow-x: auto;
+      }
+      .header-right {
+        margin-left: auto;
+      }
+    }
     .nav-btn {
       background: none;
       border: 1px solid transparent;
@@ -296,6 +332,79 @@
       gap: 0.5rem;
       font-size: 0.8rem;
       color: var(--text-secondary);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Dashboard Hero (1 Full Screen Height Landing with Big Centered FARLOOM) */
+    /* ------------------------------------------------------------------ */
+    .dashboard-hero {
+      height: calc(100vh - 56px - 3rem);
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      text-align: center;
+      user-select: none;
+      margin-bottom: 3rem;
+    }
+    .dashboard-hero-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .dashboard-hero-title {
+      font-size: clamp(4.2rem, 15vw, 11rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      line-height: 0.88;
+      white-space: nowrap;
+      user-select: none;
+      background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.82) 50%, rgba(255, 255, 255, 0.45) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 70px rgba(255, 255, 255, 0.15);
+      margin: 0;
+    }
+    .dashboard-hero-scroll {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.45rem;
+      color: rgba(255, 255, 255, 0.45);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      padding: 0.5rem 1.25rem;
+      border-radius: 20px;
+      margin-top: auto;
+      margin-bottom: 0.5rem;
+    }
+    .dashboard-hero-scroll:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .dashboard-hero-scroll-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-weight: 600;
+    }
+    .dashboard-hero-scroll-arrow {
+      animation: heroScrollBounce 2s infinite ease-in-out;
+    }
+    @keyframes heroScrollBounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(6px); }
+      60% { transform: translateY(3px); }
+    }
+    .dashboard-content-body {
+      scroll-margin-top: 72px;
     }
     .status-dot {
       width: 8px; height: 8px;
@@ -1232,7 +1341,7 @@
     /* ------------------------------------------------------------------ */
     /* Knowledge Spaces & Upload Styles                                   */
     /* ------------------------------------------------------------------ */
-    .space-selector-wrap { position: relative; margin-left: auto; }
+    .space-selector-wrap { position: relative; }
     .space-btn {
       display: flex;
       align-items: center;
@@ -1701,29 +1810,29 @@
       <button class="nav-btn" data-panel="spaces">Spaces Hub</button>
       <button class="nav-btn" data-panel="eval">Evaluation</button>
     </nav>
-    <div class="space-selector-wrap" id="space-selector-wrap">
-      <button class="space-btn" id="space-dropdown-btn" onclick="toggleSpaceDropdown()">
-        <span class="space-pill-label">Space:</span>
-        <strong id="active-space-name">Default Space</strong>
-        <span class="space-arrow">&blacktriangledown;</span>
-      </button>
-      <div class="space-dropdown hidden" id="space-dropdown">
-        <div class="space-dropdown-header">
-          <span style="font-weight:600;font-size:0.85rem;">Knowledge Spaces</span>
-          <button class="btn btn-sm btn-primary" onclick="openCreateSpaceModal()">+ New Space</button>
-        </div>
-        <div class="space-list" id="space-dropdown-list">
-          <!-- dynamically populated -->
+    <div class="header-right">
+      <div class="space-selector-wrap" id="space-selector-wrap">
+        <button class="space-btn" id="space-dropdown-btn" onclick="toggleSpaceDropdown()">
+          <span class="space-pill-label">Space:</span>
+          <strong id="active-space-name">Default Space</strong>
+          <span class="space-arrow">&blacktriangledown;</span>
+        </button>
+        <div class="space-dropdown hidden" id="space-dropdown">
+          <div class="space-dropdown-header">
+            <span style="font-weight:600;font-size:0.85rem;">Knowledge Spaces</span>
+            <button class="btn btn-sm btn-primary" onclick="openCreateSpaceModal()">+ New Space</button>
+          </div>
+          <div class="space-list" id="space-dropdown-list">
+            <!-- dynamically populated -->
+          </div>
         </div>
       </div>
-    </div>
-    <div class="header-status">
-      <span class="badge" id="header-backend-badge" style="font-size:0.75rem;padding:0.2rem 0.55rem;border-radius:4px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;gap:0.35rem;">
-        <span class="status-dot ok" id="header-backend-dot" style="width:6px;height:6px;"></span>
-        <span id="header-backend-label">NetworkX</span>
-      </span>
-      <div class="status-dot" id="health-dot"></div>
-      <span id="health-label">connecting…</span>
+      <div class="header-status">
+        <span class="badge" id="header-backend-badge" style="font-size:0.75rem;padding:0.2rem 0.55rem;border-radius:4px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);display:flex;align-items:center;gap:0.35rem;">
+          <span class="status-dot ok" id="header-backend-dot" style="width:6px;height:6px;"></span>
+          <span id="header-backend-label">NetworkX</span>
+        </span>
+      </div>
     </div>
   </header>
 
@@ -1734,18 +1843,36 @@
     <!-- DASHBOARD                                                          -->
     <!-- ================================================================ -->
     <div class="panel active" id="panel-dashboard">
-      <div style="margin-bottom:1.5rem;">
-        <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:0.35rem;">
-          FARLOOM
-          <span style="font-size:0.9rem;font-weight:400;color:var(--text2);margin-left:0.5rem;">
-            Technical Knowledge Intelligence Engine
-          </span>
-        </h1>
-        <p class="text-muted">
-          Hybrid retrieval combining dense vector search, BM25 keyword matching,
-          and knowledge graph traversal — fused with Reciprocal Rank Fusion.
-        </p>
-      </div>
+
+      <!-- Hero Section (One Screen Size with Big Centered FARLOOM) -->
+      <section class="dashboard-hero" id="dashboard-hero">
+        <div class="dashboard-hero-center">
+          <h1 class="dashboard-hero-title">FARLOOM</h1>
+        </div>
+        <div class="dashboard-hero-scroll" onclick="scrollToDashboardContent()">
+          <span class="dashboard-hero-scroll-label">Scroll to explore</span>
+          <div class="dashboard-hero-scroll-arrow">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Content Body (Shifted One Screen Size Below) -->
+      <div id="dashboard-content-anchor" class="dashboard-content-body">
+        <div style="margin-bottom:1.5rem;">
+          <h1 style="font-size:1.6rem;font-weight:700;margin-bottom:0.35rem;">
+            FARLOOM
+            <span style="font-size:0.9rem;font-weight:400;color:var(--text2);margin-left:0.5rem;">
+              Technical Knowledge Intelligence Engine
+            </span>
+          </h1>
+          <p class="text-muted">
+            Hybrid retrieval combining dense vector search, BM25 keyword matching,
+            and knowledge graph traversal — fused with Reciprocal Rank Fusion.
+          </p>
+        </div>
 
       <div id="demo-banner" class="banner warning hidden">
         <span><strong>Notice: Offline demonstration mode</strong> — no generative model configured.
@@ -1919,6 +2046,7 @@
           </div>
         </div>
       </div>
+      </div> <!-- /#dashboard-content-anchor -->
     </div>
 
     <!-- ================================================================ -->
@@ -2456,6 +2584,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (btn.dataset.panel === 'corpus') loadCorpus();
     if (btn.dataset.panel === 'graph') {
       loadEntitySuggestions();
@@ -2465,6 +2594,13 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.dataset.panel === 'upload') loadUploadHistory();
   });
 });
+
+function scrollToDashboardContent() {
+  const target = document.getElementById('dashboard-content-anchor');
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' });
+  }
+}
 
 /* ========================================================================= */
 /* API helpers (Space-aware)                                                   */
@@ -3092,13 +3228,17 @@ async function initDashboard() {
       apiFetch('/docs/list'),
     ]);
 
-    // Health
-    if (health.status === 'fulfilled' && health.value.status === 'ok') {
-      document.getElementById('health-dot').className = 'status-dot ok';
-      document.getElementById('health-label').textContent = 'healthy';
-    } else {
-      document.getElementById('health-dot').className = 'status-dot error';
-      document.getElementById('health-label').textContent = 'unreachable';
+    // Health (if indicator present)
+    const hDot = document.getElementById('health-dot');
+    const hLabel = document.getElementById('health-label');
+    if (hDot && hLabel) {
+      if (health.status === 'fulfilled' && health.value.status === 'ok') {
+        hDot.className = 'status-dot ok';
+        hLabel.textContent = 'healthy';
+      } else {
+        hDot.className = 'status-dot error';
+        hLabel.textContent = 'unreachable';
+      }
     }
 
     // Provider status & Graph backend
@@ -3157,8 +3297,10 @@ async function initDashboard() {
       document.getElementById('stat-edges').textContent = graphStats.value.num_edges;
     }
   } catch (e) {
-    document.getElementById('health-dot').className = 'status-dot error';
-    document.getElementById('health-label').textContent = 'error';
+    const hDot = document.getElementById('health-dot');
+    const hLabel = document.getElementById('health-label');
+    if (hDot) hDot.className = 'status-dot error';
+    if (hLabel) hLabel.textContent = 'error';
   }
 }
 
