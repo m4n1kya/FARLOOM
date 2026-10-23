@@ -374,36 +374,63 @@
       text-shadow: 0 0 70px rgba(255, 255, 255, 0.15);
       margin: 0;
     }
-    .dashboard-hero-scroll {
+    /* Petite Minimalist Scroll Down Animation (Small Ellipse with Inner Dot) */
+    .scroll-down-wrap {
       display: inline-flex;
-      flex-direction: column;
       align-items: center;
-      gap: 0.45rem;
-      color: rgba(255, 255, 255, 0.45);
+      justify-content: center;
       cursor: pointer;
-      transition: all 0.25s ease;
-      padding: 0.5rem 1.25rem;
-      border-radius: 20px;
+      padding: 0.6rem 1.2rem;
       margin-top: auto;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+      user-select: none;
+      z-index: 10;
+      transition: transform 0.25s ease, opacity 0.25s ease;
     }
-    .dashboard-hero-scroll:hover {
-      color: #FFFFFF;
-      background: rgba(255, 255, 255, 0.05);
+    .scroll-down-wrap:hover {
+      transform: translateY(2px);
     }
-    .dashboard-hero-scroll-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.22em;
-      font-weight: 600;
+    .scroll-down-ellipse {
+      width: 16px;
+      height: 27px;
+      border: 1.2px solid rgba(255, 255, 255, 0.42);
+      border-radius: 9px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+      background: rgba(0, 0, 0, 0.25);
     }
-    .dashboard-hero-scroll-arrow {
-      animation: heroScrollBounce 2s infinite ease-in-out;
+    .scroll-down-wrap:hover .scroll-down-ellipse {
+      border-color: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
     }
-    @keyframes heroScrollBounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(6px); }
-      60% { transform: translateY(3px); }
+    .scroll-down-circle {
+      width: 3.5px;
+      height: 3.5px;
+      background: #ffffff;
+      border-radius: 50%;
+      position: absolute;
+      top: 4.5px;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
+      animation: scrollDownCircleAnim 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+    @keyframes scrollDownCircleAnim {
+      0% {
+        opacity: 0;
+        transform: translateY(0);
+      }
+      20% {
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(11px);
+      }
+      90%, 100% {
+        opacity: 0;
+        transform: translateY(14px);
+      }
     }
     .dashboard-content-body {
       scroll-margin-top: 72px;
@@ -1856,12 +1883,9 @@
         <div class="dashboard-hero-center">
           <h1 class="dashboard-hero-title">FARLOOM</h1>
         </div>
-        <div class="dashboard-hero-scroll" onclick="scrollToDashboardContent()">
-          <span class="dashboard-hero-scroll-label">Scroll to explore</span>
-          <div class="dashboard-hero-scroll-arrow">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+        <div class="scroll-down-wrap" onclick="scrollToDashboardContent()" role="button" aria-label="Scroll down" title="Scroll to explore">
+          <div class="scroll-down-ellipse">
+            <div class="scroll-down-circle"></div>
           </div>
         </div>
       </section>
