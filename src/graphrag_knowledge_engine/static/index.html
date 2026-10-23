@@ -175,7 +175,7 @@
       display: flex;
       flex-direction: column;
     }
-    h1, h2, h3, .brand-name, .section-title, .upload-main-title, .doc-history-title, .footer-watermark {
+    h1, h2, h3, .brand-name, .section-title, .upload-main-title, .doc-history-title {
       font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     a { color: var(--text-accent); text-decoration: none; }
@@ -244,45 +244,19 @@
       font-size: 1.15rem;
     }
 
-    /* Footer with Giant Screen-Wide Watermark (Photoshop Cutter Stencil over Lightfall) */
+    /* Footer */
     .site-footer {
       position: relative;
       width: 100%;
       margin-top: auto;
-      padding: 11rem 0 2.2rem;
+      padding: 3rem 0 2.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      overflow: hidden;
+      justify-content: center;
       user-select: none;
       background: transparent;
       border-top: 1px solid rgba(255, 255, 255, 0.04);
-    }
-    .footer-watermark {
-      position: absolute;
-      bottom: 0.8vw;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      max-width: 100vw;
-      text-align: center;
-      font-size: clamp(4.5rem, 20.8vw, 26vw);
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      line-height: 0.72;
-      pointer-events: none;
-      user-select: none;
-      z-index: 1;
-      white-space: nowrap;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.008) 85%, rgba(255, 255, 255, 0) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
-      mix-blend-mode: plus-lighter;
-      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     .footer-copyright {
       position: relative;
@@ -2571,10 +2545,9 @@
 
   </main>
 
-  <!-- ===== FOOTER (Like Synaptica) ===== -->
+  <!-- ===== FOOTER ===== -->
   <footer class="site-footer">
-    <div class="footer-watermark" aria-hidden="true">FARLOOM</div>
-    <div class="footer-copyright">COPYRIGHT © 2026 FARLOOM. ALL RIGHTS RESERVED.</div>
+    <div class="footer-copyright">COPYRIGHT © 2026. ALL RIGHTS RESERVED.</div>
   </footer>
 </div>
 
