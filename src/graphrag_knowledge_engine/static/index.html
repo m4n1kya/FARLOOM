@@ -968,6 +968,51 @@
       border-radius: 0;
       border: none;
     }
+    .universe-fullscreen-back-btn {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 100000;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.52rem 1.05rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: #ffffff;
+      background: rgba(14, 18, 26, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+    .universe-fullscreen-back-btn:hover {
+      background: rgba(28, 34, 48, 0.95);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 16px rgba(255, 255, 255, 0.18);
+    }
+    .universe-fullscreen-back-btn:active {
+      transform: translateY(0);
+    }
+    .universe-fullscreen-back-btn .universe-kbd-hint {
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.65);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
+      padding: 1px 5px;
+      letter-spacing: 0.04em;
+    }
+    .universe-viewport.fullscreen .universe-fullscreen-back-btn {
+      display: inline-flex;
+    }
 
     #universe-canvas {
       width: 100%;
@@ -2363,6 +2408,15 @@
 
       <!-- Universe Canvas Viewport -->
       <div id="universe-wrapper" class="universe-viewport">
+        <!-- Floating Back Button (Visible in Fullscreen) -->
+        <button id="universe-back-btn" class="universe-fullscreen-back-btn" onclick="toggleUniverseFullscreen()" title="Back / Exit Fullscreen (Esc)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Back</span>
+          <span class="universe-kbd-hint">ESC</span>
+        </button>
+
         <canvas id="universe-canvas"></canvas>
 
         <!-- Tooltip -->
@@ -4849,7 +4903,11 @@ document.addEventListener('click', e => {
 function toggleUniverseFullscreen() {
   const wrapper = document.getElementById('universe-wrapper');
   if (!wrapper) return;
-  wrapper.classList.toggle('fullscreen');
+  const isNowFullscreen = wrapper.classList.toggle('fullscreen');
+  const btn = document.getElementById('btn-fullscreen');
+  if (btn) {
+    btn.textContent = isNowFullscreen ? 'Exit Fullscreen' : 'Fullscreen';
+  }
   if (universeEngine) {
     setTimeout(() => {
       universeEngine.resizeCanvas();
@@ -4857,6 +4915,16 @@ function toggleUniverseFullscreen() {
     }, 150);
   }
 }
+
+// Exit universe fullscreen on Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const wrapper = document.getElementById('universe-wrapper');
+    if (wrapper && wrapper.classList.contains('fullscreen')) {
+      toggleUniverseFullscreen();
+    }
+  }
+});
 
 function toggleLegendCollapse() {
   const body = document.getElementById('legend-body');
