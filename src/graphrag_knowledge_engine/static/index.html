@@ -187,7 +187,33 @@
     /* ------------------------------------------------------------------ */
     /* Layout & Header                                                       */
     /* ------------------------------------------------------------------ */
-    .app { display: flex; flex-direction: column; min-height: 100vh; background: var(--bg-primary); }
+    /* Permanent Lightfall WebGL2 Background (React Bits) */
+    .lightfall-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .lightfall-canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+      background: transparent;
+    }
 
     /* Header */
     .header {
@@ -218,7 +244,7 @@
       font-size: 1.15rem;
     }
 
-    /* Footer with Giant Screen-Wide Watermark (Exact Synaptica Style) */
+    /* Footer with Giant Screen-Wide Watermark (Photoshop Cutter Stencil over Lightfall) */
     .site-footer {
       position: relative;
       width: 100%;
@@ -230,7 +256,7 @@
       justify-content: flex-end;
       overflow: hidden;
       user-select: none;
-      background: #000000;
+      background: transparent;
       border-top: 1px solid rgba(255, 255, 255, 0.04);
     }
     .footer-watermark {
@@ -242,7 +268,7 @@
       max-width: 100vw;
       text-align: center;
       font-size: clamp(4.5rem, 20.8vw, 26vw);
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.04em;
       text-transform: uppercase;
       line-height: 0.72;
@@ -250,11 +276,13 @@
       user-select: none;
       z-index: 1;
       white-space: nowrap;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.075) 0%, rgba(255, 255, 255, 0.035) 45%, rgba(255, 255, 255, 0.008) 80%, rgba(255, 255, 255, 0) 100%);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.008) 85%, rgba(255, 255, 255, 0) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
+      mix-blend-mode: plus-lighter;
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     .footer-copyright {
       position: relative;
@@ -1747,7 +1775,12 @@
   </style>
 </head>
 <body>
-<div class="app">
+  <!-- Permanent Lightfall WebGL2 Falling Streaks Background (React Bits) -->
+  <div id="lightfall-background" class="lightfall-container">
+    <canvas id="lightfall-canvas" class="lightfall-canvas" aria-hidden="true"></canvas>
+  </div>
+
+  <div class="app">
 
   <!-- Modal for Creating Space -->
   <div class="modal-overlay hidden" id="create-space-modal">
@@ -5010,5 +5043,6 @@ function escHtml(str) {
   loadUploadHistory();
 })();
 </script>
+<script src="/static/lightfall.js"></script>
 </body>
 </html>
