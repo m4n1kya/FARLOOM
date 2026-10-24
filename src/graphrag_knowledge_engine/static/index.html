@@ -187,7 +187,8 @@
     /* ------------------------------------------------------------------ */
     /* Layout & Header                                                       */
     /* ------------------------------------------------------------------ */
-    /* Permanent LightTunnel WebGL2 Hyperspace Tunnel Background (React Bits) */
+    /* Permanent AeroShards WebGPU Shard Background (React Bits) */
+    .aero-shards-container,
     .light-tunnel-container {
       position: fixed;
       inset: 0;
@@ -197,6 +198,7 @@
       z-index: 0;
       pointer-events: none;
     }
+    .aero-shards-canvas,
     .light-tunnel-canvas {
       position: absolute;
       inset: 0;
@@ -1821,9 +1823,9 @@
   </style>
 </head>
 <body>
-  <!-- Permanent LightTunnel WebGL2 Fiber-Optic Hyperspace Tunnel Background (React Bits) -->
-  <div id="light-tunnel-background" class="light-tunnel-container">
-    <canvas id="light-tunnel-canvas" class="light-tunnel-canvas" aria-hidden="true"></canvas>
+  <!-- Permanent AeroShards WebGPU Shard Background (React Bits) -->
+  <div id="aero-shards-background" class="aero-shards aero-shards-container">
+    <canvas id="aero-shards-canvas" class="aero-shards-canvas" aria-hidden="true"></canvas>
   </div>
 
   <div class="app">
@@ -5109,5 +5111,6 @@ function escHtml(str) {
 })();
 </script>
 <script src="/static/lighttunnel.js"></script>
+<script type="module" src="/static/aeroshards.js"></script>
 </body>
 </html>

@@ -460,6 +460,8 @@ void main() {
     };
   }
 
+  window.createLightTunnel = createLightTunnel;
+
   // Auto-mount on load
   function init() {
     const container = document.getElementById('light-tunnel-background');
