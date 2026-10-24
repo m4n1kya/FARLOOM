@@ -97,34 +97,38 @@
     /* Reset & base                                                          */
     /* ------------------------------------------------------------------ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root, html {
+      color-scheme: dark;
+    }
     html { font-size: 15px; scroll-behavior: smooth; overflow-x: hidden; }
 
-    /* Dark OLED Scrollbars & Sliders System */
+    /* Pitch Black OLED Scrollbars & Sliders System */
     * {
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.22) #000000;
+      scrollbar-color: #000000 #000000;
     }
     ::-webkit-scrollbar {
-      width: 7px;
+      width: 6px;
       height: 6px;
       background: #000000;
     }
     ::-webkit-scrollbar-track {
       background: #000000;
-      border-left: 1px solid rgba(255, 255, 255, 0.04);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      border: none;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.22);
+      background: #000000;
       border-radius: 4px;
-      border: 1px solid rgba(0, 0, 0, 0.7);
-      transition: background 0.15s ease;
+      border: 1px solid #141414;
+      transition: background 0.15s ease, border-color 0.15s ease;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.42);
+      background: #111111;
+      border-color: #222222;
     }
     ::-webkit-scrollbar-thumb:active {
-      background: rgba(255, 255, 255, 0.60);
+      background: #1a1a1a;
+      border-color: #333333;
     }
     ::-webkit-scrollbar-corner {
       background: #000000;
@@ -134,10 +138,10 @@
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
-      background: #0a0a0a;
-      height: 5px;
+      background: #000000;
+      height: 4px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid #181818;
       outline: none;
       cursor: pointer;
     }
@@ -147,24 +151,25 @@
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      background: #000000;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
       cursor: pointer;
-      border: 2px solid #000000;
-      transition: transform 0.15s ease, background 0.15s ease;
+      border: 1.5px solid #2a2a2a;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
     }
     input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.18);
-      background: #f1f5f9;
+      transform: scale(1.15);
+      background: #0d0d0d;
+      border-color: #444444;
     }
     input[type="range"]::-moz-range-thumb {
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+      background: #000000;
+      box-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
       cursor: pointer;
-      border: 2px solid #000000;
+      border: 1.5px solid #2a2a2a;
     }
 
     body {
@@ -364,7 +369,7 @@
     }
     .dashboard-hero-title {
       font-family: 'Clash Display', 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: clamp(3.2rem, 11vw, 9rem);
+      font-size: clamp(2.9rem, 9.8vw, 8.2rem);
       font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -373,6 +378,7 @@
       white-space: nowrap;
       user-select: none;
       margin: 0;
+      transform: translateY(-2.2rem);
     }
 
     /* Petite Minimalist Scroll Down Animation (Small Ellipse with Inner Dot) */
@@ -400,7 +406,7 @@
       display: flex;
       justify-content: center;
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
-      background: rgba(0, 0, 0, 0.35);
+      background: #000000;
     }
     .scroll-down-wrap:hover .scroll-down-ellipse {
       border-color: #ffffff;
