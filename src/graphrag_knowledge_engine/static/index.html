@@ -380,6 +380,49 @@
       margin: 0;
       transform: translateY(-2.2rem);
     }
+    .hero-char {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(28px) scale(0.92);
+      filter: blur(14px);
+      will-change: transform, opacity, filter, color, text-shadow;
+      animation: heroCharReveal 1.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(0.25s + var(--char-idx) * 0.11s);
+    }
+    @keyframes heroCharReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(28px) scale(0.92);
+        filter: blur(14px);
+        color: #9ca3af;
+        text-shadow: none;
+      }
+      35% {
+        opacity: 0.75;
+        filter: blur(4px);
+      }
+      65% {
+        opacity: 1;
+        filter: blur(0px);
+        color: #ffffff;
+        text-shadow: 0 0 24px rgba(255, 255, 255, 0.65), 0 0 55px rgba(148, 163, 184, 0.35);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
+        color: #9ca3af;
+        text-shadow: none;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-char {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        animation: none;
+      }
+    }
 
     /* Petite Minimalist Scroll Down Animation (Small Ellipse with Inner Dot) */
     .scroll-down-wrap {
@@ -1933,7 +1976,7 @@
       <!-- Hero Section (One Screen Size with Big Centered FARLOOM) -->
       <section class="dashboard-hero" id="dashboard-hero">
         <div class="dashboard-hero-center">
-          <h1 class="dashboard-hero-title">FARLOOM</h1>
+          <h1 class="dashboard-hero-title" aria-label="FARLOOM"><span class="hero-char" style="--char-idx: 0">F</span><span class="hero-char" style="--char-idx: 1">A</span><span class="hero-char" style="--char-idx: 2">R</span><span class="hero-char" style="--char-idx: 3">L</span><span class="hero-char" style="--char-idx: 4">O</span><span class="hero-char" style="--char-idx: 5">O</span><span class="hero-char" style="--char-idx: 6">M</span></h1>
         </div>
         <div class="scroll-down-wrap" onclick="scrollToDashboardContent()" role="button" aria-label="Scroll down" title="Scroll to explore">
           <div class="scroll-down-ellipse">
