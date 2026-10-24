@@ -6,8 +6,8 @@
   <title>FARLOOM — Technical Knowledge Intelligence Engine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/mona-sans@5.0.8/index.css">
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700,800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ------------------------------------------------------------------ */
     /* Design tokens                                                         */
@@ -97,7 +97,7 @@
     /* Reset & base                                                          */
     /* ------------------------------------------------------------------ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 15px; scroll-behavior: smooth; }
+    html { font-size: 15px; scroll-behavior: smooth; overflow-x: hidden; }
 
     /* Dark OLED Scrollbars & Sliders System */
     * {
@@ -175,6 +175,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
     h1, h2, h3, .brand-name, .section-title, .upload-main-title, .doc-history-title {
       font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -362,29 +363,117 @@
       width: 100%;
     }
     .dashboard-hero-title {
-      font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: clamp(4.2rem, 15vw, 11rem);
-      font-weight: 500;
-      letter-spacing: normal;
+      font-family: 'Clash Display', 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: clamp(3.8rem, 14vw, 10.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
       text-transform: uppercase;
-      color: #FFFFFF;
-      line-height: 0.88;
-      white-space: nowrap;
+      line-height: 0.9;
       user-select: none;
-      background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.82) 50%, rgba(255, 255, 255, 0.45) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 70px rgba(255, 255, 255, 0.15);
       margin: 0;
+      width: 100%;
+      display: block;
+      text-align: center;
     }
+
+    /* MaskedHeading Component Styles (React Bits) */
+    .masked-heading {
+      position: relative;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      text-wrap: balance;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+    }
+    .masked-heading__measure {
+      color: transparent;
+      user-select: none;
+      pointer-events: none;
+    }
+    .masked-heading__word {
+      display: inline-block;
+      white-space: pre;
+    }
+    .masked-heading__word:not(:last-child)::after {
+      content: ' ';
+    }
+    .masked-heading__baseline {
+      display: inline-block;
+      width: 0;
+      height: 0;
+    }
+    .masked-heading__defs {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+    .masked-heading__reveal {
+      position: absolute;
+      inset: 0;
+      display: block;
+      pointer-events: none;
+    }
+    .masked-heading__clip {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+    .masked-heading__media {
+      position: absolute;
+      inset: 0;
+      display: block;
+      background: rgba(255, 255, 255, 0.08);
+      will-change: transform, filter;
+    }
+    .masked-heading__tint {
+      position: absolute;
+      inset: 0;
+      display: block;
+      mix-blend-mode: color;
+      pointer-events: none;
+    }
+    .masked-heading__spot {
+      position: absolute;
+      inset: 0;
+      display: block;
+      pointer-events: none;
+    }
+    .masked-heading__spot--tone {
+      background: #808080;
+      mix-blend-mode: saturation;
+    }
+    .masked-heading__spot--shade {
+      background: #000000;
+      opacity: 0.55;
+    }
+    .masked-heading__outline {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+      fill: none;
+      stroke-linejoin: round;
+    }
+    .masked-heading__source {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
     /* Petite Minimalist Scroll Down Animation (Small Ellipse with Inner Dot) */
     .scroll-down-wrap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      padding: 0.35rem 1.2rem;
+      padding: 0.25rem 1rem;
       margin-top: auto;
       margin-bottom: 0.35rem;
       user-select: none;
@@ -395,28 +484,28 @@
       transform: translateY(2px);
     }
     .scroll-down-ellipse {
-      width: 16px;
-      height: 27px;
-      border: 1.2px solid rgba(255, 255, 255, 0.42);
-      border-radius: 9px;
+      width: 11px;
+      height: 19px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 6px;
       position: relative;
       display: flex;
       justify-content: center;
       transition: border-color 0.25s ease, box-shadow 0.25s ease;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0, 0, 0, 0.35);
     }
     .scroll-down-wrap:hover .scroll-down-ellipse {
       border-color: #ffffff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.35);
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.45);
     }
     .scroll-down-circle {
-      width: 3.5px;
-      height: 3.5px;
+      width: 2.5px;
+      height: 2.5px;
       background: #ffffff;
       border-radius: 50%;
       position: absolute;
-      top: 4.5px;
-      box-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
+      top: 3px;
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.95);
       animation: scrollDownCircleAnim 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
     }
     @keyframes scrollDownCircleAnim {
@@ -429,11 +518,11 @@
       }
       70% {
         opacity: 1;
-        transform: translateY(11px);
+        transform: translateY(8px);
       }
       90%, 100% {
         opacity: 0;
-        transform: translateY(14px);
+        transform: translateY(10px);
       }
     }
     .dashboard-content-body {
@@ -1930,7 +2019,7 @@
       <!-- Hero Section (One Screen Size with Big Centered FARLOOM) -->
       <section class="dashboard-hero" id="dashboard-hero">
         <div class="dashboard-hero-center">
-          <h1 class="dashboard-hero-title">FARLOOM</h1>
+          <div id="masked-hero-title" class="dashboard-hero-title">FARLOOM</div>
         </div>
         <div class="scroll-down-wrap" onclick="scrollToDashboardContent()" role="button" aria-label="Scroll down" title="Scroll to explore">
           <div class="scroll-down-ellipse">
@@ -2633,6 +2722,8 @@
   </footer>
 </div>
 
+<script src="/static/gsap.min.js"></script>
+<script src="/static/maskedheading.js"></script>
 <script>
 /* ========================================================================= */
 /* State                                                                       */
@@ -5116,6 +5207,30 @@ function escHtml(str) {
 /* ========================================================================= */
 (async function init() {
   updateBackgroundTabVisibility('dashboard');
+  if (window.createMaskedHeading) {
+    const heroTitle = document.getElementById('masked-hero-title');
+    if (heroTitle) {
+      window.createMaskedHeading(heroTitle, {
+        text: 'FARLOOM',
+        mediaType: 'image',
+        src: '/static/farloom-mask.svg',
+        fillScale: 1.3,
+        parallax: 34,
+        reveal: 'rise',
+        trigger: 'view',
+        spotlight: true,
+        spotlightRadius: 200,
+        outline: true,
+        outlineColor: 'rgba(255, 255, 255, 0.45)',
+        outlineWidth: 1,
+        drift: 10,
+        hoverZoom: 0.06,
+        saturation: 1.15,
+        weight: 800,
+        tracking: -0.04
+      });
+    }
+  }
   await loadSpaces();
   await initDashboard();
   renderExamples('dash-examples');
