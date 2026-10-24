@@ -962,7 +962,7 @@ export function createAeroShards(container, options = {}) {
     lightMode: options.lightMode ?? false,
     placement: Math.max(0, PLACEMENTS.indexOf(options.placement ?? 'full')),
     material: MATERIALS[options.material ?? 'glass'] ?? MATERIALS.glass,
-    count: Math.round(clamp(options.count ?? 1300, 100, 6000)),
+    count: Math.round(clamp(options.count ?? 550, 50, 6000)),
     shardSize: clamp(options.shardSize ?? 1, 0.2, 4),
     spread: clamp(options.spread ?? 1, 0, 3),
     twist: clamp(options.twist ?? 1, 0, 3),
@@ -981,7 +981,7 @@ export function createAeroShards(container, options = {}) {
     holdToGather: options.holdToGather ?? true,
     parallax: clamp(options.parallax ?? 0.5, 0, 1),
     paused: options.paused ?? false,
-    dpr: Math.max(0.5, options.dpr ?? 2)
+    dpr: Math.max(0.5, Math.min(options.dpr ?? 1.25, 1.5))
   };
 
   let disposed = false;
@@ -1379,7 +1379,9 @@ export function createAeroShards(container, options = {}) {
       return closed;
     };
 
+    let updateCachedBounds = null;
     const resize = () => {
+      updateCachedBounds?.();
       const next = sizeFor();
       if (next[0] === output.size[0] && next[1] === output.size[1]) return;
       output.resize(next);
@@ -2072,24 +2074,40 @@ export function createAeroShards(container, options = {}) {
       else state.quiet += 1;
       state.seen = s;
       if (state.quiet > 30) return;
-      resize();
       render(s, dt, reduced);
     };
 
-    const local = event => {
-      const width = Math.max(container.clientWidth || window.innerWidth, 1);
-      const height = Math.max(container.clientHeight || window.innerHeight, 1);
+    let cachedWidth = Math.max(container.clientWidth || window.innerWidth, 1);
+    let cachedHeight = Math.max(container.clientHeight || window.innerHeight, 1);
+    let cachedLeft = 0;
+    let cachedTop = 0;
+
+    updateCachedBounds = () => {
+      cachedWidth = Math.max(container.clientWidth || window.innerWidth, 1);
+      cachedHeight = Math.max(container.clientHeight || window.innerHeight, 1);
       const rect = container.getBoundingClientRect();
+      cachedLeft = rect.left;
+      cachedTop = rect.top;
+    };
+    window.addEventListener('resize', updateCachedBounds, { passive: true });
+    window.addEventListener('scroll', updateCachedBounds, { passive: true });
+    updateCachedBounds();
+    cleanups.push(() => {
+      window.removeEventListener('resize', updateCachedBounds);
+      window.removeEventListener('scroll', updateCachedBounds);
+    });
+
+    const local = event => {
       return {
         point: [
-          (event.clientX - rect.left) / width,
-          (event.clientY - rect.top) / height
+          (event.clientX - cachedLeft) / cachedWidth,
+          (event.clientY - cachedTop) / cachedHeight
         ],
         inside:
-          event.clientX >= rect.left &&
-          event.clientX <= rect.left + width &&
-          event.clientY >= rect.top &&
-          event.clientY <= rect.top + height
+          event.clientX >= cachedLeft &&
+          event.clientX <= cachedLeft + cachedWidth &&
+          event.clientY >= cachedTop &&
+          event.clientY <= cachedTop + cachedHeight
       };
     };
 
@@ -2200,10 +2218,13 @@ function initAeroShardsBackground() {
     placement: 'full',
     material: 'glass',
     markers: 'none',
-    count: 1300,
-    depthOfField: 0.75,
+    count: 550,
+    shardSize: 1.18,
+    depthOfField: 0.45,
     vignette: 0.3,
+    dpr: 1.25,
     mouseInteraction: true,
+    mouseStrength: 0.5,
     pulseOnClick: true,
     holdToGather: true
   });
