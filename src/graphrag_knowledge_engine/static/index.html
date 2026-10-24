@@ -6,7 +6,8 @@
   <title>FARLOOM — Technical Knowledge Intelligence Engine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/mona-sans@5.0.8/index.css">
   <style>
     /* ------------------------------------------------------------------ */
     /* Design tokens                                                         */
@@ -361,9 +362,10 @@
       width: 100%;
     }
     .dashboard-hero-title {
+      font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, sans-serif;
       font-size: clamp(4.2rem, 15vw, 11rem);
-      font-weight: 800;
-      letter-spacing: -0.04em;
+      font-weight: 500;
+      letter-spacing: normal;
       text-transform: uppercase;
       color: #FFFFFF;
       line-height: 0.88;
@@ -2664,6 +2666,13 @@ let pendingFile = null;
 /* ========================================================================= */
 /* Navigation                                                                  */
 /* ========================================================================= */
+function updateBackgroundTabVisibility(panelName) {
+  const bg = document.getElementById('aero-shards-background');
+  if (bg) {
+    bg.style.display = (panelName === 'dashboard') ? 'block' : 'none';
+  }
+}
+
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -2671,6 +2680,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.add('active');
     document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
     window.scrollTo({ top: 0, behavior: 'instant' });
+    updateBackgroundTabVisibility(btn.dataset.panel);
     if (btn.dataset.panel === 'corpus') loadCorpus();
     if (btn.dataset.panel === 'graph') {
       loadEntitySuggestions();
@@ -2817,6 +2827,7 @@ function quickUploadToSpace(spaceId) {
   if (uploadNav) uploadNav.classList.add('active');
   const uploadPanel = document.getElementById('panel-upload');
   if (uploadPanel) uploadPanel.classList.add('active');
+  updateBackgroundTabVisibility('upload');
   loadUploadHistory();
   const dropZone = document.getElementById('panel-upload-drop-zone');
   if (dropZone) dropZone.scrollIntoView({ behavior: 'smooth' });
@@ -2828,6 +2839,7 @@ function exploreSpaceGraph(spaceId) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelector('[data-panel="graph"]').classList.add('active');
   document.getElementById('panel-graph').classList.add('active');
+  updateBackgroundTabVisibility('graph');
   loadEntitySuggestions();
   if (universeEngine) {
     universeEngine.ensureInitialized();
@@ -3293,6 +3305,7 @@ function exploreDocInUniverse(source) {
   if (graphNav) graphNav.classList.add('active');
   const graphPanel = document.getElementById('panel-graph');
   if (graphPanel) graphPanel.classList.add('active');
+  updateBackgroundTabVisibility('graph');
 
   loadEntitySuggestions();
   if (universeEngine) {
@@ -3406,6 +3419,7 @@ function renderExamples(containerId) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.querySelector('[data-panel="query"]').classList.add('active');
       document.getElementById('panel-query').classList.add('active');
+      updateBackgroundTabVisibility('query');
       submitQuery();
     };
     container.appendChild(el);
@@ -5101,6 +5115,7 @@ function escHtml(str) {
 /* Init                                                                        */
 /* ========================================================================= */
 (async function init() {
+  updateBackgroundTabVisibility('dashboard');
   await loadSpaces();
   await initDashboard();
   renderExamples('dash-examples');

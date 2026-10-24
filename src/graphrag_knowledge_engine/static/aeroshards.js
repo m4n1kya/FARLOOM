@@ -3,6 +3,7 @@
  * Ported for high-performance WebGPU canvas using vgpu.
  */
 import { draw, effect, frame, init, sampler, storage, surface, target, uniforms } from './vgpu.js';
+import { prepareShader } from './prepare.js';
 
 const ROOT = 'aero-shards';
 const CANVAS = 'aero-shards-canvas';
@@ -779,6 +780,16 @@ fn fs_main(@location(0) uv: vec2f, @builtin(position) pixel: vec4f) -> @location
 }
 `;
 
+const preparedShardShader = prepareShader(SHARD_SHADER);
+const preparedLayerBlurShader = prepareShader(LAYER_BLUR_SHADER);
+const preparedShadowShader = prepareShader(SHADOW_SHADER);
+const preparedCompositeShader = prepareShader(COMPOSITE_SHADER);
+const preparedMarkerShader = prepareShader(MARKER_SHADER);
+const preparedPrefilterShader = prepareShader(PREFILTER_SHADER);
+const preparedDownsampleShader = prepareShader(DOWNSAMPLE_SHADER);
+const preparedBlurShader = prepareShader(BLUR_SHADER);
+const preparedFinishShader = prepareShader(FINISH_SHADER);
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 const smoother = x => {
@@ -986,6 +997,13 @@ export function createAeroShards(container, options = {}) {
     gpu = null;
     console.warn('AeroShards WebGPU initialization fallback:', error);
     if (window.createLightTunnel) {
+      const oldCanvas = container.querySelector('canvas');
+      if (oldCanvas) oldCanvas.remove();
+      const newCanvas = document.createElement('canvas');
+      newCanvas.id = 'light-tunnel-canvas';
+      newCanvas.className = 'light-tunnel-canvas';
+      newCanvas.setAttribute('aria-hidden', 'true');
+      container.appendChild(newCanvas);
       window.createLightTunnel(container, {
         cableColor: '#3b82f6',
         pulseColor: '#94a3b8',
@@ -1065,7 +1083,7 @@ export function createAeroShards(container, options = {}) {
     let markerBuffer = null;
     let markerData = new Float32Array(0);
     const markerDraw = draw(instance, {
-      shader: MARKER_SHADER,
+      shader: preparedMarkerShader,
       vertices: 6,
       cull: 'none',
       depth: false,
@@ -1104,7 +1122,7 @@ export function createAeroShards(container, options = {}) {
 
     const shardSolid = DEPTHS.map((_, level) =>
       draw(instance, {
-        shader: SHARD_SHADER,
+        shader: preparedShardShader,
         entry: { fragment: 'fs_solid' },
         vertices: 6,
         cull: 'none',
@@ -1115,7 +1133,7 @@ export function createAeroShards(container, options = {}) {
 
     const shardEdge = DEPTHS.map((_, level) =>
       draw(instance, {
-        shader: SHARD_SHADER,
+        shader: preparedShardShader,
         entry: { fragment: 'fs_edge' },
         vertices: 6,
         cull: 'none',
@@ -1127,24 +1145,24 @@ export function createAeroShards(container, options = {}) {
 
     const layerPasses = DEPTHS.map((_, level) =>
       groups.map((group, index) => ({
-        shadow: effect(instance, SHADOW_SHADER, {
+        shadow: effect(instance, preparedShadowShader, {
           label: `aero-shards-shadow-${level}-${index}`,
           set: { source: group.layer, depthMap: group.layer.depth, shadeInfo: shadeParams[level] }
         }),
-        blurX: effect(instance, LAYER_BLUR_SHADER, {
+        blurX: effect(instance, preparedLayerBlurShader, {
           label: `aero-shards-depth-x-${level}-${index}`,
           set: { source: group.shaded, linearSampler: linear, spreadInfo: spreadX[level] }
         }),
-        blurY: effect(instance, LAYER_BLUR_SHADER, {
+        blurY: effect(instance, preparedLayerBlurShader, {
           label: `aero-shards-depth-y-${level}-${index}`,
           set: { source: group.temp, linearSampler: linear, spreadInfo: spreadY[level] }
         }),
-        sharp: effect(instance, COMPOSITE_SHADER, {
+        sharp: effect(instance, preparedCompositeShader, {
           label: `aero-shards-sharp-${level}-${index}`,
           blend: 'premultiplied',
           set: { source: group.shaded, linearSampler: linear, mixInfo: mixParams[level] }
         }),
-        soft: effect(instance, COMPOSITE_SHADER, {
+        soft: effect(instance, preparedCompositeShader, {
           label: `aero-shards-soft-${level}-${index}`,
           blend: 'premultiplied',
           set: { source: group.blurred, linearSampler: linear, mixInfo: mixParams[level] }
@@ -1183,15 +1201,15 @@ export function createAeroShards(container, options = {}) {
         downParams,
         horizontalParams,
         verticalParams,
-        down: effect(instance, index === 0 ? PREFILTER_SHADER : DOWNSAMPLE_SHADER, {
+        down: effect(instance, index === 0 ? preparedPrefilterShader : preparedDownsampleShader, {
           label: `aero-shards-down-${index}`,
           set: { source, linearSampler: linear, bloom: downParams }
         }),
-        horizontal: effect(instance, BLUR_SHADER, {
+        horizontal: effect(instance, preparedBlurShader, {
           label: `aero-shards-blur-x-${index}`,
           set: { source: level.main, linearSampler: linear, bloom: horizontalParams }
         }),
-        vertical: effect(instance, BLUR_SHADER, {
+        vertical: effect(instance, preparedBlurShader, {
           label: `aero-shards-blur-y-${index}`,
           set: { source: level.spare, linearSampler: linear, bloom: verticalParams }
         })
@@ -1199,7 +1217,7 @@ export function createAeroShards(container, options = {}) {
     });
 
     const finishParams = uniforms(instance, { info: [0, 0, 0, 1], paper: [0, 0, 0, 0], mode: [0, 0, 0, 0] });
-    const finish = effect(instance, FINISH_SHADER, {
+    const finish = effect(instance, preparedFinishShader, {
       label: 'aero-shards-finish',
       set: {
         sceneTexture: scene,
@@ -2158,6 +2176,15 @@ export function createAeroShards(container, options = {}) {
       cancelAnimationFrame(raf);
       cleanups.forEach(cleanup => cleanup());
       gpu?.dispose();
+    }
+  };
+}
+
+if (typeof window !== 'undefined') {
+  window.setAeroShardsVisible = function(visible) {
+    const container = document.getElementById('aero-shards-background');
+    if (container) {
+      container.style.display = visible ? 'block' : 'none';
     }
   };
 }
