@@ -195,7 +195,26 @@
     /* Layout & Header                                                       */
     /* ------------------------------------------------------------------ */
     /* Permanent AeroShards WebGPU Shard Background (React Bits) */
-    .aero-shards-container,
+    .aero-shards-container {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      animation: aeroShardsAppear 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.5s;
+    }
+    @keyframes aeroShardsAppear {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
     .light-tunnel-container {
       position: fixed;
       inset: 0;
@@ -204,6 +223,12 @@
       overflow: hidden;
       z-index: 0;
       pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .aero-shards-container {
+        opacity: 1;
+        animation: none;
+      }
     }
     .aero-shards-canvas,
     .light-tunnel-canvas {
