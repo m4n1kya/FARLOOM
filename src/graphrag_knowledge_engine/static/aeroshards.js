@@ -25,7 +25,7 @@ const SHARE = [0.26, 0.23, 0.2, 0.17, 0.14];
 const GROWTH = [1, 1.3, 1.8, 2.6, 3.6];
 const FADE = [1, 0.8, 0.52, 0.32, 0.2];
 const LEVELS = DEPTHS.length;
-const INTRO_SECONDS = 3.4;
+const INTRO_SECONDS = 2.4;
 const MARKER_STYLES = { plus: 0, dots: 1, none: -1 };
 const MARKER_FLOATS = 8;
 const MARKER_PHASES = [
@@ -1502,8 +1502,8 @@ export function createAeroShards(container, options = {}) {
         let introBank = 0;
         if (introOn) {
           const begin =
-            level * 0.22 + Math.max(0, s0 - 0.1) * (INTRO_SECONDS - 1.0 - (LEVELS - 1) * 0.22) + shard.arrive * 0.15;
-          const local = clamp((introAge - begin) / 0.9, 0, 1);
+            level * 0.17 + Math.max(0, s0 - 0.1) * (INTRO_SECONDS - 0.8 - (LEVELS - 1) * 0.17) + shard.arrive * 0.12;
+          const local = clamp((introAge - begin) / 0.7, 0, 1);
           appear = smoother(local);
           const glide = (1 - local) * (1 - local);
           s0 = closed ? s0 - glide * 0.06 : Math.max(0, s0 - glide * 0.06);
@@ -1813,8 +1813,8 @@ export function createAeroShards(container, options = {}) {
               let reveal = 1;
               if (introOn) {
                 const across = clamp((flat[0] / aspect + 1) * 0.5, 0, 1);
-                const begin = level * 0.22 + 0.35 + across * (INTRO_SECONDS - 1.3 - (LEVELS - 1) * 0.22);
-                reveal = smoother((introAge - begin) / 0.5);
+                const begin = level * 0.17 + 0.28 + across * (INTRO_SECONDS - 1.0 - (LEVELS - 1) * 0.17);
+                reveal = smoother((introAge - begin) / 0.4);
               }
               const fade = FADE[level] * (1 - smoother((markerDepth - 3) / 10) * 0.45) * reveal;
               if (fade < 0.002) continue;
