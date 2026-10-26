@@ -408,20 +408,25 @@
     .hero-char {
       display: inline-block;
       opacity: 0;
-      animation: heroLetterAppear 0.35s ease forwards;
-      animation-delay: calc(0.14s + var(--char-idx) * 0.095s);
+      transform: translateY(6px);
+      will-change: opacity, transform;
+      animation: heroLetterFadeIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: calc(0.12s + var(--char-idx) * 0.09s);
     }
-    @keyframes heroLetterAppear {
+    @keyframes heroLetterFadeIn {
       0% {
         opacity: 0;
+        transform: translateY(6px);
       }
       100% {
         opacity: 1;
+        transform: translateY(0);
       }
     }
     @media (prefers-reduced-motion: reduce) {
       .hero-char {
         opacity: 1;
+        transform: none;
         animation: none;
       }
     }
