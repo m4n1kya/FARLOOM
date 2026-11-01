@@ -299,7 +299,7 @@
       font-size: clamp(4.5rem, 16.5vw, 22vw);
       font-weight: 900;
       line-height: 0.75;
-      letter-spacing: -0.05em;
+      letter-spacing: -0.01em;
       color: rgba(255, 255, 255, 0.035);
       text-align: center;
       width: 100%;
@@ -427,32 +427,26 @@
     .hero-char {
       display: inline-block;
       opacity: 0;
-      transform: translateY(28px) scale(0.96);
-      filter: blur(12px);
-      will-change: opacity, transform, filter;
-      animation: heroLetterFadeIn 0.92s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      animation-delay: calc(0.06s + var(--char-idx) * 0.085s);
+      transform: translateY(18px);
+      will-change: opacity, transform;
+      -webkit-font-smoothing: antialiased;
+      animation: heroLetterFadeIn 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(0.08s + var(--char-idx) * 0.085s);
     }
     @keyframes heroLetterFadeIn {
       0% {
         opacity: 0;
-        transform: translateY(28px) scale(0.96);
-        filter: blur(12px);
-      }
-      60% {
-        filter: blur(2px);
+        transform: translateY(18px);
       }
       100% {
         opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0px);
+        transform: translateY(0);
       }
     }
     @media (prefers-reduced-motion: reduce) {
       .hero-char {
         opacity: 1;
         transform: none;
-        filter: none;
         animation: none;
       }
     }
