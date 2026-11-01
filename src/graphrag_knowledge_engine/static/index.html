@@ -6,6 +6,7 @@
   <title>FARLOOM — Technical Knowledge Intelligence Engine</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="modulepreload" href="/static/aeroshards.js">
   <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700,800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -204,8 +205,8 @@
       z-index: 0;
       pointer-events: none;
       opacity: 0;
-      animation: aeroShardsAppear 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      animation-delay: 0.5s;
+      animation: aeroShardsAppear 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.05s;
     }
     @keyframes aeroShardsAppear {
       0% {
@@ -278,26 +279,44 @@
       font-size: 1.15rem;
     }
 
-    /* Footer */
+    /* Footer (Synaptica Style) */
     .site-footer {
       position: relative;
       width: 100%;
       margin-top: auto;
-      padding: 3rem 0 2.5rem;
+      padding: 6rem 2rem 2.5rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
+      overflow: hidden;
       user-select: none;
       background: transparent;
       border-top: 1px solid rgba(255, 255, 255, 0.04);
     }
+    .footer-watermark {
+      font-family: 'Clash Display', 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: clamp(4.5rem, 16.5vw, 22vw);
+      font-weight: 900;
+      line-height: 0.75;
+      letter-spacing: -0.05em;
+      color: rgba(255, 255, 255, 0.035);
+      text-align: center;
+      width: 100%;
+      user-select: none;
+      pointer-events: none;
+      margin-bottom: 1.5rem;
+      transform: translateY(2vw);
+      white-space: nowrap;
+      mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
+      -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 95%);
+    }
     .footer-copyright {
       position: relative;
       z-index: 2;
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       font-weight: 500;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: rgba(255, 255, 255, 0.35);
       text-align: center;
@@ -408,25 +427,32 @@
     .hero-char {
       display: inline-block;
       opacity: 0;
-      transform: translateY(6px);
-      will-change: opacity, transform;
-      animation: heroLetterFadeIn 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-      animation-delay: calc(0.12s + var(--char-idx) * 0.09s);
+      transform: translateY(28px) scale(0.96);
+      filter: blur(12px);
+      will-change: opacity, transform, filter;
+      animation: heroLetterFadeIn 0.92s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(0.06s + var(--char-idx) * 0.085s);
     }
     @keyframes heroLetterFadeIn {
       0% {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(28px) scale(0.96);
+        filter: blur(12px);
+      }
+      60% {
+        filter: blur(2px);
       }
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
+        filter: blur(0px);
       }
     }
     @media (prefers-reduced-motion: reduce) {
       .hero-char {
         opacity: 1;
         transform: none;
+        filter: none;
         animation: none;
       }
     }
@@ -2681,8 +2707,9 @@
   </main>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="site-footer">
-    <div class="footer-copyright">COPYRIGHT © 2026. ALL RIGHTS RESERVED.</div>
+  <footer class="site-footer global-footer" id="site-global-footer" style="display: none;">
+    <div class="footer-watermark" aria-hidden="true">FARLOOM</div>
+    <div class="footer-copyright">COPYRIGHT &copy; 2026 FARLOOM. ALL RIGHTS RESERVED.</div>
   </footer>
 </div>
 
@@ -2724,6 +2751,10 @@ function updateBackgroundTabVisibility(panelName) {
   if (bg) {
     bg.style.display = (panelName === 'dashboard') ? 'block' : 'none';
   }
+  const footer = document.getElementById('site-global-footer');
+  if (footer) {
+    footer.style.display = (panelName === 'dashboard') ? 'none' : 'flex';
+  }
 }
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -2734,6 +2765,7 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
     window.scrollTo({ top: 0, behavior: 'instant' });
     updateBackgroundTabVisibility(btn.dataset.panel);
+    if (btn.dataset.panel === 'dashboard') triggerHeroAnimation();
     if (btn.dataset.panel === 'corpus') loadCorpus();
     if (btn.dataset.panel === 'graph') {
       loadEntitySuggestions();
@@ -5164,11 +5196,30 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
+function triggerHeroAnimation() {
+  const chars = document.querySelectorAll('.hero-char');
+  if (!chars.length) return;
+  chars.forEach(c => {
+    c.style.animation = 'none';
+  });
+  void document.body.offsetHeight;
+  chars.forEach(c => {
+    c.style.animation = '';
+  });
+}
+
 /* ========================================================================= */
 /* Init                                                                        */
 /* ========================================================================= */
 (async function init() {
   updateBackgroundTabVisibility('dashboard');
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      requestAnimationFrame(() => {
+        triggerHeroAnimation();
+      });
+    });
+  }
   await loadSpaces();
   await initDashboard();
   renderExamples('dash-examples');

@@ -25,7 +25,7 @@ const SHARE = [0.26, 0.23, 0.2, 0.17, 0.14];
 const GROWTH = [1, 1.3, 1.8, 2.6, 3.6];
 const FADE = [1, 0.8, 0.52, 0.32, 0.2];
 const LEVELS = DEPTHS.length;
-const INTRO_SECONDS = 1.6;
+const INTRO_SECONDS = 0.95;
 const MARKER_STYLES = { plus: 0, dots: 1, none: -1 };
 const MARKER_FLOATS = 8;
 const MARKER_PHASES = [
@@ -2231,7 +2231,7 @@ function initAeroShardsBackground() {
 }
 
 const scheduleInit = () => {
-  requestAnimationFrame(() => setTimeout(initAeroShardsBackground, 40));
+  initAeroShardsBackground();
 };
 
 if (document.readyState === 'loading') {
